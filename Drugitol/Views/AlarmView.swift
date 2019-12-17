@@ -16,22 +16,15 @@ protocol AlarmViewDelegate: AnyObject {
 class AlarmView: UIView {
 	@IBOutlet private var contentView: UIView!
 	@IBOutlet private weak var label: UILabel!
-	@IBOutlet private weak var button: UIButton!
 
-	var alarmTime: TimeInterval {
+	var alarmTime: DrugAlarm {
 		didSet {
 			updateViews()
 		}
 	}
 	weak var delegate: AlarmViewDelegate?
 
-	private let formatter: DateFormatter = {
-		let formatter = DateFormatter()
-		formatter.dateFormat = "h:mm a"
-		return formatter
-	}()
-
-	init(alarmTime: TimeInterval) {
+	init(alarmTime: DrugAlarm) {
 		self.alarmTime = alarmTime
 		super.init(frame: .zero)
 		commonInit()
@@ -47,18 +40,20 @@ class AlarmView: UIView {
 		nib.instantiate(withOwner: self, options: nil)
 
 		addSubview(contentView)
+		contentView.translatesAutoresizingMaskIntoConstraints = false
 		contentView.topAnchor.constraint(equalTo: topAnchor).isActive = true
 		contentView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
 		contentView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
 		contentView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+
+		updateViews()
 	}
 
 	private func updateViews() {
-		let time = Date(timeIntervalSince1970: alarmTime)
-		label.text = "Every day at \(formatter.string(from: time))"
+		label.text = "Every day at \(alarmTime.prettyTimeString)"
 	}
 
-	@IBAction func buttonPressed(_ sender: UIButton) {
+	@IBAction func editButtonPressed(_ sender: UIButton) {
 		delegate?.alarmViewInvokedEditing(self)
 	}
 

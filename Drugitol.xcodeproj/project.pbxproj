@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3329A47423A89AEC007F10E2 /* DrugEntry+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3329A47323A89AEC007F10E2 /* DrugEntry+Convenience.swift */; };
+		3329A47623A8A05F007F10E2 /* DrugAlarm+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3329A47523A8A05F007F10E2 /* DrugAlarm+Convenience.swift */; };
+		3329A47823A8A395007F10E2 /* DrugController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3329A47723A8A395007F10E2 /* DrugController.swift */; };
 		333F746A23A888B400E51514 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F746923A888B400E51514 /* AppDelegate.swift */; };
 		333F747123A888B400E51514 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 333F746F23A888B400E51514 /* Main.storyboard */; };
 		333F747323A888B500E51514 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 333F747223A888B500E51514 /* Assets.xcassets */; };
@@ -22,6 +25,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3329A47323A89AEC007F10E2 /* DrugEntry+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DrugEntry+Convenience.swift"; sourceTree = "<group>"; };
+		3329A47523A8A05F007F10E2 /* DrugAlarm+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DrugAlarm+Convenience.swift"; sourceTree = "<group>"; };
+		3329A47723A8A395007F10E2 /* DrugController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrugController.swift; sourceTree = "<group>"; };
 		333F746623A888B400E51514 /* Drugitol.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Drugitol.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		333F746923A888B400E51514 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		333F747023A888B400E51514 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -49,6 +55,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3329A47223A89AD6007F10E2 /* Model Controller */ = {
+			isa = PBXGroup;
+			children = (
+				3329A47723A8A395007F10E2 /* DrugController.swift */,
+			);
+			path = "Model Controller";
+			sourceTree = "<group>";
+		};
 		333F745D23A888B400E51514 = {
 			isa = PBXGroup;
 			children = (
@@ -72,6 +86,7 @@
 				333F746923A888B400E51514 /* AppDelegate.swift */,
 				333F748523A88E4400E51514 /* ViewControllers */,
 				333F748F23A8901A00E51514 /* Views */,
+				3329A47223A89AD6007F10E2 /* Model Controller */,
 				333F748B23A88ED800E51514 /* Model */,
 				333F748823A88EBE00E51514 /* Helpers */,
 				333F746F23A888B400E51514 /* Main.storyboard */,
@@ -104,6 +119,8 @@
 			isa = PBXGroup;
 			children = (
 				333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */,
+				3329A47323A89AEC007F10E2 /* DrugEntry+Convenience.swift */,
+				3329A47523A8A05F007F10E2 /* DrugAlarm+Convenience.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -231,8 +248,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3329A47623A8A05F007F10E2 /* DrugAlarm+Convenience.swift in Sources */,
+				3329A47823A8A395007F10E2 /* DrugController.swift in Sources */,
 				333F748A23A88ECA00E51514 /* CoreDataStack.swift in Sources */,
 				333F748723A88E5D00E51514 /* TimeSelectionViewController.swift in Sources */,
+				3329A47423A89AEC007F10E2 /* DrugEntry+Convenience.swift in Sources */,
 				333F748423A88E3000E51514 /* NewDrugViewController.swift in Sources */,
 				333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */,
 				333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */,
