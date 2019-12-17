@@ -5,12 +5,14 @@
 //  Created by Michael Redig on 12/16/19.
 //  Copyright © 2019 Red_Egg Productions. All rights reserved.
 //
+//swiftlint:disable untyped_error_in_catch
 
 import Foundation
 import CoreData
 
 class CoreDataStack {
 	static let shared = CoreDataStack()
+	
 	private init() {}
 
 	/// A generic function to save any context we want (main or background)
@@ -34,7 +36,7 @@ class CoreDataStack {
 	/// Access to the Persistent Container
 	lazy var container: NSPersistentContainer = {
 		let container = NSPersistentContainer(name: "Drugs")
-		container.loadPersistentStores(completionHandler: { (_, error) in
+		container.loadPersistentStores(completionHandler: { _, error in
 			if let error = error {
 				fatalError("Failed to load persistent store: \(error)")
 			}

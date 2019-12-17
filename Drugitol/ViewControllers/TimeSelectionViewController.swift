@@ -10,7 +10,8 @@ import UIKit
 
 class TimeSelectionViewController: UIViewController {
 
-	@IBOutlet weak var datePicker: UIDatePicker!
+	@IBOutlet private weak var datePicker: UIDatePicker!
+
 	override func viewDidLoad() {
         super.viewDidLoad()
 

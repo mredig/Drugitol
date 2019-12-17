@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 class DrugEntryVC: UIViewController {
-	@IBOutlet weak var tableView: UITableView!
+	@IBOutlet private weak var tableView: UITableView!
 
 	lazy var fetchedResultsController: NSFetchedResultsController<DrugEntry> = {
 		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
