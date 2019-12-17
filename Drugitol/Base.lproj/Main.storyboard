@@ -133,6 +133,7 @@
                     <connections>
                         <outlet property="alarmListStackView" destination="jU9-C3-8vp" id="UoI-FF-OLO"/>
                         <outlet property="nameTextField" destination="C2G-xl-QJ2" id="rWN-va-TtS"/>
+                        <segue destination="MBu-dv-K4j" kind="presentation" identifier="AlarmTimeSegue" modalPresentationStyle="overFullScreen" id="an2-Mp-j44"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GAm-oH-K7y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -160,12 +161,24 @@
                                     <constraint firstAttribute="height" constant="216" id="hBl-vs-lvK"/>
                                 </constraints>
                             </datePicker>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SV0-8N-VD4">
+                                <rect key="frame" x="0.0" y="44" width="414" height="522"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="Zzo-Fw-piy" appends="YES" id="5RI-BT-JJO"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="sS7-B0-tYM" firstAttribute="trailing" secondItem="SV0-8N-VD4" secondAttribute="trailing" id="1Sd-R8-Muw"/>
+                            <constraint firstItem="SV0-8N-VD4" firstAttribute="leading" secondItem="sS7-B0-tYM" secondAttribute="leading" id="4h0-xL-4hM"/>
                             <constraint firstItem="y6b-jS-mVI" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="sS7-B0-tYM" secondAttribute="leading" constant="20" id="84g-vC-Qm2"/>
                             <constraint firstItem="sS7-B0-tYM" firstAttribute="trailing" secondItem="y6b-jS-mVI" secondAttribute="trailing" constant="20" id="PbJ-L7-eFx"/>
                             <constraint firstItem="aFH-Qq-sV6" firstAttribute="trailing" secondItem="sS7-B0-tYM" secondAttribute="trailing" id="d38-WD-F1b"/>
+                            <constraint firstItem="aFH-Qq-sV6" firstAttribute="top" secondItem="SV0-8N-VD4" secondAttribute="bottom" id="dov-F1-y4m"/>
+                            <constraint firstItem="SV0-8N-VD4" firstAttribute="top" secondItem="sS7-B0-tYM" secondAttribute="top" id="ho1-AI-Dgv"/>
                             <constraint firstItem="sS7-B0-tYM" firstAttribute="bottom" secondItem="aFH-Qq-sV6" secondAttribute="bottom" constant="80" id="p4V-UW-ujS"/>
                             <constraint firstItem="aFH-Qq-sV6" firstAttribute="leading" secondItem="sS7-B0-tYM" secondAttribute="leading" id="pgH-xT-MAw"/>
                             <constraint firstItem="aFH-Qq-sV6" firstAttribute="top" secondItem="y6b-jS-mVI" secondAttribute="bottom" constant="20" id="yvv-hG-h65"/>
@@ -177,6 +190,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qx7-0o-knX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Zzo-Fw-piy"/>
             </objects>
             <point key="canvasLocation" x="3925" y="-346"/>
         </scene>

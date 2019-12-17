@@ -34,6 +34,11 @@ class DrugController {
 		return entry
 	}
 
+	func removeAlarmFromEntry(_ entry: DrugEntry, alarm: DrugAlarm) {
+		entry.removeFromAlarms(alarm)
+		save(withErrorLogging: "Failed removing alarm '\(alarm)' from entry '\(entry)'")
+	}
+
 	// MARK: - DrugAlarm
 	@discardableResult func createDrugAlarm(alarmTime: TimeInterval) -> DrugAlarm {
 		let alarm = DrugAlarm(alarmTime: alarmTime, context: context)

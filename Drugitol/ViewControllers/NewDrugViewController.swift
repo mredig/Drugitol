@@ -21,6 +21,8 @@ class NewDrugViewController: UIViewController {
 		}
 	}
 
+	private var removedAlarms: [DrugAlarm] = []
+
 	override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -30,29 +32,45 @@ class NewDrugViewController: UIViewController {
 		guard let entry = entry else { return }
 		nameTextField.text = entry.name
 		entry.drugAlarms.forEach {
-			let alarmView = AlarmView(alarmTime: $0)
-			alarmListStackView.addArrangedSubview(alarmView)
+			addAlarmView(for: $0)
 		}
+	}
+
+	private func addAlarmView(for alarm: DrugAlarm) {
+		let alarmView = AlarmView(alarmTime: alarm)
+		alarmView.delegate = self
+		alarmListStackView.addArrangedSubview(alarmView)
+	}
+
+	private func removeAlarmView(_ alarmView: AlarmView) {
+		alarmView.removeFromSuperview()
+		removedAlarms.append(alarmView.alarmTime)
 	}
 
 	@IBAction func saveButtonPressed(_ sender: UIBarButtonItem) {
 		guard let name = nameTextField.text else { return }
 
-		let alarms = alarmListStackView.arrangedSubviews.compactMap { ($0 as? AlarmView)?.alarmTime }
+		let entry = self.entry ?? drugController.createDrugEntry(named: name)
 
-		if let entry = entry {
-			drugController.updateDrugEntry(entry, name: name, alarms: alarms)
-		} else {
-			let entry = drugController.createDrugEntry(named: name)
-			drugController.updateDrugEntry(entry, name: name, alarms: alarms)
-		}
+		let alarms = alarmListStackView.arrangedSubviews.compactMap { ($0 as? AlarmView)?.alarmTime }
+		drugController.updateDrugEntry(entry, name: name, alarms: alarms)
+		removedAlarms.forEach { drugController.removeAlarmFromEntry(entry, alarm: $0) }
 
 		navigationController?.popViewController(animated: true)
 	}
 
 	@IBAction func plusButtonPressed(_ sender: UIButton) {
 		let alarm = drugController.createDrugAlarm(alarmTime: 7 * 60 * 60)
-		let alarmView = AlarmView(alarmTime: alarm)
-		alarmListStackView.addArrangedSubview(alarmView)
+		addAlarmView(for: alarm)
+	}
+}
+
+extension NewDrugViewController: AlarmViewDelegate {
+	func alarmViewInvokedEditing(_ alarmView: AlarmView) {
+		performSegue(withIdentifier: "AlarmTimeSegue", sender: nil)
+	}
+
+	func alarmViewInvokedDeletion(_ alarmView: AlarmView) {
+		removeAlarmView(alarmView)
 	}
 }
