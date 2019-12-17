@@ -39,6 +39,12 @@ class DrugController {
 		save(withErrorLogging: "Failed removing alarm '\(alarm)' from entry '\(entry)'")
 	}
 
+	func deleteDrugEntry(_ entry: DrugEntry) {
+		context.delete(entry)
+
+		save(withErrorLogging: "Error deleting entry")
+	}
+
 	// MARK: - DrugAlarm
 	@discardableResult func createDrugAlarm(alarmTime: TimeInterval) -> DrugAlarm {
 		let alarm = DrugAlarm(alarmTime: alarmTime, context: context)

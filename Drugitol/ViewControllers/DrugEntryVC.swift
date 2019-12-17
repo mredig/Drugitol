@@ -12,6 +12,8 @@ import CoreData
 class DrugEntryVC: UIViewController {
 	@IBOutlet private weak var tableView: UITableView!
 
+	let drugController = DrugController(context: .mainContext)
+
 	lazy var fetchedResultsController: NSFetchedResultsController<DrugEntry> = {
 		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
@@ -65,6 +67,12 @@ extension DrugEntryVC: UITableViewDelegate, UITableViewDataSource {
 		cell.detailTextLabel?.text = alarms.map { $0.prettyTimeString }.joined(separator: ", ")
 
 		return cell
+	}
+
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		guard editingStyle == .delete else { return }
+		let entry = fetchedResultsController.object(at: indexPath)
+		drugController.deleteDrugEntry(entry)
 	}
 }
 
