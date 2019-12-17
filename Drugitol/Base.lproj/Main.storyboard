@@ -69,42 +69,43 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2417" y="-346"/>
+            <point key="canvasLocation" x="2214" y="-346"/>
         </scene>
         <!--New Drug Reminder-->
         <scene sceneID="Jb4-I0-Lrn">
             <objects>
-                <viewController id="vPc-ZL-nEh" sceneMemberID="viewController">
+                <viewController id="vPc-ZL-nEh" customClass="NewDrugViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TPV-Tl-JJz">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="36" translatesAutoresizingMaskIntoConstraints="NO" id="ZDy-b6-sxJ">
-                                <rect key="frame" x="20" y="160" width="374" height="100"/>
+                                <rect key="frame" x="20" y="160" width="374" height="152"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="C2G-xl-QJ2">
                                         <rect key="frame" x="0.0" y="0.0" width="374" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="48" translatesAutoresizingMaskIntoConstraints="NO" id="jU9-C3-8vp">
-                                        <rect key="frame" x="0.0" y="70" width="374" height="30"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="jU9-C3-8vp">
+                                        <rect key="frame" x="0.0" y="70" width="374" height="0.0"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="TOD: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4r0-2d-7aY">
-                                                <rect key="frame" x="0.0" y="0.0" width="296" height="30"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VHF-K3-AV8">
-                                                <rect key="frame" x="344" y="0.0" width="30" height="30"/>
-                                                <state key="normal" title="Edit"/>
-                                                <connections>
-                                                    <segue destination="MBu-dv-K4j" kind="presentation" modalPresentationStyle="overFullScreen" id="eUZ-8Z-GqT"/>
-                                                </connections>
-                                            </button>
+                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="car-LH-cxL">
+                                                <rect key="frame" x="0.0" y="0.0" width="374" height="0.0"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" id="lDS-UF-T3T"/>
+                                                </constraints>
+                                            </view>
                                         </subviews>
                                     </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2HC-UZ-K77">
+                                        <rect key="frame" x="0.0" y="106" width="374" height="46"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                        <state key="normal" title="+">
+                                            <color key="titleColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                    </button>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -117,15 +118,19 @@
                         <viewLayoutGuide key="safeArea" id="oLU-S4-q8R"/>
                     </view>
                     <navigationItem key="navigationItem" title="New Drug Reminder" id="1Rw-CP-akq"/>
+                    <connections>
+                        <outlet property="alarmListStackView" destination="jU9-C3-8vp" id="UoI-FF-OLO"/>
+                        <outlet property="nameTextField" destination="C2G-xl-QJ2" id="rWN-va-TtS"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GAm-oH-K7y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3417" y="-346"/>
+            <point key="canvasLocation" x="3094" y="-346"/>
         </scene>
-        <!--View Controller-->
+        <!--Time Selection View Controller-->
         <scene sceneID="IdD-xk-fvk">
             <objects>
-                <viewController id="MBu-dv-K4j" sceneMemberID="viewController">
+                <viewController id="MBu-dv-K4j" customClass="TimeSelectionViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="p5D-3P-w3Y">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -133,6 +138,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y6b-jS-mVI">
                                 <rect key="frame" x="357" y="516" width="37" height="30"/>
                                 <state key="normal" title="Done"/>
+                                <connections>
+                                    <action selector="doneButtonPressed:" destination="MBu-dv-K4j" eventType="touchUpInside" id="KE8-5T-oAJ"/>
+                                </connections>
                             </button>
                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="aFH-Qq-sV6">
                                 <rect key="frame" x="0.0" y="566" width="414" height="216"/>
@@ -152,10 +160,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sS7-B0-tYM"/>
                     </view>
+                    <connections>
+                        <outlet property="datePicker" destination="aFH-Qq-sV6" id="o8e-Vd-Po8"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qx7-0o-knX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4439" y="-346"/>
+            <point key="canvasLocation" x="3925" y="-346"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="WYR-9V-oXD">

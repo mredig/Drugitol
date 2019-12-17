@@ -13,6 +13,12 @@
 		333F747623A888B500E51514 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 333F747423A888B500E51514 /* LaunchScreen.storyboard */; };
 		333F748023A889B900E51514 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 333F747F23A889B800E51514 /* .swiftlint.yml */; };
 		333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748123A88D3B00E51514 /* DrugEntryVC.swift */; };
+		333F748423A88E3000E51514 /* NewDrugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748323A88E3000E51514 /* NewDrugViewController.swift */; };
+		333F748723A88E5D00E51514 /* TimeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748623A88E5D00E51514 /* TimeSelectionViewController.swift */; };
+		333F748A23A88ECA00E51514 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748923A88ECA00E51514 /* CoreDataStack.swift */; };
+		333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */; };
+		333F749123A8902D00E51514 /* AlarmView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 333F749023A8902D00E51514 /* AlarmView.xib */; };
+		333F749323A8905100E51514 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F749223A8905100E51514 /* AlarmView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +30,12 @@
 		333F747723A888B500E51514 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		333F747F23A889B800E51514 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		333F748123A88D3B00E51514 /* DrugEntryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrugEntryVC.swift; sourceTree = "<group>"; };
+		333F748323A88E3000E51514 /* NewDrugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDrugViewController.swift; sourceTree = "<group>"; };
+		333F748623A88E5D00E51514 /* TimeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectionViewController.swift; sourceTree = "<group>"; };
+		333F748923A88ECA00E51514 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		333F748D23A88EE900E51514 /* Drugs.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Drugs.xcdatamodel; sourceTree = "<group>"; };
+		333F749023A8902D00E51514 /* AlarmView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlarmView.xib; sourceTree = "<group>"; };
+		333F749223A8905100E51514 /* AlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,13 +70,51 @@
 			isa = PBXGroup;
 			children = (
 				333F746923A888B400E51514 /* AppDelegate.swift */,
-				333F748123A88D3B00E51514 /* DrugEntryVC.swift */,
+				333F748523A88E4400E51514 /* ViewControllers */,
+				333F748F23A8901A00E51514 /* Views */,
+				333F748B23A88ED800E51514 /* Model */,
+				333F748823A88EBE00E51514 /* Helpers */,
 				333F746F23A888B400E51514 /* Main.storyboard */,
 				333F747223A888B500E51514 /* Assets.xcassets */,
 				333F747423A888B500E51514 /* LaunchScreen.storyboard */,
 				333F747723A888B500E51514 /* Info.plist */,
 			);
 			path = Drugitol;
+			sourceTree = "<group>";
+		};
+		333F748523A88E4400E51514 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				333F748123A88D3B00E51514 /* DrugEntryVC.swift */,
+				333F748323A88E3000E51514 /* NewDrugViewController.swift */,
+				333F748623A88E5D00E51514 /* TimeSelectionViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		333F748823A88EBE00E51514 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				333F748923A88ECA00E51514 /* CoreDataStack.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		333F748B23A88ED800E51514 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		333F748F23A8901A00E51514 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				333F749023A8902D00E51514 /* AlarmView.xib */,
+				333F749223A8905100E51514 /* AlarmView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,6 +179,7 @@
 			files = (
 				333F748023A889B900E51514 /* .swiftlint.yml in Resources */,
 				333F747623A888B500E51514 /* LaunchScreen.storyboard in Resources */,
+				333F749123A8902D00E51514 /* AlarmView.xib in Resources */,
 				333F747323A888B500E51514 /* Assets.xcassets in Resources */,
 				333F747123A888B400E51514 /* Main.storyboard in Resources */,
 			);
@@ -180,7 +231,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				333F748A23A88ECA00E51514 /* CoreDataStack.swift in Sources */,
+				333F748723A88E5D00E51514 /* TimeSelectionViewController.swift in Sources */,
+				333F748423A88E3000E51514 /* NewDrugViewController.swift in Sources */,
+				333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */,
 				333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */,
+				333F749323A8905100E51514 /* AlarmView.swift in Sources */,
 				333F746A23A888B400E51514 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -381,6 +437,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				333F748D23A88EE900E51514 /* Drugs.xcdatamodel */,
+			);
+			currentVersion = 333F748D23A88EE900E51514 /* Drugs.xcdatamodel */;
+			path = Drugs.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 333F745E23A888B400E51514 /* Project object */;
 }
