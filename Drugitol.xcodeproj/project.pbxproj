@@ -8,22 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		333F746A23A888B400E51514 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F746923A888B400E51514 /* AppDelegate.swift */; };
-		333F746E23A888B400E51514 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F746D23A888B400E51514 /* ViewController.swift */; };
 		333F747123A888B400E51514 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 333F746F23A888B400E51514 /* Main.storyboard */; };
 		333F747323A888B500E51514 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 333F747223A888B500E51514 /* Assets.xcassets */; };
 		333F747623A888B500E51514 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 333F747423A888B500E51514 /* LaunchScreen.storyboard */; };
 		333F748023A889B900E51514 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 333F747F23A889B800E51514 /* .swiftlint.yml */; };
+		333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748123A88D3B00E51514 /* DrugEntryVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		333F746623A888B400E51514 /* Drugitol.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Drugitol.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		333F746923A888B400E51514 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		333F746D23A888B400E51514 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		333F747023A888B400E51514 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		333F747223A888B500E51514 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		333F747523A888B500E51514 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		333F747723A888B500E51514 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		333F747F23A889B800E51514 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		333F748123A88D3B00E51514 /* DrugEntryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrugEntryVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				333F746923A888B400E51514 /* AppDelegate.swift */,
-				333F746D23A888B400E51514 /* ViewController.swift */,
+				333F748123A88D3B00E51514 /* DrugEntryVC.swift */,
 				333F746F23A888B400E51514 /* Main.storyboard */,
 				333F747223A888B500E51514 /* Assets.xcassets */,
 				333F747423A888B500E51514 /* LaunchScreen.storyboard */,
@@ -180,7 +180,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				333F746E23A888B400E51514 /* ViewController.swift in Sources */,
+				333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */,
 				333F746A23A888B400E51514 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
