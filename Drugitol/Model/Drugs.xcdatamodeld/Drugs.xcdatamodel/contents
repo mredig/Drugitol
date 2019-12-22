@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15508" systemVersion="18G1012" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15400" systemVersion="18G87" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="DoseEntry" representedClassName="DoseEntry" syncable="YES" codeGenerationType="class">
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="drug" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DrugEntry" inverseName="takenDosages" inverseEntity="DrugEntry"/>
+    </entity>
     <entity name="DrugAlarm" representedClassName="DrugAlarm" syncable="YES" codeGenerationType="class">
         <attribute name="alarmTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="drug" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DrugEntry" inverseName="alarms" inverseEntity="DrugEntry"/>
     </entity>
     <entity name="DrugEntry" representedClassName="DrugEntry" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="alarms" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="DrugAlarm"/>
+        <relationship name="alarms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DrugAlarm" inverseName="drug" inverseEntity="DrugAlarm"/>
+        <relationship name="takenDosages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DoseEntry" inverseName="drug" inverseEntity="DoseEntry"/>
     </entity>
     <elements>
-        <element name="DrugEntry" positionX="-257.88671875" positionY="-96.609375" width="128" height="73"/>
-        <element name="DrugAlarm" positionX="-54" positionY="0" width="128" height="58"/>
+        <element name="DrugAlarm" positionX="-54" positionY="0" width="128" height="73"/>
+        <element name="DrugEntry" positionX="-257.88671875" positionY="-96.609375" width="128" height="88"/>
+        <element name="DoseEntry" positionX="-153" positionY="-36" width="128" height="73"/>
     </elements>
 </model>

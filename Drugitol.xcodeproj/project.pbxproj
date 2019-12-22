@@ -10,6 +10,7 @@
 		3329A47423A89AEC007F10E2 /* DrugEntry+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3329A47323A89AEC007F10E2 /* DrugEntry+Convenience.swift */; };
 		3329A47623A8A05F007F10E2 /* DrugAlarm+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3329A47523A8A05F007F10E2 /* DrugAlarm+Convenience.swift */; };
 		3329A47823A8A395007F10E2 /* DrugController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3329A47723A8A395007F10E2 /* DrugController.swift */; };
+		3335EB6F23B0037D00509A2F /* DoseEntry+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3335EB6E23B0037D00509A2F /* DoseEntry+Convenience.swift */; };
 		333F746A23A888B400E51514 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F746923A888B400E51514 /* AppDelegate.swift */; };
 		333F747123A888B400E51514 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 333F746F23A888B400E51514 /* Main.storyboard */; };
 		333F747323A888B500E51514 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 333F747223A888B500E51514 /* Assets.xcassets */; };
@@ -28,6 +29,7 @@
 		3329A47323A89AEC007F10E2 /* DrugEntry+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DrugEntry+Convenience.swift"; sourceTree = "<group>"; };
 		3329A47523A8A05F007F10E2 /* DrugAlarm+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DrugAlarm+Convenience.swift"; sourceTree = "<group>"; };
 		3329A47723A8A395007F10E2 /* DrugController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrugController.swift; sourceTree = "<group>"; };
+		3335EB6E23B0037D00509A2F /* DoseEntry+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DoseEntry+Convenience.swift"; sourceTree = "<group>"; };
 		333F746623A888B400E51514 /* Drugitol.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Drugitol.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		333F746923A888B400E51514 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		333F747023A888B400E51514 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */,
 				3329A47323A89AEC007F10E2 /* DrugEntry+Convenience.swift */,
 				3329A47523A8A05F007F10E2 /* DrugAlarm+Convenience.swift */,
+				3335EB6E23B0037D00509A2F /* DoseEntry+Convenience.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */,
 				333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */,
 				333F749323A8905100E51514 /* AlarmView.swift in Sources */,
+				3335EB6F23B0037D00509A2F /* DoseEntry+Convenience.swift in Sources */,
 				333F746A23A888B400E51514 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

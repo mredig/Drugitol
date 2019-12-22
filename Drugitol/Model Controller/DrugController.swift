@@ -28,7 +28,7 @@ class DrugController {
 	@discardableResult func updateDrugEntry(_ entry: DrugEntry, name: String, alarms: [DrugAlarm]) -> DrugEntry {
 		entry.name = name
 		entry.alarms = nil
-		entry.addToAlarms(NSOrderedSet(array: alarms))
+		entry.addToAlarms(NSSet(array: alarms))
 
 		save(withErrorLogging: "Failed updating entry '\(entry)'")
 		return entry
