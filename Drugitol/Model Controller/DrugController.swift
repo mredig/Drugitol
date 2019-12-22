@@ -17,6 +17,25 @@ class DrugController {
 		self.context = context
 	}
 
+	// MARK: - FRC
+	func createDosageFetchedResultsController(withDelegate delegate: NSFetchedResultsControllerDelegate) -> NSFetchedResultsController<DrugEntry> {
+		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
+		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+
+		let moc = CoreDataStack.shared.mainContext
+		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+																  managedObjectContext: moc,
+																  sectionNameKeyPath: nil,
+																  cacheName: nil)
+		fetchedResultsController.delegate = delegate
+		do {
+			try fetchedResultsController.performFetch()
+		} catch {
+			print("error performing initial fetch for frc: \(error)")
+		}
+		return fetchedResultsController
+	}
+
 	// MARK: - DrugEntry
 	@discardableResult func createDrugEntry(named name: String) -> DrugEntry {
 		let entry = DrugEntry(name: name, context: context)
