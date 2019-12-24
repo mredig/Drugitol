@@ -16,7 +16,7 @@ class DosageTableViewController: UITableViewController {
 	lazy var fetchedResultsController = drugController.createDosageFetchedResultsController(withDelegate: self)
 
 	@IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-		guard let drug = drugController.allDrugs.first else { return }
+		guard let drug = drugController.activeDrugs.first else { return }
 
 		drugController.createDoseEntry(at: Date(), forDrug: drug)
 	}

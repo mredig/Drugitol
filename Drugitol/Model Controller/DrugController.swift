@@ -11,8 +11,8 @@ import CoreData
 
 class DrugController {
 
-	var allDrugs: [DrugEntry] {
-		getAllDrugs()
+	var activeDrugs: [DrugEntry] {
+		getActiveDrugs()
 	}
 
 	let context: NSManagedObjectContext
@@ -57,9 +57,11 @@ class DrugController {
 
 	// MARK: - DrugEntry
 
-	private func getAllDrugs() -> [DrugEntry] {
+	private func getActiveDrugs() -> [DrugEntry] {
 		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+
+		fetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
 
 		do {
 			return try context.fetch(fetchRequest)
