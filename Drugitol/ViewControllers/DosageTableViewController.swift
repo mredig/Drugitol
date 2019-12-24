@@ -13,10 +13,19 @@ class DosageTableViewController: UITableViewController {
 
 	let drugController = DrugController(context: .mainContext)
 
-	lazy var fetchedResultsController = drugController.createDosageFetchedResultsController(withDelegate: self)
+	@IBOutlet private var drugPickerView: UIPickerView!
+	lazy var dosageFetchedResultsController = drugController.createDosageFetchedResultsController(withDelegate: self)
 
+	// MARK: - Lifecycle
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		drugPickerView.reloadAllComponents()
+	}
+
+	// MARK: - Actions
 	@IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-		guard let drug = drugController.activeDrugs.first else { return }
+		guard !drugController.activeDrugs.isEmpty else { return }
+		let drug = drugController.activeDrugs[drugPickerView.selectedRow(inComponent: 0)]
 
 		drugController.createDoseEntry(at: Date(), forDrug: drug)
 	}
@@ -27,7 +36,7 @@ extension DosageTableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "DoseCell", for: indexPath)
 
-		let dosageEntry = fetchedResultsController.object(at: indexPath)
+		let dosageEntry = dosageFetchedResultsController.object(at: indexPath)
 		let drugEntry = dosageEntry.drug
 
 		let drugName = drugEntry?.name ?? "A drug"
@@ -40,17 +49,18 @@ extension DosageTableViewController {
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return fetchedResultsController.sections?[section].numberOfObjects ?? 0
+		return dosageFetchedResultsController.sections?[section].numberOfObjects ?? 0
 	}
 
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
-			let entry = fetchedResultsController.object(at: indexPath)
+			let entry = dosageFetchedResultsController.object(at: indexPath)
 			drugController.deleteDoseEntry(entry)
 		}
 	}
 }
 
+// MARK: - FetchedResultsController Delegate
 extension DosageTableViewController: NSFetchedResultsControllerDelegate {
 	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		tableView.beginUpdates()
@@ -101,4 +111,19 @@ extension DosageTableViewController: NSFetchedResultsControllerDelegate {
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, sectionIndexTitleForSectionName sectionName: String) -> String? {
 		return nil
 	}
+}
+
+extension DosageTableViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+	func numberOfComponents(in pickerView: UIPickerView) -> Int {
+		1
+	}
+
+	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+		drugController.activeDrugs.count
+	}
+
+	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+		drugController.activeDrugs[row].name ?? "A drug"
+	}
+
 }
