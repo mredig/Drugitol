@@ -31,9 +31,7 @@ extension DosageTableViewController {
 		let drugEntry = dosageEntry.drug
 
 		let drugName = drugEntry?.name ?? "A drug"
-		let drugNameAttributed = NSMutableAttributedString(string: drugName)
-		let drugNameRange = NSRange(location: 0, length: drugNameAttributed.length)
-		drugNameAttributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize), range: drugNameRange)
+		let drugNameAttributed = NSMutableAttributedString(string: drugName, attributes: [.font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)])
 
 		let timeAttributed = NSAttributedString(string: ": \(dosageEntry.timeString)")
 		drugNameAttributed.append(timeAttributed)
