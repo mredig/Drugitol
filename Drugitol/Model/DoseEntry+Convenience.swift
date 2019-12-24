@@ -20,10 +20,16 @@ extension DoseEntry {
 		DoseEntry.formatter.string(from: timestamp ?? Date())
 	}
 
-	convenience init(timestamp: Date, for drug: DrugEntry, context: NSManagedObjectContext) {
-		self.init(context: context)
+	func updateTimestamp(to timestamp: Date) {
 		self.timestamp = timestamp
-		self.drug = drug
+		let calendar = Calendar.current
+		let date = calendar.startOfDay(for: timestamp)
+		self.date = date
 	}
 
+	convenience init(timestamp: Date, for drug: DrugEntry, context: NSManagedObjectContext) {
+		self.init(context: context)
+		self.drug = drug
+		updateTimestamp(to: timestamp)
+	}
 }

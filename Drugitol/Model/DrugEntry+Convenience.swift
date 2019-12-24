@@ -15,8 +15,9 @@ extension DrugEntry {
 		alarms?.compactMap { $0 as? DrugAlarm } ?? []
 	}
 
-	convenience init(name: String, context: NSManagedObjectContext) {
+	convenience init(name: String, isActive: Bool = true, context: NSManagedObjectContext) {
 		self.init(context: context)
 		self.name = name
+		self.isActive = isActive
 	}
 }

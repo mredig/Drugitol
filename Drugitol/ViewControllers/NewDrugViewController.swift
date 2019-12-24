@@ -12,6 +12,8 @@ class NewDrugViewController: UIViewController {
 
 	@IBOutlet private weak var nameTextField: UITextField!
 	@IBOutlet private weak var alarmListStackView: UIStackView!
+	@IBOutlet private weak var isActiveSwitch: UISwitch!
+
 
 	let drugController = DrugController(context: .mainContext)
 
@@ -31,6 +33,7 @@ class NewDrugViewController: UIViewController {
 		loadViewIfNeeded()
 		guard let entry = entry else { return }
 		nameTextField.text = entry.name
+		isActiveSwitch.isOn = entry.isActive
 		entry.drugAlarms.forEach {
 			addAlarmView(for: $0)
 		}
@@ -53,7 +56,7 @@ class NewDrugViewController: UIViewController {
 		let entry = self.entry ?? drugController.createDrugEntry(named: name)
 
 		let alarms = alarmListStackView.arrangedSubviews.compactMap { ($0 as? AlarmView)?.alarmTime }
-		drugController.updateDrugEntry(entry, name: name, alarms: alarms)
+		drugController.updateDrugEntry(entry, name: name, isActive: isActiveSwitch.isOn, alarms: alarms)
 		removedAlarms.forEach { drugController.removeAlarmFromEntry(entry, alarm: $0) }
 
 		navigationController?.popViewController(animated: true)

@@ -48,6 +48,8 @@
 		333F748D23A88EE900E51514 /* Drugs.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Drugs.xcdatamodel; sourceTree = "<group>"; };
 		333F749023A8902D00E51514 /* AlarmView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlarmView.xib; sourceTree = "<group>"; };
 		333F749223A8905100E51514 /* AlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmView.swift; sourceTree = "<group>"; };
+		334D094823B2A2D80074FFF6 /* Drugs 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 2.xcdatamodel"; sourceTree = "<group>"; };
+		334D094923B2AEFA0074FFF6 /* Drugs 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 3.xcdatamodel"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -474,9 +476,11 @@
 		333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				334D094923B2AEFA0074FFF6 /* Drugs 3.xcdatamodel */,
+				334D094823B2A2D80074FFF6 /* Drugs 2.xcdatamodel */,
 				333F748D23A88EE900E51514 /* Drugs.xcdatamodel */,
 			);
-			currentVersion = 333F748D23A88EE900E51514 /* Drugs.xcdatamodel */;
+			currentVersion = 334D094923B2AEFA0074FFF6 /* Drugs 3.xcdatamodel */;
 			path = Drugs.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
