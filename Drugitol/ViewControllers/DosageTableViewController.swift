@@ -15,16 +15,30 @@ class DosageTableViewController: UITableViewController {
 
 	lazy var fetchedResultsController = drugController.createDosageFetchedResultsController(withDelegate: self)
 
+	@IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+		guard let drug = drugController.allDrugs.first else { return }
+
+		drugController.createDoseEntry(at: Date(), forDrug: drug)
+	}
 }
 
 // MARK: - TableView stuff
 extension DosageTableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		return UITableViewCell()
+		let cell = tableView.dequeueReusableCell(withIdentifier: "DoseCell", for: indexPath)
+		cell.textLabel?.text = fetchedResultsController.object(at: indexPath).timeString
+		return cell
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return fetchedResultsController.sections?[section].numberOfObjects ?? 0
+	}
+
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		if editingStyle == .delete {
+			let entry = fetchedResultsController.object(at: indexPath)
+			drugController.deleteDoseEntry(entry)
+		}
 	}
 }
 

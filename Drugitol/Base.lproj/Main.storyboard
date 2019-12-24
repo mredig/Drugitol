@@ -235,13 +235,13 @@
         <!--Dosage Log-->
         <scene sceneID="wHD-TX-Xo7">
             <objects>
-                <tableViewController id="J19-iq-fXs" sceneMemberID="viewController">
+                <tableViewController id="J19-iq-fXs" customClass="DosageTableViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="rLR-xl-uZY">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="TQx-6N-hF8">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DoseCell" id="TQx-6N-hF8">
                                 <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="TQx-6N-hF8" id="eDH-oB-45d">
@@ -258,7 +258,7 @@
                     <navigationItem key="navigationItem" title="Dosage Log" id="5gN-DF-ReH">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="y1w-Qd-teL">
                             <connections>
-                                <segue destination="3Dr-lT-7gl" kind="presentation" id="73N-g0-uNM"/>
+                                <action selector="addButtonPressed:" destination="J19-iq-fXs" id="1m7-ia-xh9"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -267,24 +267,84 @@
             </objects>
             <point key="canvasLocation" x="2257.971014492754" y="415.84821428571428"/>
         </scene>
-        <!--View Controller-->
+        <!--Dosage Creation View Controller-->
         <scene sceneID="7gh-S9-uRE">
             <objects>
-                <viewController id="WaK-4u-Wfn" sceneMemberID="viewController">
+                <viewController id="WaK-4u-Wfn" customClass="DosageCreationViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MLi-HG-BLu">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="94I-f4-j1Q">
+                                <rect key="frame" x="0.0" y="593" width="414" height="269"/>
+                                <subviews>
+                                    <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f65-B7-sec">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                        <items>
+                                            <barButtonItem systemItem="cancel" id="sJP-bt-g6F">
+                                                <connections>
+                                                    <action selector="cancelButtonPressed:" destination="WaK-4u-Wfn" id="xT6-5x-urw"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="Dze-fM-OKC"/>
+                                            <barButtonItem enabled="NO" title="Item" style="plain" id="5wM-Av-tqV">
+                                                <color key="tintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="KuX-14-H3A"/>
+                                            <barButtonItem systemItem="done" id="lUS-sG-HHR">
+                                                <connections>
+                                                    <action selector="doneButtonPressed:" destination="WaK-4u-Wfn" id="ERK-bE-uHa"/>
+                                                </connections>
+                                            </barButtonItem>
+                                        </items>
+                                    </toolbar>
+                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="vIS-Ca-2Rr">
+                                        <rect key="frame" x="0.0" y="44" width="414" height="225"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="225" id="QuR-RJ-Br6"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="datePickerUpdated:" destination="WaK-4u-Wfn" eventType="valueChanged" id="hWj-x7-nOz"/>
+                                        </connections>
+                                    </datePicker>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="secondarySystemBackgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0kr-ax-3sH">
+                                <rect key="frame" x="0.0" y="44" width="414" height="549"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="lFl-ob-Fme" appends="YES" id="uf8-zO-msy"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="aow-9G-00E" firstAttribute="trailing" secondItem="0kr-ax-3sH" secondAttribute="trailing" id="0ud-0o-s3s"/>
+                            <constraint firstItem="94I-f4-j1Q" firstAttribute="top" secondItem="0kr-ax-3sH" secondAttribute="bottom" id="Qks-24-R9f"/>
+                            <constraint firstItem="0kr-ax-3sH" firstAttribute="leading" secondItem="aow-9G-00E" secondAttribute="leading" id="d21-wE-Sgj"/>
+                            <constraint firstItem="94I-f4-j1Q" firstAttribute="leading" secondItem="aow-9G-00E" secondAttribute="leading" id="ijf-4m-Bre"/>
+                            <constraint firstItem="aow-9G-00E" firstAttribute="bottom" secondItem="94I-f4-j1Q" secondAttribute="bottom" id="l8r-X1-REz"/>
+                            <constraint firstItem="aow-9G-00E" firstAttribute="trailing" secondItem="94I-f4-j1Q" secondAttribute="trailing" id="ntN-Rw-wvQ"/>
+                            <constraint firstItem="0kr-ax-3sH" firstAttribute="top" secondItem="aow-9G-00E" secondAttribute="top" id="sh2-Ge-bE5"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="aow-9G-00E"/>
                     </view>
-                    <navigationItem key="navigationItem" id="r8n-8r-dLf">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="A3X-Ep-wJz"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="sbr-QR-Cjw"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="R4c-yL-fNy"/>
+                    <connections>
+                        <outlet property="datePicker" destination="vIS-Ca-2Rr" id="Cy6-th-pWG"/>
+                        <outlet property="selectedTimeDisplayLabel" destination="5wM-Av-tqV" id="Qa0-Ko-ai9"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYZ-Lv-Ov6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="lFl-ob-Fme">
+                    <connections>
+                        <action selector="cancelGesturePressed:" destination="WaK-4u-Wfn" id="f22-96-sEx"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="3976.811594202899" y="415.84821428571428"/>
+            <point key="canvasLocation" x="3235" y="416"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Od1-jn-R9z">
@@ -304,24 +364,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AvS-g4-dXO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1347.8260869565217" y="415.84821428571428"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="U9i-bx-9QH">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3Dr-lT-7gl" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="A0l-SX-yBd">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="WaK-4u-Wfn" kind="relationship" relationship="rootViewController" id="aYG-0C-sxi"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Ixe-hH-Xkm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3128" y="416"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

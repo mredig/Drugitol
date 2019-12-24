@@ -11,6 +11,10 @@ import CoreData
 
 class DrugController {
 
+	var allDrugs: [DrugEntry] {
+		getAllDrugs()
+	}
+
 	let context: NSManagedObjectContext
 
 	init(context: NSManagedObjectContext) {
@@ -18,9 +22,9 @@ class DrugController {
 	}
 
 	// MARK: - FRC
-	func createDosageFetchedResultsController(withDelegate delegate: NSFetchedResultsControllerDelegate) -> NSFetchedResultsController<DrugEntry> {
-		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
-		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+	func createDosageFetchedResultsController(withDelegate delegate: NSFetchedResultsControllerDelegate) -> NSFetchedResultsController<DoseEntry> {
+		let fetchRequest: NSFetchRequest<DoseEntry> = DoseEntry.fetchRequest()
+		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
 
 		let moc = CoreDataStack.shared.mainContext
 		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -36,7 +40,35 @@ class DrugController {
 		return fetchedResultsController
 	}
 
+	// MARK: - DoseEntry
+
+	@discardableResult func createDoseEntry(at timestamp: Date, forDrug drug: DrugEntry) -> DoseEntry {
+		let entry = DoseEntry(timestamp: timestamp, for: drug, context: context)
+
+		save(withErrorLogging: "Failed saving new dose entry")
+		return entry
+	}
+
+	func deleteDoseEntry(_ entry: DoseEntry) {
+		context.delete(entry)
+		save(withErrorLogging: "Failed deleting DoseEntry: \(entry)")
+	}
+
+
 	// MARK: - DrugEntry
+
+	private func getAllDrugs() -> [DrugEntry] {
+		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
+		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+
+		do {
+			return try context.fetch(fetchRequest)
+		} catch {
+			NSLog("Error fetching drugs: \(error)")
+			return []
+		}
+	}
+
 	@discardableResult func createDrugEntry(named name: String) -> DrugEntry {
 		let entry = DrugEntry(name: name, context: context)
 

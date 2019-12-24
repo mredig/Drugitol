@@ -10,6 +10,16 @@ import Foundation
 import CoreData
 
 extension DoseEntry {
+	private static let formatter: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "h:mm a"
+		return formatter
+	}()
+
+	var timeString: String {
+		DoseEntry.formatter.string(from: timestamp ?? Date())
+	}
+
 	convenience init(timestamp: Date, for drug: DrugEntry, context: NSManagedObjectContext) {
 		self.init(context: context)
 		self.timestamp = timestamp
