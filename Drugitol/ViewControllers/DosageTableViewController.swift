@@ -26,7 +26,18 @@ class DosageTableViewController: UITableViewController {
 extension DosageTableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "DoseCell", for: indexPath)
-		cell.textLabel?.text = fetchedResultsController.object(at: indexPath).timeString
+
+		let dosageEntry = fetchedResultsController.object(at: indexPath)
+		let drugEntry = dosageEntry.drug
+
+		let drugName = drugEntry?.name ?? "A drug"
+		let drugNameAttributed = NSMutableAttributedString(string: drugName)
+		let drugNameRange = NSRange(location: 0, length: drugNameAttributed.length)
+		drugNameAttributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize), range: drugNameRange)
+
+		let timeAttributed = NSAttributedString(string: ": \(dosageEntry.timeString)")
+		drugNameAttributed.append(timeAttributed)
+		cell.textLabel?.attributedText = drugNameAttributed
 		return cell
 	}
 
