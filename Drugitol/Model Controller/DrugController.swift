@@ -68,13 +68,17 @@ class DrugController {
 	}
 
 	func updateDoseEntry(_ entry: DoseEntry, timestamp: Date) {
-		entry.updateTimestamp(to: timestamp)
+		context.performAndWait {
+			entry.updateTimestamp(to: timestamp)
+		}
 
 		save(withErrorLogging: "Failed updating dose entry: \(entry)")
 	}
 
 	func deleteDoseEntry(_ entry: DoseEntry) {
-		context.delete(entry)
+		context.performAndWait {
+			context.delete(entry)
+		}
 		save(withErrorLogging: "Failed deleting DoseEntry: \(entry)")
 	}
 
@@ -85,12 +89,15 @@ class DrugController {
 
 		fetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
 
-		do {
-			return try context.fetch(fetchRequest)
-		} catch {
-			NSLog("Error fetching drugs: \(error)")
-			return []
+		var entries: [DrugEntry] = []
+		context.performAndWait {
+			do {
+				entries = try context.fetch(fetchRequest)
+			} catch {
+				NSLog("Error fetching drugs: \(error)")
+			}
 		}
+		return entries
 	}
 
 	@discardableResult func createDrugEntry(named name: String) -> DrugEntry {
@@ -101,22 +108,28 @@ class DrugController {
 	}
 
 	@discardableResult func updateDrugEntry(_ entry: DrugEntry, name: String, isActive: Bool, alarms: [DrugAlarm]) -> DrugEntry {
-		entry.name = name
-		entry.alarms = nil
-		entry.isActive = isActive
-		entry.addToAlarms(NSSet(array: alarms))
+		context.performAndWait {
+			entry.name = name
+			entry.alarms = nil
+			entry.isActive = isActive
+			entry.addToAlarms(NSSet(array: alarms))
+		}
 
 		save(withErrorLogging: "Failed updating entry '\(entry)'")
 		return entry
 	}
 
 	func removeAlarmFromEntry(_ entry: DrugEntry, alarm: DrugAlarm) {
-		entry.removeFromAlarms(alarm)
+		context.performAndWait {
+			entry.removeFromAlarms(alarm)
+		}
 		save(withErrorLogging: "Failed removing alarm '\(alarm)' from entry '\(entry)'")
 	}
 
 	func deleteDrugEntry(_ entry: DrugEntry) {
-		context.delete(entry)
+		context.performAndWait {
+			context.delete(entry)
+		}
 
 		save(withErrorLogging: "Error deleting entry")
 	}
@@ -130,7 +143,9 @@ class DrugController {
 	}
 
 	@discardableResult func updateDrugAlarm(_ alarm: DrugAlarm, alarmTime: TimeInterval) -> DrugAlarm {
-		alarm.alarmTime = alarmTime
+		context.performAndWait {
+			alarm.alarmTime = alarmTime
+		}
 
 		save(withErrorLogging: "Failed updating drug alarm")
 		return alarm
