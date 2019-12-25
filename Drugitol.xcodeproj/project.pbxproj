@@ -25,6 +25,7 @@
 		333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */; };
 		333F749123A8902D00E51514 /* AlarmView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 333F749023A8902D00E51514 /* AlarmView.xib */; };
 		333F749323A8905100E51514 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F749223A8905100E51514 /* AlarmView.swift */; };
+		33A38CE723B3073300783926 /* DefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CE623B3073300783926 /* DefaultsManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		333F749223A8905100E51514 /* AlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmView.swift; sourceTree = "<group>"; };
 		334D094823B2A2D80074FFF6 /* Drugs 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 2.xcdatamodel"; sourceTree = "<group>"; };
 		334D094923B2AEFA0074FFF6 /* Drugs 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 3.xcdatamodel"; sourceTree = "<group>"; };
+		33A38CE623B3073300783926 /* DefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				333F748923A88ECA00E51514 /* CoreDataStack.swift */,
+				33A38CE623B3073300783926 /* DefaultsManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				3329A47623A8A05F007F10E2 /* DrugAlarm+Convenience.swift in Sources */,
 				3329A47823A8A395007F10E2 /* DrugController.swift in Sources */,
 				333F748A23A88ECA00E51514 /* CoreDataStack.swift in Sources */,
+				33A38CE723B3073300783926 /* DefaultsManager.swift in Sources */,
 				333F748723A88E5D00E51514 /* TimeSelectionViewController.swift in Sources */,
 				3335EB7123B0056900509A2F /* DosageTableViewController.swift in Sources */,
 				3329A47423A89AEC007F10E2 /* DrugEntry+Convenience.swift in Sources */,
