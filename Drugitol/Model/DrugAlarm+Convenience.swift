@@ -10,9 +10,20 @@ import Foundation
 import CoreData
 
 extension DrugAlarm {
-	convenience init(alarmTime: TimeInterval, context: NSManagedObjectContext) {
+	var alarmHour: Int {
+		get { Int(alarmHour16) }
+		set { alarmHour16 = Int16(min(newValue, Int(Int16.max))) }
+	}
+
+	var alarmMinute: Int {
+		get { Int(alarmMinute16) }
+		set { alarmMinute16 = Int16(min(newValue, Int(Int16.max))) }
+	}
+
+	convenience init(alarmHour: Int, alarmMinute: Int, context: NSManagedObjectContext) {
 		self.init(context: context)
-		self.alarmTime = alarmTime
+		self.alarmHour = alarmHour
+		self.alarmMinute = alarmMinute
 	}
 
 	private static let formatter: DateFormatter = {
@@ -23,7 +34,9 @@ extension DrugAlarm {
 	}()
 
 	var prettyTimeString: String {
-		let time = Date(timeIntervalSince1970: alarmTime)
+		let minutesFromMidnight = alarmMinute + alarmHour * 60
+		let secondsFromMidnight = TimeInterval(minutesFromMidnight * 60)
+		let time = Date(timeIntervalSince1970: secondsFromMidnight)
 		return DrugAlarm.formatter.string(from: time)
 	}
 }

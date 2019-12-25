@@ -48,7 +48,7 @@ class DosageDetailViewController: UIViewController {
 		selectedTimeDisplayLabel.title = dateString
 	}
 
-	func dismiss(completion: @escaping () -> Void = { } ) {
+	func dismiss(completion: @escaping () -> Void = {}) {
 		dismiss(animated: true, completion: completion)
 	}
 

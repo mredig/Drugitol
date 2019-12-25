@@ -63,14 +63,23 @@ class NewDrugViewController: UIViewController {
 	}
 
 	@IBAction func plusButtonPressed(_ sender: UIButton) {
-		let alarm = drugController.createDrugAlarm(alarmTime: 7 * 60 * 60)
+		let alarm = drugController.createDrugAlarm(alarmHour: 7, alarmMinute: 0)
 		addAlarmView(for: alarm)
+	}
+
+	private func presentAlarmTimePicker(for alarm: DrugAlarm) {
+		guard let alarmTimePickerVC = storyboard?.instantiateViewController(withIdentifier: "TimeSelectionViewController") as? TimeSelectionViewController else { return }
+		alarmTimePickerVC.modalPresentationStyle = .overFullScreen
+		alarmTimePickerVC.currentAlarmTime = (alarm.alarmHour, alarm.alarmMinute)
+
+
+		present(alarmTimePickerVC, animated: true)
 	}
 }
 
 extension NewDrugViewController: AlarmViewDelegate {
 	func alarmViewInvokedEditing(_ alarmView: AlarmView) {
-		performSegue(withIdentifier: "AlarmTimeSegue", sender: nil)
+		presentAlarmTimePicker(for: alarmView.alarmTime)
 	}
 
 	func alarmViewInvokedDeletion(_ alarmView: AlarmView) {

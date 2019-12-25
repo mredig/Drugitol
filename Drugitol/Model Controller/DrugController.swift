@@ -135,16 +135,17 @@ class DrugController {
 	}
 
 	// MARK: - DrugAlarm
-	@discardableResult func createDrugAlarm(alarmTime: TimeInterval) -> DrugAlarm {
-		let alarm = DrugAlarm(alarmTime: alarmTime, context: context)
+	@discardableResult func createDrugAlarm(alarmHour: Int, alarmMinute: Int) -> DrugAlarm {
+		let alarm = DrugAlarm(alarmHour: alarmHour, alarmMinute: alarmMinute, context: context)
 
 		save(withErrorLogging: "Failed saving new drug alarm")
 		return alarm
 	}
 
-	@discardableResult func updateDrugAlarm(_ alarm: DrugAlarm, alarmTime: TimeInterval) -> DrugAlarm {
+	@discardableResult func updateDrugAlarm(_ alarm: DrugAlarm, alarmHour: Int, alarmMinute: Int) -> DrugAlarm {
 		context.performAndWait {
-			alarm.alarmTime = alarmTime
+			alarm.alarmHour = alarmHour
+			alarm.alarmMinute = alarmMinute
 		}
 
 		save(withErrorLogging: "Failed updating drug alarm")

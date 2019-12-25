@@ -173,7 +173,6 @@
                         <outlet property="alarmListStackView" destination="jU9-C3-8vp" id="UoI-FF-OLO"/>
                         <outlet property="isActiveSwitch" destination="Dam-dO-ZJB" id="F5c-ck-W0P"/>
                         <outlet property="nameTextField" destination="C2G-xl-QJ2" id="rWN-va-TtS"/>
-                        <segue destination="MBu-dv-K4j" kind="presentation" identifier="AlarmTimeSegue" modalPresentationStyle="overFullScreen" id="an2-Mp-j44"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GAm-oH-K7y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -189,7 +188,7 @@
                     </connections>
                 </tapGestureRecognizer>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qx7-0o-knX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <viewController id="MBu-dv-K4j" customClass="TimeSelectionViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TimeSelectionViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MBu-dv-K4j" customClass="TimeSelectionViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="p5D-3P-w3Y">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
