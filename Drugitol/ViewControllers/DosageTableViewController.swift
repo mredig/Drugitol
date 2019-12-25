@@ -23,6 +23,12 @@ class DosageTableViewController: UITableViewController {
 	}()
 
 	// MARK: - Lifecycle
+	override func viewDidLoad() {
+		super.viewDidLoad()
+
+		drugPickerView.selectRow(DefaultsManager.lastSelectedDoseIndex, inComponent: 0, animated: true)
+	}
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		drugPickerView.reloadAllComponents()
@@ -156,6 +162,9 @@ extension DosageTableViewController: UIPickerViewDelegate, UIPickerViewDataSourc
 		drugController.activeDrugs[row].name ?? "A drug"
 	}
 
+	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+		DefaultsManager.lastSelectedDoseIndex = row
+	}
 }
 
 extension DosageTableViewController: DosageDetailViewControllerDelegate {
