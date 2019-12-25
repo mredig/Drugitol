@@ -67,11 +67,17 @@ class NewDrugViewController: UIViewController {
 		addAlarmView(for: alarm)
 	}
 
-	private func presentAlarmTimePicker(for alarm: DrugAlarm) {
-		guard let alarmTimePickerVC = storyboard?.instantiateViewController(withIdentifier: "TimeSelectionViewController") as? TimeSelectionViewController else { return }
+	private func presentAlarmTimePicker(for alarmView: AlarmView) {
+		guard let alarmTimePickerVC = storyboard?
+			.instantiateViewController(withIdentifier: "TimeSelectionViewController")
+			as? TimeSelectionViewController else { return }
+		let alarm = alarmView.alarmTime
 		alarmTimePickerVC.modalPresentationStyle = .overFullScreen
-		alarmTimePickerVC.currentAlarmTime = (alarm.alarmHour, alarm.alarmMinute)
-
+		alarmTimePickerVC.selectedAlarmTime = (alarm.alarmHour, alarm.alarmMinute)
+		alarmTimePickerVC.successCompletion = { [weak self] alarmComponents in
+			self?.drugController.updateDrugAlarm(alarm, alarmHour: alarmComponents.hour, alarmMinute: alarmComponents.minute)
+			alarmView.alarmTime = alarm
+		}
 
 		present(alarmTimePickerVC, animated: true)
 	}
@@ -79,7 +85,7 @@ class NewDrugViewController: UIViewController {
 
 extension NewDrugViewController: AlarmViewDelegate {
 	func alarmViewInvokedEditing(_ alarmView: AlarmView) {
-		presentAlarmTimePicker(for: alarmView.alarmTime)
+		presentAlarmTimePicker(for: alarmView)
 	}
 
 	func alarmViewInvokedDeletion(_ alarmView: AlarmView) {

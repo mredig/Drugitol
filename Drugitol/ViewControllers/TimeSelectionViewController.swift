@@ -8,10 +8,6 @@
 
 import UIKit
 
-protocol TimeSelectionViewControllerDelegate: AnyObject {
-	func timeSelectionVC(_ timeSelectionVC: TimeSelectionViewController, didSelectTime time: (hour: Int, minute: Int))
-}
-
 class TimeSelectionViewController: UIViewController {
 	@IBOutlet private var selectedTimeLabel: UIBarButtonItem!
 
@@ -22,13 +18,15 @@ class TimeSelectionViewController: UIViewController {
 		formatter.dateFormat = "hh:mm a"
 		return formatter
 	}()
-	weak var delegate: TimeSelectionViewControllerDelegate?
+	/// Only runs this closure in the event that the user confirms their selection with the "done" button
+	var successCompletion: SuccessCompletionHandler?
 
-	var currentAlarmTime: (hour: Int, minute: Int) {
+	typealias AlarmTimeComponents = (hour: Int, minute: Int)
+	typealias SuccessCompletionHandler = (AlarmTimeComponents) -> Void
+
+	var selectedAlarmTime: AlarmTimeComponents {
 		get { getCurrentAlarmTime() }
-		set {
-			updateDatePicker(to: newValue)
-		}
+		set { updateDatePicker(to: newValue) }
 	}
 
 	override func viewDidLoad() {
@@ -42,7 +40,7 @@ class TimeSelectionViewController: UIViewController {
 		selectedTimeLabel.title = dateString
 	}
 
-	private func updateDatePicker(to newValue: (hour: Int, minute: Int)) {
+	private func updateDatePicker(to newValue: AlarmTimeComponents) {
 		loadViewIfNeeded()
 		let calendar = Calendar.current
 		let day = calendar.startOfDay(for: Date())
@@ -60,7 +58,7 @@ class TimeSelectionViewController: UIViewController {
 	@IBAction func doneButtonPressed(_ sender: UIBarButtonItem) {
 		dismiss { [weak self] in
 			guard let self = self else { return }
-			self.delegate?.timeSelectionVC(self, didSelectTime: self.currentAlarmTime)
+			self.successCompletion?(self.selectedAlarmTime)
 		}
 	}
 
@@ -76,7 +74,7 @@ class TimeSelectionViewController: UIViewController {
 		updateSelectedTimeDisplayLabel()
 	}
 
-	private func getCurrentAlarmTime() -> (hour: Int, minute: Int) {
+	private func getCurrentAlarmTime() -> AlarmTimeComponents {
 		let date = datePicker.date
 		let calendar = Calendar.current
 		let hour = calendar.component(.hour, from: date)
