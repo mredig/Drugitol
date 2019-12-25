@@ -16,6 +16,12 @@ class DosageTableViewController: UITableViewController {
 	@IBOutlet private var drugPickerView: UIPickerView!
 	lazy var dosageFetchedResultsController = drugController.createDosageFetchedResultsController(withDelegate: self)
 
+	private static let sectionHeadFormatter: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateStyle = .medium
+		return formatter
+	}()
+
 	// MARK: - Lifecycle
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
@@ -29,10 +35,24 @@ class DosageTableViewController: UITableViewController {
 
 		drugController.createDoseEntry(at: Date(), forDrug: drug)
 	}
+
+	func showDosageDetail(for doseEntry: DoseEntry) {
+		guard let dosageDetailVC = storyboard?.instantiateViewController(withIdentifier: "DosageDetailViewController") as? DosageDetailViewController else { return }
+		dosageDetailVC.drugController = drugController
+		dosageDetailVC.doseEntry = doseEntry
+		dosageDetailVC.delegate = self
+		dosageDetailVC.modalPresentationStyle = .overFullScreen
+		present(dosageDetailVC, animated: true)
+	}
 }
 
 // MARK: - TableView stuff
 extension DosageTableViewController {
+
+	override func numberOfSections(in tableView: UITableView) -> Int {
+		dosageFetchedResultsController.sections?.count ?? 0
+	}
+
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "DoseCell", for: indexPath)
 
@@ -57,6 +77,16 @@ extension DosageTableViewController {
 			let entry = dosageFetchedResultsController.object(at: indexPath)
 			drugController.deleteDoseEntry(entry)
 		}
+	}
+
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		showDosageDetail(for: dosageFetchedResultsController.object(at: indexPath))
+	}
+
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		let doseEntry = dosageFetchedResultsController.object(at: IndexPath(row: 0, section: section))
+		guard let date = doseEntry.date else { return nil }
+		return DosageTableViewController.sectionHeadFormatter.string(from: date)
 	}
 }
 
@@ -109,7 +139,7 @@ extension DosageTableViewController: NSFetchedResultsControllerDelegate {
 	}
 
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, sectionIndexTitleForSectionName sectionName: String) -> String? {
-		return nil
+		nil
 	}
 }
 
@@ -126,4 +156,12 @@ extension DosageTableViewController: UIPickerViewDelegate, UIPickerViewDataSourc
 		drugController.activeDrugs[row].name ?? "A drug"
 	}
 
+}
+
+extension DosageTableViewController: DosageDetailViewControllerDelegate {
+	// sometimes the frc doesn't trigger a refresh when an entry is updated, so this will do so when that happens
+	func dosageDetailVCDidFinish(_ dosageDetailVC: DosageDetailViewController) {
+		guard let indexPath = tableView.indexPathForSelectedRow else { return }
+		tableView.reloadRows(at: [indexPath], with: .automatic)
+	}
 }

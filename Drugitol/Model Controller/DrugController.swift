@@ -24,12 +24,12 @@ class DrugController {
 	// MARK: - FRC
 	func createDosageFetchedResultsController(withDelegate delegate: NSFetchedResultsControllerDelegate) -> NSFetchedResultsController<DoseEntry> {
 		let fetchRequest: NSFetchRequest<DoseEntry> = DoseEntry.fetchRequest()
-		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false), NSSortDescriptor(key: "timestamp", ascending: false)]
 
 		let moc = CoreDataStack.shared.mainContext
 		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
 																  managedObjectContext: moc,
-																  sectionNameKeyPath: nil,
+																  sectionNameKeyPath: "date",
 																  cacheName: nil)
 		fetchedResultsController.delegate = delegate
 		do {
@@ -67,14 +67,18 @@ class DrugController {
 		return entry
 	}
 
+	func updateDoseEntry(_ entry: DoseEntry, timestamp: Date) {
+		entry.updateTimestamp(to: timestamp)
+
+		save(withErrorLogging: "Failed updating dose entry: \(entry)")
+	}
+
 	func deleteDoseEntry(_ entry: DoseEntry) {
 		context.delete(entry)
 		save(withErrorLogging: "Failed deleting DoseEntry: \(entry)")
 	}
 
-
 	// MARK: - DrugEntry
-
 	private func getActiveDrugs() -> [DrugEntry] {
 		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]

@@ -220,8 +220,8 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="fjV-Df-Hr5" kind="relationship" relationship="viewControllers" id="o8D-WN-uvz"/>
                         <segue destination="7Od-Jh-efb" kind="relationship" relationship="viewControllers" id="1EE-g1-Idj"/>
+                        <segue destination="fjV-Df-Hr5" kind="relationship" relationship="viewControllers" id="o8D-WN-uvz"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a0j-VY-lvm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -262,7 +262,7 @@
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2Or-qA-0jP">
                                     <rect key="frame" x="0.0" y="8" width="375" height="100"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="New Entry Type" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3kJ-FS-LhC">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="I just took a dose of..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3kJ-FS-LhC">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="20.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
@@ -316,14 +316,18 @@
             </objects>
             <point key="canvasLocation" x="2257.971014492754" y="415.84821428571428"/>
         </scene>
-        <!--Dosage Creation View Controller-->
+        <!--Dosage Detail View Controller-->
         <scene sceneID="7gh-S9-uRE">
             <objects>
-                <viewController id="WaK-4u-Wfn" customClass="DosageCreationViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DosageDetailViewController" id="WaK-4u-Wfn" customClass="DosageDetailViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MLi-HG-BLu">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fUm-Md-Pap">
+                                <rect key="frame" x="0.0" y="398" width="375" height="269"/>
+                                <color key="backgroundColor" systemColor="secondarySystemBackgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="94I-f4-j1Q">
                                 <rect key="frame" x="0.0" y="398" width="375" height="269"/>
                                 <subviews>
@@ -349,6 +353,7 @@
                                     </toolbar>
                                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="vIS-Ca-2Rr">
                                         <rect key="frame" x="0.0" y="44" width="375" height="225"/>
+                                        <color key="backgroundColor" systemColor="secondarySystemGroupedBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="225" id="QuR-RJ-Br6"/>
                                         </constraints>
@@ -371,9 +376,13 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="aow-9G-00E" firstAttribute="trailing" secondItem="0kr-ax-3sH" secondAttribute="trailing" id="0ud-0o-s3s"/>
+                            <constraint firstAttribute="bottom" secondItem="fUm-Md-Pap" secondAttribute="bottom" id="2gZ-am-Tzy"/>
+                            <constraint firstItem="fUm-Md-Pap" firstAttribute="top" secondItem="94I-f4-j1Q" secondAttribute="top" id="FLK-mb-eUV"/>
                             <constraint firstItem="94I-f4-j1Q" firstAttribute="top" secondItem="0kr-ax-3sH" secondAttribute="bottom" id="Qks-24-R9f"/>
+                            <constraint firstItem="fUm-Md-Pap" firstAttribute="trailing" secondItem="94I-f4-j1Q" secondAttribute="trailing" id="R50-bW-QsX"/>
                             <constraint firstItem="0kr-ax-3sH" firstAttribute="leading" secondItem="aow-9G-00E" secondAttribute="leading" id="d21-wE-Sgj"/>
                             <constraint firstItem="94I-f4-j1Q" firstAttribute="leading" secondItem="aow-9G-00E" secondAttribute="leading" id="ijf-4m-Bre"/>
+                            <constraint firstItem="fUm-Md-Pap" firstAttribute="leading" secondItem="94I-f4-j1Q" secondAttribute="leading" id="jXO-ne-w1a"/>
                             <constraint firstItem="aow-9G-00E" firstAttribute="bottom" secondItem="94I-f4-j1Q" secondAttribute="bottom" id="l8r-X1-REz"/>
                             <constraint firstItem="aow-9G-00E" firstAttribute="trailing" secondItem="94I-f4-j1Q" secondAttribute="trailing" id="ntN-Rw-wvQ"/>
                             <constraint firstItem="0kr-ax-3sH" firstAttribute="top" secondItem="aow-9G-00E" secondAttribute="top" id="sh2-Ge-bE5"/>
