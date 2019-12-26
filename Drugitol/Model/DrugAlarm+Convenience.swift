@@ -24,6 +24,7 @@ extension DrugAlarm {
 		self.init(context: context)
 		self.alarmHour = alarmHour
 		self.alarmMinute = alarmMinute
+		self.id = UUID()
 	}
 
 	private static let formatter: DateFormatter = {
