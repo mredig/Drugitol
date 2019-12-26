@@ -71,4 +71,3 @@ extension CoreDataStack {
 extension NSManagedObjectContext {
 	static let mainContext = CoreDataStack.shared.mainContext
 }
-

@@ -37,7 +37,7 @@
 		3335EB6E23B0037D00509A2F /* DoseEntry+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DoseEntry+Convenience.swift"; sourceTree = "<group>"; };
 		3335EB7023B0056900509A2F /* DosageTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DosageTableViewController.swift; sourceTree = "<group>"; };
 		3335EB7223B0341000509A2F /* DosageDetaillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DosageDetaillViewController.swift; sourceTree = "<group>"; };
-		333F746623A888B400E51514 /* Drugitol.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Drugitol.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		333F746623A888B400E51514 /* Chronitol.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chronitol.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		333F746923A888B400E51514 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		333F747023A888B400E51514 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		333F747223A888B500E51514 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -81,7 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				333F747F23A889B800E51514 /* .swiftlint.yml */,
-				333F746823A888B400E51514 /* Drugitol */,
+				333F746823A888B400E51514 /* Chronitol */,
 				333F746723A888B400E51514 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -89,12 +89,12 @@
 		333F746723A888B400E51514 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				333F746623A888B400E51514 /* Drugitol.app */,
+				333F746623A888B400E51514 /* Chronitol.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		333F746823A888B400E51514 /* Drugitol */ = {
+		333F746823A888B400E51514 /* Chronitol */ = {
 			isa = PBXGroup;
 			children = (
 				333F746923A888B400E51514 /* AppDelegate.swift */,
@@ -108,7 +108,7 @@
 				333F747423A888B500E51514 /* LaunchScreen.storyboard */,
 				333F747723A888B500E51514 /* Info.plist */,
 			);
-			path = Drugitol;
+			path = Chronitol;
 			sourceTree = "<group>";
 		};
 		333F748523A88E4400E51514 /* ViewControllers */ = {
@@ -157,9 +157,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		333F746523A888B400E51514 /* Drugitol */ = {
+		333F746523A888B400E51514 /* Chronitol */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 333F747A23A888B500E51514 /* Build configuration list for PBXNativeTarget "Drugitol" */;
+			buildConfigurationList = 333F747A23A888B500E51514 /* Build configuration list for PBXNativeTarget "Chronitol" */;
 			buildPhases = (
 				333F746223A888B400E51514 /* Sources */,
 				333F746323A888B400E51514 /* Frameworks */,
@@ -171,9 +171,9 @@
 			);
 			dependencies = (
 			);
-			name = Drugitol;
+			name = Chronitol;
 			productName = Drugitol;
-			productReference = 333F746623A888B400E51514 /* Drugitol.app */;
+			productReference = 333F746623A888B400E51514 /* Chronitol.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -191,7 +191,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 333F746123A888B400E51514 /* Build configuration list for PBXProject "Drugitol" */;
+			buildConfigurationList = 333F746123A888B400E51514 /* Build configuration list for PBXProject "Chronitol" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -204,7 +204,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				333F746523A888B400E51514 /* Drugitol */,
+				333F746523A888B400E51514 /* Chronitol */,
 			);
 		};
 /* End PBXProject section */
@@ -429,14 +429,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5UZAT7KA9;
-				INFOPLIST_FILE = Drugitol/Info.plist;
+				INFOPLIST_FILE = Chronitol/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.redeggproductions.Drugitol;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.redeggproductions.Chronitol;
+				PRODUCT_NAME = Chronitol;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -448,14 +448,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5UZAT7KA9;
-				INFOPLIST_FILE = Drugitol/Info.plist;
+				INFOPLIST_FILE = Chronitol/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.redeggproductions.Drugitol;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.redeggproductions.Chronitol;
+				PRODUCT_NAME = Chronitol;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -464,7 +464,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		333F746123A888B400E51514 /* Build configuration list for PBXProject "Drugitol" */ = {
+		333F746123A888B400E51514 /* Build configuration list for PBXProject "Chronitol" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				333F747823A888B500E51514 /* Debug */,
@@ -473,7 +473,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		333F747A23A888B500E51514 /* Build configuration list for PBXNativeTarget "Drugitol" */ = {
+		333F747A23A888B500E51514 /* Build configuration list for PBXNativeTarget "Chronitol" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				333F747B23A888B500E51514 /* Debug */,
