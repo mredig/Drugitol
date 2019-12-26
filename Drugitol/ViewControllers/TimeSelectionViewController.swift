@@ -42,11 +42,8 @@ class TimeSelectionViewController: UIViewController {
 
 	private func updateDatePicker(to newValue: AlarmTimeComponents) {
 		loadViewIfNeeded()
-		let calendar = Calendar.current
-		let day = calendar.startOfDay(for: Date())
-		guard let dayHour = calendar.date(byAdding: .hour, value: newValue.hour, to: day) else { return }
-		guard let dayHourMinute = calendar.date(byAdding: .minute, value: newValue.minute, to: dayHour) else { return }
-		datePicker.date = dayHourMinute
+		let converter = AlarmNumberConverter(alarmHour: newValue.hour, alarmMinute: newValue.minute)
+		datePicker.date = converter.date
 
 		updateSelectedTimeDisplayLabel()
 	}
