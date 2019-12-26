@@ -32,6 +32,7 @@ class DosageTableViewController: UITableViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		drugPickerView.reloadAllComponents()
+		tableView.reloadData()
 	}
 
 	// MARK: - Actions
