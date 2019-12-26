@@ -11,7 +11,7 @@
         <!--Daily Meds-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="DrugEntryVC" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="DrugEntryVC" customModule="Chronitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -77,7 +77,7 @@
         <!--New Drug Reminder-->
         <scene sceneID="Jb4-I0-Lrn">
             <objects>
-                <viewController id="vPc-ZL-nEh" customClass="NewDrugViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="vPc-ZL-nEh" customClass="NewDrugViewController" customModule="Chronitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TPV-Tl-JJz">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -182,13 +182,7 @@
         <!--Time Selection View Controller-->
         <scene sceneID="IdD-xk-fvk">
             <objects>
-                <tapGestureRecognizer id="vKu-ug-MQK">
-                    <connections>
-                        <action selector="clearAreaTapped:" destination="MBu-dv-K4j" id="jAo-Zl-D5N"/>
-                    </connections>
-                </tapGestureRecognizer>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Qx7-0o-knX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <viewController storyboardIdentifier="TimeSelectionViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MBu-dv-K4j" customClass="TimeSelectionViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TimeSelectionViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MBu-dv-K4j" customClass="TimeSelectionViewController" customModule="Chronitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="p5D-3P-w3Y">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -267,6 +261,12 @@
                         <outlet property="selectedTimeLabel" destination="90l-Xl-P2R" id="83g-yp-7br"/>
                     </connections>
                 </viewController>
+                <tapGestureRecognizer id="vKu-ug-MQK">
+                    <connections>
+                        <action selector="clearAreaTapped:" destination="MBu-dv-K4j" id="jAo-Zl-D5N"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Qx7-0o-knX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3924" y="-346.77661169415296"/>
         </scene>
@@ -289,11 +289,11 @@
             </objects>
             <point key="canvasLocation" x="259" y="50"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Drug List-->
         <scene sceneID="8VY-Hr-blm">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fjV-Df-Hr5" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" systemItem="favorites" id="6dW-nW-Xl3"/>
+                    <tabBarItem key="tabBarItem" title="Drug List" image="capsule pills-simple" id="6dW-nW-Xl3"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="2tF-5i-CLb">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
@@ -311,7 +311,7 @@
         <!--Dosage Log-->
         <scene sceneID="wHD-TX-Xo7">
             <objects>
-                <tableViewController id="J19-iq-fXs" customClass="DosageTableViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="J19-iq-fXs" customClass="DosageTableViewController" customModule="Chronitol" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="rLR-xl-uZY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -380,7 +380,7 @@
         <!--Dosage Detail View Controller-->
         <scene sceneID="7gh-S9-uRE">
             <objects>
-                <viewController storyboardIdentifier="DosageDetailViewController" id="WaK-4u-Wfn" customClass="DosageDetailViewController" customModule="Drugitol" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DosageDetailViewController" id="WaK-4u-Wfn" customClass="DosageDetailViewController" customModule="Chronitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MLi-HG-BLu">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -465,11 +465,11 @@
             </objects>
             <point key="canvasLocation" x="3094" y="415"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Dosage Log-->
         <scene sceneID="Od1-jn-R9z">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="7Od-Jh-efb" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" systemItem="history" id="nBg-Y0-VZn"/>
+                    <tabBarItem key="tabBarItem" title="Dosage Log" image="list-simple" id="nBg-Y0-VZn"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="evX-lD-9vS">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
@@ -485,6 +485,10 @@
             <point key="canvasLocation" x="1347.8260869565217" y="415.84821428571428"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="capsule pills-simple" width="24" height="24"/>
+        <image name="list-simple" width="24" height="24"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="SlH-nc-Hnv"/>
     </inferredMetricsTieBreakers>
