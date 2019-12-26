@@ -13,7 +13,9 @@ import CoreData
 class CoreDataStack {
 	static let shared = CoreDataStack()
 	
-	private init() {}
+	private init() {
+		setupNotificationObservers()
+	}
 
 	/// A generic function to save any context we want (main or background)
 	func save(context: NSManagedObjectContext) throws {
@@ -51,6 +53,22 @@ class CoreDataStack {
 	}
 }
 
+// MARK: - custom stuff
+extension CoreDataStack {
+	private func setupNotificationObservers() {
+		_ = NotificationCenter.default.addObserver(forName: .dosageTakenNotification, object: nil, queue: nil, using: { [weak self] notification in
+			print("got notification \(notification)")
+			guard let self = self else { return }
+			guard let id = notification.userInfo?["id"] as? String else { return }
+			let drugController = DrugController(context: self.container.newBackgroundContext())
+			guard let alarm = drugController.getAlarm(withID: id), let drug = alarm.drug else { return }
+
+			drugController.createDoseEntry(at: Date(), forDrug: drug)
+		})
+	}
+}
+
 extension NSManagedObjectContext {
 	static let mainContext = CoreDataStack.shared.mainContext
 }
+

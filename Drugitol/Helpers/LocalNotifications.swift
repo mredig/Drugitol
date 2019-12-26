@@ -180,6 +180,7 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 			print("delay 30")
 		case .drugNotificationDosageTakenActionID:
 			NotificationCenter.default.post(name: .dosageTakenNotification, object: nil, userInfo: ["id": identifier])
+			print("sent notification: \(identifier)")
 		default:
 			break
 		}

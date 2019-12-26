@@ -20,17 +20,6 @@ class DrugController {
 
 	init(context: NSManagedObjectContext) {
 		self.context = context
-		setupNotificationObservers()
-	}
-
-	private func setupNotificationObservers() {
-		_ = NotificationCenter.default.addObserver(forName: .dosageTakenNotification, object: nil, queue: nil, using: { [weak self] notification in
-			guard let self = self else { return }
-			guard let id = notification.userInfo?["id"] as? String else { return }
-			guard let alarm = self.getAlarm(withID: id), let drug = alarm.drug else { return }
-
-			self.createDoseEntry(at: Date(), forDrug: drug)
-		})
 	}
 
 	// MARK: - FRC
@@ -185,7 +174,7 @@ class DrugController {
 		localNotifications.createDrugReminder(titled: "Time to take \(name)!", body: "Be sure to take it soon OR YOU'LL DIE", hour: alarmHour, minute: alarmMinute, id: alarmID)
 	}
 
-	private func getAlarm(withID id: String) -> DrugAlarm? {
+	func getAlarm(withID id: String) -> DrugAlarm? {
 		let fetchRequest: NSFetchRequest<DrugAlarm> = DrugAlarm.fetchRequest()
 
 		guard let uuid = UUID(uuidString: id) else { return nil }
