@@ -75,7 +75,7 @@ class LocalNotifications: NSObject {
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
-		content.badge = NSNumber(value: pendingNotifications.count + 1)
+//		content.badge = NSNumber(value: pendingNotifications.count + 1)
 		content.sound = UNNotificationSound.default
 		content.categoryIdentifier = .drugNotificationCategoryIdentifier
 
@@ -98,7 +98,7 @@ class LocalNotifications: NSObject {
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
-		content.badge = NSNumber(value: pendingNotifications.count + 1)
+//		content.badge = NSNumber(value: pendingNotifications.count + 1)
 		content.sound = UNNotificationSound.default
 		content.categoryIdentifier = .drugNotificationCategoryIdentifier
 
@@ -114,27 +114,6 @@ class LocalNotifications: NSObject {
 		}
 
 	}
-
-//	func createPoopReminder(withTitle title: String, body: String, atTime time: Date, id: String) {
-//		let content = UNMutableNotificationContent()
-//		content.title = title
-//		content.body = body
-//		content.badge = 1
-//		content.sound = UNNotificationSound.default
-////		content.categoryIdentifier = poopNotificationCategoryIdentifier
-//
-//		let calendar = Calendar.current
-//		let components = calendar.dateComponents([.day, .minute, .second, .hour], from: time)
-//		let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
-//
-//		let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
-//
-//		nc.add(request) { _ in
-////			NSLog("scheduled: \(request)!")
-//		}
-//
-////		pendInfo()
-//	}
 
 	func deleteDrugAlarm(withID id: String) {
 		nc.removeDeliveredNotifications(withIdentifiers: [id])
@@ -159,8 +138,10 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 
 		let content = response.notification.request.content
 		let request = response.notification.request
-//		LocalNotifications.shared.deleteDrugAlarm(request: response.notification.request)
-		UIApplication.shared.applicationIconBadgeNumber = pendingNotifications.count
+		if request.trigger is UNTimeIntervalNotificationTrigger {
+			deleteDrugAlarm(request: response.notification.request)
+		}
+//		UIApplication.shared.applicationIconBadgeNumber = pendingNotifications.count
 
 		let identifier = request.identifier.replacingOccurrences(of: ##"\:.*"##, with: "", options: .regularExpression, range: nil)
 
@@ -184,8 +165,6 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		default:
 			break
 		}
-
-//		NotificationCenter.default.post(name: .kUNNotificationRecieved, object: nil, userInfo: ["id": response.notification.request.identifier])
 	}
 
 	func userNotificationCenter(_ center: UNUserNotificationCenter,
