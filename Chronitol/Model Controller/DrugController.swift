@@ -116,6 +116,15 @@ class DrugController {
 			entry.addToAlarms(NSSet(array: alarms))
 		}
 
+		alarms.forEach {
+			guard let id = $0.id?.uuidString else { return }
+			localNotifications.deleteDrugAlarm(withID: id)
+			if isActive {
+				setupAlarmNotification($0)
+			}
+		}
+
+
 		save(withErrorLogging: "Failed updating entry '\(entry)'")
 		return entry
 	}
@@ -124,6 +133,7 @@ class DrugController {
 		context.performAndWait {
 			entry.removeFromAlarms(alarm)
 		}
+		localNotifications.deleteDrugAlarm(withID: alarm.id?.uuidString ?? "noid")
 		save(withErrorLogging: "Failed removing alarm '\(alarm)' from entry '\(entry)'")
 	}
 
@@ -140,8 +150,6 @@ class DrugController {
 		let alarm = DrugAlarm(alarmHour: alarmHour, alarmMinute: alarmMinute, context: context)
 
 		save(withErrorLogging: "Failed saving new drug alarm")
-
-		setupAlarmNotification(alarm)
 		return alarm
 	}
 
@@ -152,7 +160,6 @@ class DrugController {
 		}
 
 		save(withErrorLogging: "Failed updating drug alarm")
-		setupAlarmNotification(alarm)
 		return alarm
 	}
 
