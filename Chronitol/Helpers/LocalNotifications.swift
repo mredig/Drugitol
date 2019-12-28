@@ -54,7 +54,7 @@ class LocalNotifications: NSObject {
 		let category = UNNotificationCategory(identifier: .drugNotificationCategoryIdentifier,
 											  actions: [remind5Action, remind15Action, remind30Action, dosageTakenAction, dosageIgnoredAction],
 											  intentIdentifiers: [],
-											  options: [])
+											  options: [.customDismissAction])
 
 		nc.setNotificationCategories([category])
 	}
@@ -98,7 +98,6 @@ class LocalNotifications: NSObject {
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
-//		content.badge = NSNumber(value: pendingNotifications.count + 1)
 		content.sound = UNNotificationSound.default
 		content.categoryIdentifier = .drugNotificationCategoryIdentifier
 
@@ -141,16 +140,13 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		if request.trigger is UNTimeIntervalNotificationTrigger {
 			deleteDrugAlarm(request: response.notification.request)
 		}
-//		UIApplication.shared.applicationIconBadgeNumber = pendingNotifications.count
 
 		let identifier = request.identifier.replacingOccurrences(of: ##"\:.*"##, with: "", options: .regularExpression, range: nil)
 
 		switch response.actionIdentifier {
-		case UNNotificationDismissActionIdentifier:
-			print("Dismiss action")
 		case UNNotificationDefaultActionIdentifier:
 			print("Default")
-		case .drugNotificationRemind5ActionID:
+		case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier:
 			createDelayedDrugReminder(titled: content.title, body: content.body, delayedSeconds: 5 * 60, id: identifier)
 			print("delay 5")
 		case .drugNotificationRemind15ActionID:
