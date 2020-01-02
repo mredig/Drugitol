@@ -13,6 +13,7 @@ class DosageTableViewController: UITableViewController {
 
 	let drugController = DrugController(context: .mainContext)
 
+	@IBOutlet private weak var createNewDosageButton: UIBarButtonItem!
 	@IBOutlet private var drugPickerView: UIPickerView!
 	lazy var dosageFetchedResultsController = drugController.createDosageFetchedResultsController(withDelegate: self)
 
@@ -27,11 +28,21 @@ class DosageTableViewController: UITableViewController {
 		super.viewDidLoad()
 
 		drugPickerView.selectRow(DefaultsManager.lastSelectedDoseIndex, inComponent: 0, animated: true)
+
+		#if DEBUG
+		let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(pending))
+		navigationItem.rightBarButtonItems?.append(item)
+		#endif
+	}
+
+	@objc func pending() {
+		LocalNotifications.shared.pendInfo()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		drugPickerView.reloadAllComponents()
+		createNewDosageButton.isEnabled = !drugController.activeDrugs.isEmpty
 		tableView.reloadData()
 	}
 
