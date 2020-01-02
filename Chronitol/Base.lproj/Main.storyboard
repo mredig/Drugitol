@@ -87,10 +87,10 @@
                                 <rect key="frame" x="0.0" y="96" width="375" height="522"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A5r-ZN-2TS">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="219"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="203"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="36" translatesAutoresizingMaskIntoConstraints="NO" id="ZDy-b6-sxJ">
-                                                <rect key="frame" x="20" y="0.0" width="335" height="219"/>
+                                                <rect key="frame" x="20" y="0.0" width="335" height="203"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="C2G-xl-QJ2">
                                                         <rect key="frame" x="0.0" y="0.0" width="335" height="34"/>
@@ -123,12 +123,9 @@
                                                             </view>
                                                         </subviews>
                                                     </stackView>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2HC-UZ-K77">
-                                                        <rect key="frame" x="0.0" y="173" width="335" height="46"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                                        <state key="normal" title="+">
-                                                            <color key="titleColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        </state>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2HC-UZ-K77">
+                                                        <rect key="frame" x="0.0" y="173" width="335" height="30"/>
+                                                        <state key="normal" title="Add New Alarm"/>
                                                         <connections>
                                                             <action selector="plusButtonPressed:" destination="vPc-ZL-nEh" eventType="touchUpInside" id="PU3-4g-qjc"/>
                                                         </connections>
