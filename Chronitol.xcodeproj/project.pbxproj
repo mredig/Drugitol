@@ -53,6 +53,7 @@
 		333F749223A8905100E51514 /* AlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmView.swift; sourceTree = "<group>"; };
 		334D094823B2A2D80074FFF6 /* Drugs 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 2.xcdatamodel"; sourceTree = "<group>"; };
 		334D094923B2AEFA0074FFF6 /* Drugs 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 3.xcdatamodel"; sourceTree = "<group>"; };
+		335E562323BD7DE3008FE6A6 /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		33A38CE623B3073300783926 /* DefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsManager.swift; sourceTree = "<group>"; };
 		33A38CE823B4379F00783926 /* LocalNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotifications.swift; sourceTree = "<group>"; };
 		33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmNumberConverter.swift; sourceTree = "<group>"; };
@@ -80,6 +81,7 @@
 		333F745D23A888B400E51514 = {
 			isa = PBXGroup;
 			children = (
+				335E562323BD7DE3008FE6A6 /* TODO */,
 				333F747F23A889B800E51514 /* .swiftlint.yml */,
 				333F746823A888B400E51514 /* Chronitol */,
 				333F746723A888B400E51514 /* Products */,
