@@ -48,7 +48,7 @@ class LocalNotifications: NSObject {
 		let remind30Action = UNNotificationAction(identifier: .drugNotificationRemind30ActionID, title: "Remind me in 30 minutes", options: [])
 		let remind15Action = UNNotificationAction(identifier: .drugNotificationRemind15ActionID, title: "Remind me in 15 minutes", options: [])
 		let remind5Action = UNNotificationAction(identifier: .drugNotificationRemind5ActionID, title: "Remind me in 5 minutes", options: [])
-		let dosageTakenAction = UNNotificationAction(identifier: .drugNotificationDosageTakenActionID, title: "I just took this dose!", options: [])
+		let dosageTakenAction = UNNotificationAction(identifier: .drugNotificationDosageTakenActionID, title: "I'm taking it now!", options: [])
 		let dosageIgnoredAction = UNNotificationAction(identifier: .drugNotificationDosageIgnoredActionID, title: "Ignore this dose", options: [.destructive])
 
 		let category = UNNotificationCategory(identifier: .drugNotificationCategoryIdentifier,
@@ -174,6 +174,7 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		switch response.actionIdentifier {
 		case UNNotificationDefaultActionIdentifier:
 			print("Default")
+			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5 * 60, id: identifier, userInfo: userInfo)
 		case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier:
 			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5 * 60, id: identifier, userInfo: userInfo)
 			print("delay 5")
