@@ -281,6 +281,7 @@
                     <connections>
                         <segue destination="7Od-Jh-efb" kind="relationship" relationship="viewControllers" id="1EE-g1-Idj"/>
                         <segue destination="fjV-Df-Hr5" kind="relationship" relationship="viewControllers" id="o8D-WN-uvz"/>
+                        <segue destination="cpk-k4-qgu" kind="relationship" relationship="viewControllers" id="oIe-eN-2GZ"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a0j-VY-lvm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -463,6 +464,16 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3094" y="415"/>
+        </scene>
+        <!--Settings-->
+        <scene sceneID="4vZ-Tx-P6B">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Settings" id="cpk-k4-qgu" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="KyG-0e-SFl"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tSk-eX-A6S" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="258" y="955"/>
         </scene>
         <!--Dosage Log-->
         <scene sceneID="Od1-jn-R9z">

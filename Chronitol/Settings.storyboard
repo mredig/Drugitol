@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="6Dv-X4-hTa">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Settings View Controller-->
+        <scene sceneID="9KD-ak-pK7">
+            <objects>
+                <viewController id="YTw-Zu-MBH" customClass="SettingsViewController" customModule="Chronitol" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="7lX-s1-bfc">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qYR-GH-p5V">
+                                <rect key="frame" x="156.5" y="433" width="101" height="30"/>
+                                <state key="normal" title="Export Backup"/>
+                                <connections>
+                                    <action selector="exportBackupButtonPressed:" destination="YTw-Zu-MBH" eventType="touchUpInside" id="bgl-V0-mXa"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="qYR-GH-p5V" firstAttribute="centerY" secondItem="7lX-s1-bfc" secondAttribute="centerY" id="PMN-v3-Fu4"/>
+                            <constraint firstItem="qYR-GH-p5V" firstAttribute="centerX" secondItem="7lX-s1-bfc" secondAttribute="centerX" id="afS-gm-5Pk"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="yQ1-6m-ARa"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="pqM-71-CEY"/>
+                    <connections>
+                        <outlet property="exportBackupButton" destination="qYR-GH-p5V" id="PvG-gy-8lR"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1t9-g9-ZTO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1000.0000000000001" y="112.5"/>
+        </scene>
+        <!--Settings-->
+        <scene sceneID="pwO-d8-XBc">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="6Dv-X4-hTa" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Settings" image="setting-simple" id="AP6-7I-7H3"/>
+                    <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="QB3-ON-gkp">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="YTw-Zu-MBH" kind="relationship" relationship="rootViewController" id="dJV-Ez-Gpq"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0xP-vj-wDy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="89.855072463768124" y="112.5"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="setting-simple" width="24" height="24"/>
+    </resources>
+</document>

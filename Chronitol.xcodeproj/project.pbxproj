@@ -25,6 +25,8 @@
 		333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */; };
 		333F749123A8902D00E51514 /* AlarmView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 333F749023A8902D00E51514 /* AlarmView.xib */; };
 		333F749323A8905100E51514 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F749223A8905100E51514 /* AlarmView.swift */; };
+		335E562623BDCA1E008FE6A6 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 335E562523BDCA1E008FE6A6 /* Settings.storyboard */; };
+		335E562823BDCCC6008FE6A6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335E562723BDCCC6008FE6A6 /* SettingsViewController.swift */; };
 		33A38CE723B3073300783926 /* DefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CE623B3073300783926 /* DefaultsManager.swift */; };
 		33A38CE923B4379F00783926 /* LocalNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CE823B4379F00783926 /* LocalNotifications.swift */; };
 		33A38CEB23B43B3900783926 /* AlarmNumberConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */; };
@@ -54,6 +56,8 @@
 		334D094823B2A2D80074FFF6 /* Drugs 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 2.xcdatamodel"; sourceTree = "<group>"; };
 		334D094923B2AEFA0074FFF6 /* Drugs 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 3.xcdatamodel"; sourceTree = "<group>"; };
 		335E562323BD7DE3008FE6A6 /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		335E562523BDCA1E008FE6A6 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
+		335E562723BDCCC6008FE6A6 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		33A38CE623B3073300783926 /* DefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsManager.swift; sourceTree = "<group>"; };
 		33A38CE823B4379F00783926 /* LocalNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotifications.swift; sourceTree = "<group>"; };
 		33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmNumberConverter.swift; sourceTree = "<group>"; };
@@ -106,6 +110,7 @@
 				333F748B23A88ED800E51514 /* Model */,
 				333F748823A88EBE00E51514 /* Helpers */,
 				333F746F23A888B400E51514 /* Main.storyboard */,
+				335E562523BDCA1E008FE6A6 /* Settings.storyboard */,
 				333F747223A888B500E51514 /* Assets.xcassets */,
 				333F747423A888B500E51514 /* LaunchScreen.storyboard */,
 				333F747723A888B500E51514 /* Info.plist */,
@@ -121,6 +126,7 @@
 				333F748623A88E5D00E51514 /* TimeSelectionViewController.swift */,
 				3335EB7023B0056900509A2F /* DosageTableViewController.swift */,
 				3335EB7223B0341000509A2F /* DosageDetaillViewController.swift */,
+				335E562723BDCCC6008FE6A6 /* SettingsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -221,6 +227,7 @@
 				333F749123A8902D00E51514 /* AlarmView.xib in Resources */,
 				333F747323A888B500E51514 /* Assets.xcassets in Resources */,
 				333F747123A888B400E51514 /* Main.storyboard in Resources */,
+				335E562623BDCA1E008FE6A6 /* Settings.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,6 +289,7 @@
 				3335EB7323B0341000509A2F /* DosageDetaillViewController.swift in Sources */,
 				333F748423A88E3000E51514 /* NewDrugViewController.swift in Sources */,
 				333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */,
+				335E562823BDCCC6008FE6A6 /* SettingsViewController.swift in Sources */,
 				333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */,
 				333F749323A8905100E51514 /* AlarmView.swift in Sources */,
 				3335EB6F23B0037D00509A2F /* DoseEntry+Convenience.swift in Sources */,

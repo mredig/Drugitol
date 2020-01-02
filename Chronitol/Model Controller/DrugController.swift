@@ -12,7 +12,7 @@ import CoreData
 class DrugController {
 
 	var activeDrugs: [DrugEntry] {
-		getActiveDrugs()
+		getDrugs(activeOnly: true)
 	}
 
 	let context: NSManagedObjectContext
@@ -84,11 +84,13 @@ class DrugController {
 	}
 
 	// MARK: - DrugEntry
-	private func getActiveDrugs() -> [DrugEntry] {
+	private func getDrugs(activeOnly: Bool) -> [DrugEntry] {
 		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
 
-		fetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
+		if activeOnly {
+			fetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
+		}
 
 		var entries: [DrugEntry] = []
 		context.performAndWait {
@@ -190,5 +192,48 @@ class DrugController {
 		} catch {
 			NSLog("\(errorLogging): \(error)")
 		}
+	}
+}
+
+// MARK: - Import/Export
+extension DrugController {
+	func importFromPlistData(_ data: Data) {
+
+	}
+
+	/// doesn't actually export, but provides the data that can then BE exported
+	func exportPlistData() -> Data {
+		let drugs = getDrugs(activeOnly: false)
+
+		var rawDict = [[String: Any]]()
+		context.performAndWait {
+			for drug in drugs {
+				let alarms: [[String: Any]] = drug.drugAlarms.map {
+					["id": $0.id?.uuidString,
+					 "alarmHour": $0.alarmHour,
+					 "alarmMinute": $0.alarmMinute]
+				}
+				let dosages: [[String: Any]] = drug.drugDosages.map {
+					["date": $0.date,
+					 "timestamp": $0.timestamp]
+				}
+				let drugDict: [String: Any] = [
+					"name": drug.name,
+					"isActive": drug.isActive,
+					"alarms": alarms,
+					"takenDosages": dosages]
+				rawDict.append(drugDict)
+			}
+		}
+
+		let jsonData: Data
+		do {
+			jsonData = try PropertyListSerialization.data(fromPropertyList: rawDict, format: .binary, options: 0)
+		} catch {
+			NSLog("Error encoding drug info: \(error)")
+			jsonData = Data()
+		}
+
+		return jsonData
 	}
 }
