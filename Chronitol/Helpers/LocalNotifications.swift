@@ -175,7 +175,7 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		case UNNotificationDefaultActionIdentifier:
 			print("Default")
 		case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier:
-			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5, id: identifier, userInfo: userInfo)
+			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5 * 60, id: identifier, userInfo: userInfo)
 			print("delay 5")
 		case .drugNotificationRemind15ActionID:
 			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 15 * 60, id: identifier, userInfo: userInfo)
