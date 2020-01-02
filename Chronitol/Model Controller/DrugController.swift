@@ -164,21 +164,7 @@ class DrugController {
 	}
 
 	private func setupAlarmNotification(_ alarm: DrugAlarm) {
-		var name = "A drug"
-		var minute: Int?
-		var hour: Int?
-		var id: String?
-
-		context.performAndWait {
-			let drug = alarm.drug
-			name = drug?.name ?? name
-			minute = alarm.alarmMinute
-			hour = alarm.alarmHour
-			id = alarm.id?.uuidString
-		}
-
-		guard let alarmHour = hour, let alarmMinute = minute, let alarmID = id else { return }
-		localNotifications.createDrugReminder(titled: "Time to take \(name)!", body: "Be sure to take it soon OR YOU'LL DIE", hour: alarmHour, minute: alarmMinute, id: alarmID)
+		localNotifications.createDrugReminder(for: alarm)
 	}
 
 	func getAlarm(withID id: String) -> DrugAlarm? {

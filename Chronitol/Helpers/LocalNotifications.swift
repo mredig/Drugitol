@@ -52,32 +52,51 @@ class LocalNotifications: NSObject {
 		let dosageIgnoredAction = UNNotificationAction(identifier: .drugNotificationDosageIgnoredActionID, title: "Ignore this dose", options: [.destructive])
 
 		let category = UNNotificationCategory(identifier: .drugNotificationCategoryIdentifier,
-											  actions: [remind5Action, remind15Action, remind30Action, dosageTakenAction, dosageIgnoredAction],
+											  actions: [dosageTakenAction, remind5Action, remind15Action, remind30Action, dosageIgnoredAction],
 											  intentIdentifiers: [],
 											  options: [.customDismissAction])
 
 		nc.setNotificationCategories([category])
 	}
 
-//	func pendInfo() {
-//		nc.getPendingNotificationRequests { requests in
-//			print("pending")
-//			requests.forEach { print($0) }
-//		}
-//
-//		nc.getDeliveredNotifications { notifications in
-//			print("delivered")
-//			notifications.forEach { print($0) }
-//		}
-//	}
+	func pendInfo() {
+		nc.getPendingNotificationRequests { requests in
+			print("pending")
+			requests.forEach { print($0) }
+		}
 
-	func createDrugReminder(titled title: String, body: String, hour: Int, minute: Int, id: String) {
+		nc.getDeliveredNotifications { notifications in
+			print("delivered")
+			notifications.forEach { print($0) }
+		}
+	}
+
+	func createDrugReminder(for drugAlarm: DrugAlarm?) {
+		guard let drugAlarm = drugAlarm else { return }
+		var name = "A drug"
+		var minute: Int?
+		var hour: Int?
+		var id: String?
+
+		drugAlarm.managedObjectContext?.performAndWait {
+			let drug = drugAlarm.drug
+			name = drug?.name ?? name
+			minute = drugAlarm.alarmMinute
+			hour = drugAlarm.alarmHour
+			id = drugAlarm.id?.uuidString
+		}
+		guard let alarmHour = hour, let alarmMinute = minute, let alarmID = id else { return }
+		let userInfo = ["drugName": name]
+		createDrugReminder(titled: "Time to take \(name)!", body: "Be sure to take it soon OR YOU'LL DIE", hour: alarmHour, minute: alarmMinute, id: alarmID, userInfo: userInfo)
+	}
+
+	func createDrugReminder(titled title: String, body: String, hour: Int, minute: Int, id: String, userInfo: [AnyHashable: Any]) {
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
-//		content.badge = NSNumber(value: pendingNotifications.count + 1)
 		content.sound = UNNotificationSound.default
 		content.categoryIdentifier = .drugNotificationCategoryIdentifier
+		content.userInfo = userInfo
 
 		var components = DateComponents()
 		components.hour = hour
@@ -94,12 +113,13 @@ class LocalNotifications: NSObject {
 		}
 	}
 
-	func createDelayedDrugReminder(titled title: String, body: String, delayedSeconds seconds: TimeInterval, id: String) {
+	func createDelayedDrugReminder(titled title: String, body: String, delayedSeconds seconds: TimeInterval, id: String, userInfo: [AnyHashable: Any]) {
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
 		content.sound = UNNotificationSound.default
 		content.categoryIdentifier = .drugNotificationCategoryIdentifier
+		content.userInfo = userInfo
 
 		let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
 
@@ -136,9 +156,17 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		defer { completionHandler() }
 
 		let content = response.notification.request.content
+		let userInfo = content.userInfo
 		let request = response.notification.request
 		if request.trigger is UNTimeIntervalNotificationTrigger {
 			deleteDrugAlarm(request: response.notification.request)
+		}
+
+		let delayedTitle: String
+		if let drugName = userInfo["drugName"] as? String {
+			delayedTitle = "Have you taken your \(drugName) yet?"
+		} else {
+			delayedTitle = content.title
 		}
 
 		let identifier = request.identifier.replacingOccurrences(of: ##"\:.*"##, with: "", options: .regularExpression, range: nil)
@@ -147,13 +175,13 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		case UNNotificationDefaultActionIdentifier:
 			print("Default")
 		case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier:
-			createDelayedDrugReminder(titled: content.title, body: content.body, delayedSeconds: 5 * 60, id: identifier)
+			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5, id: identifier, userInfo: userInfo)
 			print("delay 5")
 		case .drugNotificationRemind15ActionID:
-			createDelayedDrugReminder(titled: content.title, body: content.body, delayedSeconds: 15 * 60, id: identifier)
+			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 15 * 60, id: identifier, userInfo: userInfo)
 			print("delay 15")
 		case .drugNotificationRemind30ActionID:
-			createDelayedDrugReminder(titled: content.title, body: content.body, delayedSeconds: 30 * 60, id: identifier)
+			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 30 * 60, id: identifier, userInfo: userInfo)
 			print("delay 30")
 		case .drugNotificationDosageTakenActionID:
 			NotificationCenter.default.post(name: .dosageTakenNotification, object: nil, userInfo: ["id": identifier])

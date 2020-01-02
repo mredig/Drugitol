@@ -151,9 +151,7 @@ extension DosageTableViewController: NSFetchedResultsControllerDelegate {
 }
 
 extension DosageTableViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-	func numberOfComponents(in pickerView: UIPickerView) -> Int {
-		1
-	}
+	func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
 
 	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
 		drugController.activeDrugs.count
