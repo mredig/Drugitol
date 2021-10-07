@@ -33,6 +33,10 @@ class TimeSelectionViewController: UIViewController {
         super.viewDidLoad()
 
 		updateSelectedTimeDisplayLabel()
+
+		if #available(iOS 13.4, *) {
+			datePicker.preferredDatePickerStyle = .wheels
+		}
     }
 
 	private func updateSelectedTimeDisplayLabel() {

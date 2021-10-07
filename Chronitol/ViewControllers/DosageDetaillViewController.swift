@@ -33,6 +33,10 @@ class DosageDetailViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		updateViews()
+
+		if #available(iOS 13.4, *) {
+			datePicker.preferredDatePickerStyle = .wheels
+		}
 	}
 
 	private func updateViews() {
