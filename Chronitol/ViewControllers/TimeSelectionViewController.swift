@@ -8,6 +8,7 @@
 
 import UIKit
 
+@MainActor
 class TimeSelectionViewController: UIViewController {
 	@IBOutlet private var selectedTimeLabel: UIBarButtonItem!
 

@@ -8,6 +8,7 @@
 
 import UIKit
 
+@MainActor
 class NewDrugViewController: UIViewController {
 
 	@IBOutlet private weak var nameTextField: UITextField!

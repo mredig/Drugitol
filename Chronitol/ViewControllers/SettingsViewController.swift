@@ -8,6 +8,7 @@
 
 import UIKit
 
+@MainActor
 class SettingsViewController: UIViewController {
 	@IBOutlet private weak var exportBackupButton: UIButton!
 

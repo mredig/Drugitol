@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 
+@MainActor
 class DrugEntryVC: UIViewController {
 	@IBOutlet private weak var tableView: UITableView!
 	@IBOutlet private weak var createNewDrugButton: UIBarButtonItem!

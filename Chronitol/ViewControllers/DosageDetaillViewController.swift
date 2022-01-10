@@ -8,10 +8,12 @@
 
 import UIKit
 
+@MainActor
 protocol DosageDetailViewControllerDelegate: AnyObject {
 	func dosageDetailVCDidFinish(_ dosageDetailVC: DosageDetailViewController)
 }
 
+@MainActor
 class DosageDetailViewController: UIViewController {
 	@IBOutlet private var datePicker: UIDatePicker!
 	@IBOutlet private var selectedTimeDisplayLabel: UIBarButtonItem!

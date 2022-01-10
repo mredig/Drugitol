@@ -8,6 +8,7 @@
 
 import UIKit
 
+@MainActor
 protocol AlarmViewDelegate: AnyObject {
 	func alarmViewInvokedEditing(_ alarmView: AlarmView)
 	func alarmViewInvokedDeletion(_ alarmView: AlarmView)

@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 
+@MainActor
 class DosageTableViewController: UITableViewController {
 
 	let drugController = DrugController(context: .mainContext)
