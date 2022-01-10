@@ -105,7 +105,6 @@ class LocalNotifications: NSObject {
 		case specificTime(hour: Int, minute: Int)
 	}
 
-
 	func createDrugReminder(titled title: String, body: String, scheduleInfo: SchedulingInfo, id: String, userInfo: [AnyHashable: Any]) async throws {
 		let content = UNMutableNotificationContent()
 		content.title = title
@@ -114,6 +113,7 @@ class LocalNotifications: NSObject {
 		content.categoryIdentifier = .drugNotificationCategoryIdentifier
 		content.userInfo = userInfo
 		content.interruptionLevel = .critical
+		content.threadIdentifier = userInfo["drugName"] as? String ?? "Chronitol"
 
 		let request: UNNotificationRequest
 		switch scheduleInfo {
