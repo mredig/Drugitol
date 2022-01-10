@@ -13,14 +13,9 @@ class LocalNotifications: NSObject {
 	let nc = UNUserNotificationCenter.current()
 
 	var pendingNotifications: [UNNotificationRequest] {
-		var rRequests = [UNNotificationRequest]()
-		let semaphore = DispatchSemaphore(value: 0)
-		nc.getPendingNotificationRequests { requests in
-			rRequests = requests
-			semaphore.signal()
+		get async {
+			await nc.pendingNotificationRequests()
 		}
-		semaphore.wait()
-		return rRequests
 	}
 
 	static let shared = LocalNotifications()
