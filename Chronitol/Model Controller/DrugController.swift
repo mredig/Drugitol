@@ -209,16 +209,16 @@ extension DrugController {
 		context.performAndWait {
 			for drug in drugs {
 				let alarms: [[String: Any]] = drug.drugAlarms.map {
-					["id": $0.id?.uuidString,
+					["id": $0.id?.uuidString as Any,
 					 "alarmHour": $0.alarmHour,
 					 "alarmMinute": $0.alarmMinute]
 				}
 				let dosages: [[String: Any]] = drug.drugDosages.map {
-					["date": $0.date,
-					 "timestamp": $0.timestamp]
+					["date": $0.date as Any,
+					 "timestamp": $0.timestamp as Any]
 				}
 				let drugDict: [String: Any] = [
-					"name": drug.name,
+					"name": drug.name as Any,
 					"isActive": drug.isActive,
 					"alarms": alarms,
 					"takenDosages": dosages]
@@ -226,14 +226,14 @@ extension DrugController {
 			}
 		}
 
-		let jsonData: Data
+		let plistData: Data
 		do {
-			jsonData = try PropertyListSerialization.data(fromPropertyList: rawDict, format: .binary, options: 0)
+			plistData = try PropertyListSerialization.data(fromPropertyList: rawDict, format: .binary, options: 0)
 		} catch {
 			NSLog("Error encoding drug info: \(error)")
-			jsonData = Data()
+			plistData = Data()
 		}
 
-		return jsonData
+		return plistData
 	}
 }
