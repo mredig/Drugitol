@@ -13,34 +13,50 @@ import Combine
 
 class DrugController: NSObject {
 
+	private let activeDrugsFRC: NSFetchedResultsController<DrugEntry>
 	let activeDrugPublisher = CurrentValueSubject<NSDiffableDataSourceSnapshot<String, NSManagedObjectID>, Never>(.init())
 	var activeDrugIDs: [NSManagedObjectID] {
 		activeDrugPublisher.value.itemIdentifiers
 	}
 
+	private let allDrugsFRC: NSFetchedResultsController<DrugEntry>
+	let allDrugsPublisher = CurrentValueSubject<NSDiffableDataSourceSnapshot<String, NSManagedObjectID>, Never>(.init())
+	var allDrugsIDs: [NSManagedObjectID] {
+		allDrugsPublisher.value.itemIdentifiers
+	}
+
 	let context: NSManagedObjectContext
 	let localNotifications = LocalNotifications.shared
-
-	private let activeDrugsFRC: NSFetchedResultsController<DrugEntry>
 
 	init(context: NSManagedObjectContext) {
 		self.context = context
 
-		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
-		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-		self.activeDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+		let allDrugsFetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
+		allDrugsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+		self.allDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: allDrugsFetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+
+		let activeDrugsFetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
+		activeDrugsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+		activeDrugsFetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
+		self.activeDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: activeDrugsFetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
 
 		super.init()
 		activeDrugsFRC.delegate = self
+		allDrugsFRC.delegate = self
 
 		fetchFRCs()
 	}
 
 	private func fetchFRCs() {
-		do {
-			try activeDrugsFRC.performFetch()
-		} catch {
-			NSLog("Error fetching active drugs: \(error)")
+		[
+			activeDrugsFRC,
+			allDrugsFRC,
+		].forEach {
+			do {
+				try $0.performFetch()
+			} catch {
+				NSLog("Error fetching frc: \(error)")
+			}
 		}
 	}
 
@@ -53,24 +69,6 @@ class DrugController: NSObject {
 		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
 																  managedObjectContext: moc,
 																  sectionNameKeyPath: "date",
-																  cacheName: nil)
-		fetchedResultsController.delegate = delegate
-		do {
-			try fetchedResultsController.performFetch()
-		} catch {
-			print("error performing initial fetch for frc: \(error)")
-		}
-		return fetchedResultsController
-	}
-
-	func createDrugFetchedResultsController(withDelegate delegate: NSFetchedResultsControllerDelegate?) -> NSFetchedResultsController<DrugEntry> {
-		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
-		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-
-		let moc = CoreDataStack.shared.mainContext
-		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-																  managedObjectContext: moc,
-																  sectionNameKeyPath: nil,
 																  cacheName: nil)
 		fetchedResultsController.delegate = delegate
 		do {
@@ -106,20 +104,6 @@ class DrugController: NSObject {
 	}
 
 	// MARK: - DrugEntry
-	private func getDrugs(activeOnly: Bool) async throws -> [NSManagedObjectID] {
-		let fetchRequest = DrugEntry.fetchRequest() as! NSFetchRequest<NSManagedObjectID>
-		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-		fetchRequest.resultType = .managedObjectIDResultType
-
-		if activeOnly {
-			fetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
-		}
-
-		return try await context.perform {
-			try fetchRequest.execute()
-		}
-	}
-
 	func drug(for id: NSManagedObjectID, on context: NSManagedObjectContext = .mainContext) -> DrugEntry? {
 		do {
 			let existingItem = try context.existingObject(with: id)
@@ -224,7 +208,14 @@ class DrugController: NSObject {
 
 extension DrugController: NSFetchedResultsControllerDelegate {
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-		activeDrugPublisher.send(snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>)
+		let snap = snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+		switch controller {
+		case activeDrugsFRC:
+			activeDrugPublisher.send(snap)
+		case allDrugsFRC:
+			allDrugsPublisher.send(snap)
+		default: break
+		}
 	}
 }
 
@@ -236,7 +227,14 @@ extension DrugController {
 
 	/// doesn't actually export, but provides the data that can then BE exported
 	func exportPlistData() async throws -> Data {
-		let drugIDs = try await getDrugs(activeOnly: false)
+		let fetchRequest = DrugEntry.fetchRequest() as! NSFetchRequest<NSManagedObjectID>
+		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+		fetchRequest.resultType = .managedObjectIDResultType
+
+		let drugIDs = try await context.perform {
+			try fetchRequest.execute()
+		}
+
 
 		var rawDict = [[String: Any]]()
 		context.performAndWait {
