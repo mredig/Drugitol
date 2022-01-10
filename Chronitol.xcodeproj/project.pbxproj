@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -29,6 +29,7 @@
 		335E562823BDCCC6008FE6A6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335E562723BDCCC6008FE6A6 /* SettingsViewController.swift */; };
 		3363402E278BFBBA00EFEF51 /* SimpleConveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3363402D278BFBBA00EFEF51 /* SimpleConveniences.swift */; };
 		33634030278BFC7500EFEF51 /* Weakify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3363402F278BFC7500EFEF51 /* Weakify.swift */; };
+		33634033278C1FD400EFEF51 /* DateBuilder in Frameworks */ = {isa = PBXBuildFile; productRef = 33634032278C1FD400EFEF51 /* DateBuilder */; };
 		33A38CE723B3073300783926 /* DefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CE623B3073300783926 /* DefaultsManager.swift */; };
 		33A38CE923B4379F00783926 /* LocalNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CE823B4379F00783926 /* LocalNotifications.swift */; };
 		33A38CEB23B43B3900783926 /* AlarmNumberConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */; };
@@ -72,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33634033278C1FD400EFEF51 /* DateBuilder in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,6 +188,9 @@
 			dependencies = (
 			);
 			name = Chronitol;
+			packageProductDependencies = (
+				33634032278C1FD400EFEF51 /* DateBuilder */,
+			);
 			productName = Drugitol;
 			productReference = 333F746623A888B400E51514 /* Chronitol.app */;
 			productType = "com.apple.product-type.application";
@@ -214,6 +219,9 @@
 				Base,
 			);
 			mainGroup = 333F745D23A888B400E51514;
+			packageReferences = (
+				33634031278C1FD400EFEF51 /* XCRemoteSwiftPackageReference "DateBuilder" */,
+			);
 			productRefGroup = 333F746723A888B400E51514 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -507,6 +515,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		33634031278C1FD400EFEF51 /* XCRemoteSwiftPackageReference "DateBuilder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "http://github.com/nicephoton/DateBuilder.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		33634032278C1FD400EFEF51 /* DateBuilder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 33634031278C1FD400EFEF51 /* XCRemoteSwiftPackageReference "DateBuilder" */;
+			productName = DateBuilder;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */ = {
