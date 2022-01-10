@@ -152,7 +152,7 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		_ center: UNUserNotificationCenter,
 		didReceive response: UNNotificationResponse,
 		withCompletionHandler completionHandler: @escaping () -> Void) {
-			print("did receive: \(response)")
+			print("did receive: \(response.actionIdentifier)")
 			defer { completionHandler() }
 
 			let content = response.notification.request.content
