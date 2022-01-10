@@ -7,19 +7,41 @@
 //
 
 import Foundation
+import UIKit
 import CoreData
+import Combine
 
-class DrugController {
+class DrugController: NSObject {
 
-	var activeDrugs: [DrugEntry] {
-		getDrugs(activeOnly: true)
+	let activeDrugPublisher = CurrentValueSubject<NSDiffableDataSourceSnapshot<String, NSManagedObjectID>, Never>(.init())
+	var activeDrugIDs: [NSManagedObjectID] {
+		activeDrugPublisher.value.itemIdentifiers
 	}
 
 	let context: NSManagedObjectContext
 	let localNotifications = LocalNotifications.shared
 
+	private let activeDrugsFRC: NSFetchedResultsController<DrugEntry>
+
 	init(context: NSManagedObjectContext) {
 		self.context = context
+
+		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
+		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+		self.activeDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+
+		super.init()
+		activeDrugsFRC.delegate = self
+
+		fetchFRCs()
+	}
+
+	private func fetchFRCs() {
+		do {
+			try activeDrugsFRC.performFetch()
+		} catch {
+			NSLog("Error fetching active drugs: \(error)")
+		}
 	}
 
 	// MARK: - FRC
@@ -84,23 +106,28 @@ class DrugController {
 	}
 
 	// MARK: - DrugEntry
-	private func getDrugs(activeOnly: Bool) -> [DrugEntry] {
-		let fetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
+	private func getDrugs(activeOnly: Bool) async throws -> [NSManagedObjectID] {
+		let fetchRequest = DrugEntry.fetchRequest() as! NSFetchRequest<NSManagedObjectID>
 		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+		fetchRequest.resultType = .managedObjectIDResultType
 
 		if activeOnly {
 			fetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
 		}
 
-		var entries: [DrugEntry] = []
-		context.performAndWait {
-			do {
-				entries = try context.fetch(fetchRequest)
-			} catch {
-				NSLog("Error fetching drugs: \(error)")
-			}
+		return try await context.perform {
+			try fetchRequest.execute()
 		}
-		return entries
+	}
+
+	func drug(for id: NSManagedObjectID, on context: NSManagedObjectContext = .mainContext) -> DrugEntry? {
+		do {
+			let existingItem = try context.existingObject(with: id)
+			return existingItem as? DrugEntry
+		} catch {
+			NSLog("Error fetching item: \(error)")
+			return nil
+		}
 	}
 
 	@discardableResult func createDrugEntry(named name: String) -> DrugEntry {
@@ -195,6 +222,12 @@ class DrugController {
 	}
 }
 
+extension DrugController: NSFetchedResultsControllerDelegate {
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+		activeDrugPublisher.send(snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>)
+	}
+}
+
 // MARK: - Import/Export
 extension DrugController {
 	func importFromPlistData(_ data: Data) {
@@ -202,12 +235,13 @@ extension DrugController {
 	}
 
 	/// doesn't actually export, but provides the data that can then BE exported
-	func exportPlistData() -> Data {
-		let drugs = getDrugs(activeOnly: false)
+	func exportPlistData() async throws -> Data {
+		let drugIDs = try await getDrugs(activeOnly: false)
 
 		var rawDict = [[String: Any]]()
 		context.performAndWait {
-			for drug in drugs {
+			for drugID in drugIDs {
+				guard let drug = self.drug(for: drugID, on: context) else { continue }
 				let alarms: [[String: Any]] = drug.drugAlarms.map {
 					["id": $0.id?.uuidString as Any,
 					 "alarmHour": $0.alarmHour,

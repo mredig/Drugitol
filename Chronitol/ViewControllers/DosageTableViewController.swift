@@ -24,16 +24,25 @@ class DosageTableViewController: UITableViewController {
 		return formatter
 	}()
 
+	private var bag: Bag = []
+
 	// MARK: - Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
-
-		drugPickerView.selectRow(DefaultsManager.lastSelectedDoseIndex, inComponent: 0, animated: true)
 
 		#if DEBUG
 		let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(pending))
 		navigationItem.rightBarButtonItems?.append(item)
 		#endif
+
+		drugController
+			.activeDrugPublisher
+			.receive(on: DispatchQueue.main)
+			.sink(receiveValue: weakify { snap, strongSelf in
+				strongSelf.drugPickerView.reloadAllComponents()
+				strongSelf.drugPickerView.selectRow(DefaultsManager.lastSelectedDoseIndex, inComponent: 0, animated: true)
+			})
+			.store(in: &bag)
 	}
 
 	@objc func pending() {
@@ -43,14 +52,22 @@ class DosageTableViewController: UITableViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		drugPickerView.reloadAllComponents()
-		createNewDosageButton.isEnabled = !drugController.activeDrugs.isEmpty
+		updateViews()
+
 		tableView.reloadData()
+	}
+
+	private func updateViews() {
+		createNewDosageButton.isEnabled = drugController.activeDrugIDs.hasContent
 	}
 
 	// MARK: - Actions
 	@IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-		guard !drugController.activeDrugs.isEmpty else { return }
-		let drug = drugController.activeDrugs[drugPickerView.selectedRow(inComponent: 0)]
+		let drugIDs = drugController.activeDrugIDs
+		guard drugIDs.hasContent else { return }
+		let drugID = drugIDs[drugPickerView.selectedRow(inComponent: 0)]
+
+		guard let drug = drugController.drug(for: drugID) else { return }
 
 		drugController.createDoseEntry(at: Date(), forDrug: drug)
 	}
@@ -166,11 +183,13 @@ extension DosageTableViewController: UIPickerViewDelegate, UIPickerViewDataSourc
 	func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
 
 	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		drugController.activeDrugs.count
+		drugController.activeDrugIDs.count
 	}
 
 	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		drugController.activeDrugs[row].name ?? "A drug"
+		let drugID = drugController.activeDrugIDs[row]
+		guard let drug = drugController.drug(for: drugID) else { return nil }
+		return drug.name
 	}
 
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

@@ -20,3 +20,6 @@ public extension Collection {
 		!isEmpty
 	}
 }
+
+import Combine
+typealias Bag = Set<AnyCancellable>
