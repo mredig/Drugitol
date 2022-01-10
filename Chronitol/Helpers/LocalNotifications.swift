@@ -151,55 +151,56 @@ class LocalNotifications: NSObject {
 }
 
 extension LocalNotifications: UNUserNotificationCenterDelegate {
-	func userNotificationCenter(_ center: UNUserNotificationCenter,
-								didReceive response: UNNotificationResponse,
-								withCompletionHandler completionHandler: @escaping () -> Void) {
-		print("did receive: \(response)")
-		defer { completionHandler() }
+	func userNotificationCenter(
+		_ center: UNUserNotificationCenter,
+		didReceive response: UNNotificationResponse,
+		withCompletionHandler completionHandler: @escaping () -> Void) {
+			print("did receive: \(response)")
+			defer { completionHandler() }
 
-		let content = response.notification.request.content
-		let userInfo = content.userInfo
-		let request = response.notification.request
-		if request.trigger is UNTimeIntervalNotificationTrigger {
-			deleteDrugAlarm(request: response.notification.request)
+			let content = response.notification.request.content
+			let userInfo = content.userInfo
+			let request = response.notification.request
+			if request.trigger is UNTimeIntervalNotificationTrigger {
+				deleteDrugAlarm(request: response.notification.request)
+			}
+
+			let delayedTitle: String
+			if let drugName = userInfo["drugName"] as? String {
+				delayedTitle = "Have you taken your \(drugName) yet?"
+			} else {
+				delayedTitle = content.title
+			}
+
+			let identifier = request.identifier.replacingOccurrences(of: ##"\:.*"##, with: "", options: .regularExpression, range: nil)
+
+			switch response.actionIdentifier {
+			case UNNotificationDefaultActionIdentifier:
+				print("Default")
+				createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5 * 60, id: identifier, userInfo: userInfo)
+			case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier:
+				createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5 * 60, id: identifier, userInfo: userInfo)
+				print("delay 5")
+			case .drugNotificationRemind15ActionID:
+				createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 15 * 60, id: identifier, userInfo: userInfo)
+				print("delay 15")
+			case .drugNotificationRemind30ActionID:
+				createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 30 * 60, id: identifier, userInfo: userInfo)
+				print("delay 30")
+			case .drugNotificationDosageTakenActionID:
+				NotificationCenter.default.post(name: .dosageTakenNotification, object: nil, userInfo: ["id": identifier])
+				print("sent notification: \(identifier)")
+			default:
+				break
+			}
 		}
-
-		let delayedTitle: String
-		if let drugName = userInfo["drugName"] as? String {
-			delayedTitle = "Have you taken your \(drugName) yet?"
-		} else {
-			delayedTitle = content.title
-		}
-
-		let identifier = request.identifier.replacingOccurrences(of: ##"\:.*"##, with: "", options: .regularExpression, range: nil)
-
-		switch response.actionIdentifier {
-		case UNNotificationDefaultActionIdentifier:
-			print("Default")
-			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5 * 60, id: identifier, userInfo: userInfo)
-		case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier:
-			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5 * 60, id: identifier, userInfo: userInfo)
-			print("delay 5")
-		case .drugNotificationRemind15ActionID:
-			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 15 * 60, id: identifier, userInfo: userInfo)
-			print("delay 15")
-		case .drugNotificationRemind30ActionID:
-			createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 30 * 60, id: identifier, userInfo: userInfo)
-			print("delay 30")
-		case .drugNotificationDosageTakenActionID:
-			NotificationCenter.default.post(name: .dosageTakenNotification, object: nil, userInfo: ["id": identifier])
-			print("sent notification: \(identifier)")
-		default:
-			break
-		}
-	}
 
 	func userNotificationCenter(
 		_ center: UNUserNotificationCenter,
 		willPresent notification: UNNotification,
 		withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
 			completionHandler([.alert, .sound])
-	}
+		}
 }
 
 fileprivate extension String {
