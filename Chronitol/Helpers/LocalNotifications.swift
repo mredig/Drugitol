@@ -86,12 +86,24 @@ class LocalNotifications: NSObject {
 	}
 
 	func createDrugReminder(titled title: String, body: String, hour: Int, minute: Int, id: String, userInfo: [AnyHashable: Any]) {
+		Task {
+			do {
+				try await createDrugReminder(titled: title, body: body, hour: hour, minute: minute, id: id, userInfo: userInfo)
+			} catch {
+				let string = "\(title) \(body) at \(hour):\(minute) \(id)"
+				NSLog("Error creating alarm for drug - '\(string)': \(error)")
+			}
+		}
+	}
+
+	func createDrugReminder(titled title: String, body: String, hour: Int, minute: Int, id: String, userInfo: [AnyHashable: Any]) async throws {
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
 		content.sound = UNNotificationSound.default
 		content.categoryIdentifier = .drugNotificationCategoryIdentifier
 		content.userInfo = userInfo
+		content.interruptionLevel = .critical
 
 		var components = DateComponents()
 		components.hour = hour
@@ -100,12 +112,7 @@ class LocalNotifications: NSObject {
 
 		let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
 
-		nc.add(request) { error in
-			if let error = error {
-				let string = "\(title) \(body) at \(hour):\(minute) \(id)"
-				NSLog("Error creating alarm for drug - '\(string)': \(error)")
-			}
-		}
+		try await nc.add(request)
 	}
 
 	func createDelayedDrugReminder(titled title: String, body: String, delayedSeconds seconds: TimeInterval, id: String, userInfo: [AnyHashable: Any]) {
