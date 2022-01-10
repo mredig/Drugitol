@@ -28,7 +28,7 @@ class LocalNotifications: NSObject {
 	}
 
 	private func authorizeNotifications() {
-		nc.requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+		nc.requestAuthorization(options: [.alert, .badge, .sound, .criticalAlert]) { granted, error in
 			// i don't think i need anything here?
 			print("Notification permission granted: \(granted)")
 			if let error = error {
