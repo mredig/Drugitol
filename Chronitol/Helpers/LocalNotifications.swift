@@ -81,22 +81,32 @@ class LocalNotifications: NSObject {
 			id = drugAlarm.id?.uuidString
 		}
 		guard let alarmHour = hour, let alarmMinute = minute, let alarmID = id else { return }
-		let userInfo = ["drugName": name]
-		createDrugReminder(titled: "Time to take \(name)!", body: "Be sure to take it soon OR YOU'LL DIE", hour: alarmHour, minute: alarmMinute, id: alarmID, userInfo: userInfo)
-	}
 
-	func createDrugReminder(titled title: String, body: String, hour: Int, minute: Int, id: String, userInfo: [AnyHashable: Any]) {
+		let userInfo = ["drugName": name]
+		let title = "Time to take \(name)!"
+		let body = "Be sure to take it soon OR YOU'LL DIE"
 		Task {
 			do {
-				try await createDrugReminder(titled: title, body: body, hour: hour, minute: minute, id: id, userInfo: userInfo)
+				try await createDrugReminder(
+					titled: title,
+					body: body,
+					scheduleInfo: .specificTime(hour: alarmHour, minute: alarmMinute),
+					id: alarmID,
+					userInfo: userInfo)
 			} catch {
-				let string = "\(title) \(body) at \(hour):\(minute) \(id)"
+				let string = "\(title) \(body) at \(alarmHour):\(alarmMinute) \(alarmID)"
 				NSLog("Error creating alarm for drug - '\(string)': \(error)")
 			}
 		}
 	}
 
-	func createDrugReminder(titled title: String, body: String, hour: Int, minute: Int, id: String, userInfo: [AnyHashable: Any]) async throws {
+	enum SchedulingInfo {
+		case delayedFromNow(seconds: TimeInterval)
+		case specificTime(hour: Int, minute: Int)
+	}
+
+
+	func createDrugReminder(titled title: String, body: String, scheduleInfo: SchedulingInfo, id: String, userInfo: [AnyHashable: Any]) async throws {
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
@@ -105,35 +115,22 @@ class LocalNotifications: NSObject {
 		content.userInfo = userInfo
 		content.interruptionLevel = .critical
 
-		var components = DateComponents()
-		components.hour = hour
-		components.minute = minute
-		let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+		let request: UNNotificationRequest
+		switch scheduleInfo {
+		case .delayedFromNow(let seconds):
+			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
 
-		let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+			request = UNNotificationRequest(identifier: id + ":delayed", content: content, trigger: trigger)
+		case .specificTime(let hour, let minute):
+			var components = DateComponents()
+			components.hour = hour
+			components.minute = minute
+			let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
 
-		try await nc.add(request)
-	}
-
-	func createDelayedDrugReminder(titled title: String, body: String, delayedSeconds seconds: TimeInterval, id: String, userInfo: [AnyHashable: Any]) {
-		let content = UNMutableNotificationContent()
-		content.title = title
-		content.body = body
-		content.sound = UNNotificationSound.default
-		content.categoryIdentifier = .drugNotificationCategoryIdentifier
-		content.userInfo = userInfo
-
-		let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
-
-		let request = UNNotificationRequest(identifier: id + ":delayed", content: content, trigger: trigger)
-
-		nc.add(request) { error in
-			if let error = error {
-				let string = "\(title) \(body) in \(seconds) \(id)"
-				NSLog("Error creating alarm for drug - '\(string)': \(error)")
-			}
+			request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
 		}
 
+		try await nc.add(request)
 	}
 
 	func deleteDrugAlarm(withID id: String) {
@@ -174,24 +171,26 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 
 			let identifier = request.identifier.replacingOccurrences(of: ##"\:.*"##, with: "", options: .regularExpression, range: nil)
 
-			switch response.actionIdentifier {
-			case UNNotificationDefaultActionIdentifier:
-				print("Default")
-				createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5 * 60, id: identifier, userInfo: userInfo)
-			case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier:
-				createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 5 * 60, id: identifier, userInfo: userInfo)
-				print("delay 5")
-			case .drugNotificationRemind15ActionID:
-				createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 15 * 60, id: identifier, userInfo: userInfo)
-				print("delay 15")
-			case .drugNotificationRemind30ActionID:
-				createDelayedDrugReminder(titled: delayedTitle, body: content.body, delayedSeconds: 30 * 60, id: identifier, userInfo: userInfo)
-				print("delay 30")
-			case .drugNotificationDosageTakenActionID:
-				NotificationCenter.default.post(name: .dosageTakenNotification, object: nil, userInfo: ["id": identifier])
-				print("sent notification: \(identifier)")
-			default:
-				break
+			Task {
+				switch response.actionIdentifier {
+				case UNNotificationDefaultActionIdentifier:
+					print("Default")
+					try await createDrugReminder(titled: delayedTitle, body: content.body, scheduleInfo: .delayedFromNow(seconds: 5 * 60), id: identifier, userInfo: userInfo)
+				case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier:
+					try await createDrugReminder(titled: delayedTitle, body: content.body, scheduleInfo: .delayedFromNow(seconds: 5 * 60), id: identifier, userInfo: userInfo)
+					print("delay 5")
+				case .drugNotificationRemind15ActionID:
+					try await createDrugReminder(titled: delayedTitle, body: content.body, scheduleInfo: .delayedFromNow(seconds: 15 * 60), id: identifier, userInfo: userInfo)
+					print("delay 15")
+				case .drugNotificationRemind30ActionID:
+					try await createDrugReminder(titled: delayedTitle, body: content.body, scheduleInfo: .delayedFromNow(seconds: 30 * 60), id: identifier, userInfo: userInfo)
+					print("delay 30")
+				case .drugNotificationDosageTakenActionID:
+					NotificationCenter.default.post(name: .dosageTakenNotification, object: nil, userInfo: ["id": identifier])
+					print("sent notification: \(identifier)")
+				default:
+					break
+				}
 			}
 		}
 
