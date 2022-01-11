@@ -17,12 +17,12 @@ protocol DrugEntryVCCoordinator: Coordinator {
 
 @MainActor
 class DrugEntryVC: UIViewController {
-	private let tableView = UITableView()
+	private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 	private var createNewDrugButton: UIBarButtonItem?
 
 	let drugController: DrugController
 
-	private var dataSource: UITableViewDiffableDataSource<String, NSManagedObjectID>!
+	private var dataSource: UICollectionViewDiffableDataSource<String, NSManagedObjectID>!
 
 	private var bag: Bag = []
 
@@ -41,6 +41,8 @@ class DrugEntryVC: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		navigationItem.title = "Drug List"
+
 		setupNewDrugButton()
 
 		setupTableView()
@@ -51,17 +53,27 @@ class DrugEntryVC: UIViewController {
 		var constraints: [NSLayoutConstraint] = []
 		defer { NSLayoutConstraint.activate(constraints) }
 
-		view.addSubview(tableView)
-		constraints += view.constrain(subview: tableView, activate: false)
+		view.addSubview(collectionView)
+		constraints += view.constrain(subview: collectionView, activate: false)
 
-		tableView.delegate = self
+		var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+		config.trailingSwipeActionsConfigurationProvider = weakify { indexPath, strongSelf in
+			strongSelf.trailingSwipeActionsConfiguration(forRowAt: indexPath)
+		}
+		let layout = UICollectionViewCompositionalLayout.list(using: config)
+		collectionView.collectionViewLayout = layout
 
-		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DrugEntryCell")
+		collectionView.delegate = self
 	}
 
 	private func setupDataSource() {
-		dataSource = .init(tableView: tableView, cellProvider: weakify { tableView, indexPath, objectID, strongSelf in
-			let cell = tableView.dequeueReusableCell(withIdentifier: "DrugEntryCell", for: indexPath)
+		let configuredDrugCell = UICollectionView.CellRegistration<UICollectionViewListCell, NSManagedObjectID>(
+			handler: weakify { cell, indexPath, objectID, strongSelf in
+				strongSelf.configureDrugCell(cell, indexPath: indexPath, objectID: objectID)
+			})
+
+		dataSource = .init(collectionView: collectionView, cellProvider: weakify { tableView, indexPath, objectID, strongSelf in
+			let cell = tableView.dequeueConfiguredReusableCell(using: configuredDrugCell, for: indexPath, item: objectID)
 			strongSelf.configureDrugCell(cell, indexPath: indexPath, objectID: objectID)
 			return cell
 		})
@@ -84,20 +96,25 @@ class DrugEntryVC: UIViewController {
 	}
 
 	private func updateDataSource(from snap: NSDiffableDataSourceSnapshot<String, NSManagedObjectID>) {
-		let shouldAnimate = tableView.numberOfSections != 0
+		let shouldAnimate = collectionView.numberOfSections != 0
 		dataSource.apply(snap, animatingDifferences: shouldAnimate)
 	}
 }
 
-extension DrugEntryVC: UITableViewDelegate {
-	private func configureDrugCell(_ cell: UITableViewCell, indexPath: IndexPath, objectID: NSManagedObjectID) {
+extension DrugEntryVC: UICollectionViewDelegate {
+	private func configureDrugCell(_ cell: UICollectionViewListCell, indexPath: IndexPath, objectID: NSManagedObjectID) {
 		guard let drug = drugController.drug(for: objectID) else { return }
 		let alarms = drug.alarms?.compactMap { $0 as? DrugAlarm } ?? []
-		cell.textLabel?.text = drug.name
-		cell.detailTextLabel?.text = alarms.map { $0.prettyTimeString }.joined(separator: ", ")
+
+		var config = cell.defaultContentConfiguration()
+		config.text = drug.name
+		config.secondaryText = alarms.map { $0.prettyTimeString }.joined(separator: ", ")
+
+		cell.contentConfiguration = config
 	}
 
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		collectionView.deselectItem(at: indexPath, animated: false)
 		guard
 			let drugID = dataSource.itemIdentifier(for: indexPath),
 			let drug = drugController.drug(for: drugID)
@@ -105,7 +122,7 @@ extension DrugEntryVC: UITableViewDelegate {
 		coordinator.drugEntryVC(self, tappedDrug: drug)
 	}
 
-	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+	func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		let action = UIContextualAction(style: .destructive, title: "Delete", handler: weakify { action, view, completion, strongSelf in
 			var successful = false
 			defer { completion(successful) }
