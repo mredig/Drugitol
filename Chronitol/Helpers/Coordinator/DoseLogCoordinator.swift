@@ -4,7 +4,7 @@ import UIKit
 class DoseLogCoordinator: NavigationCoordinator {
 	var children: [Coordinator] = []
 
-	let navigationController = UINavigationController()
+	let navigationController: UINavigationController = LargeTitledNavigationController()
 	var rootController: UIViewController { navigationController }
 	private var dosageTableViewController: DosageTableViewController!
 

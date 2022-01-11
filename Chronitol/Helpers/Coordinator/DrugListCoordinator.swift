@@ -5,7 +5,7 @@ import UIKit
 class DrugListCoordinator: NavigationCoordinator {
 	var children: [Coordinator] = []
 
-	let navigationController = UINavigationController()
+	let navigationController: UINavigationController = LargeTitledNavigationController()
 	var rootController: UIViewController { navigationController }
 	private var drugEntryViewController: DrugEntryVC!
 
