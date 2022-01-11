@@ -293,23 +293,6 @@ extension DosageTableViewController: NSFetchedResultsControllerDelegate {
 	}
 }
 
-extension DosageTableViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-	func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
-
-	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		drugController.activeDrugIDs.count
-	}
-
-	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		let drugID = drugController.activeDrugIDs[row]
-		guard let drug = drugController.drug(for: drugID) else { return nil }
-		return drug.name
-	}
-
-	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-	}
-}
-
 extension DosageTableViewController: DosageDetailViewControllerDelegate {
 	// sometimes the frc doesn't trigger a refresh when an entry is updated, so this will do so when that happens
 	func dosageDetailVCDidFinish(_ dosageDetailVC: DosageDetailViewController) {
