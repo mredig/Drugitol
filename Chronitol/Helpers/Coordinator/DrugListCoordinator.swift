@@ -28,4 +28,11 @@ extension DrugListCoordinator: DrugEntryVCCoordinator {
 		let newDrugVC = NewDrugViewController.instantiate()
 		navigationController.pushViewController(newDrugVC, animated: true)
 	}
+
+	func drugEntryVC(_ drugEntryVC: DrugEntryVC, tappedDrug drug: DrugEntry) {
+		let newDrugVC = NewDrugViewController.instantiate()
+		newDrugVC.entry = drug
+
+		navigationController.pushViewController(newDrugVC, animated: true)
+	}
 }

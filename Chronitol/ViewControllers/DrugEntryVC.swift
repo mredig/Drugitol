@@ -12,6 +12,7 @@ import CoreData
 @MainActor
 protocol DrugEntryVCCoordinator: Coordinator {
 	func drugEntryVCTappedPlusButton(_ drugEntryVC: DrugEntryVC)
+	func drugEntryVC(_ drugEntryVC: DrugEntryVC, tappedDrug drug: DrugEntry)
 }
 
 @MainActor
@@ -95,6 +96,14 @@ extension DrugEntryVC: UITableViewDelegate {
 		let alarms = drug.alarms?.compactMap { $0 as? DrugAlarm } ?? []
 		cell.textLabel?.text = drug.name
 		cell.detailTextLabel?.text = alarms.map { $0.prettyTimeString }.joined(separator: ", ")
+	}
+
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		guard
+			let drugID = dataSource.itemIdentifier(for: indexPath),
+			let drug = drugController.drug(for: drugID)
+		else { return }
+		coordinator?.drugEntryVC(self, tappedDrug: drug)
 	}
 
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
