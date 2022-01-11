@@ -47,9 +47,9 @@ class DosageTableViewController: UIViewController {
 		navigationItem.title = "Dosage Log"
 
 		setupNewDosageButton()
+		setupTableView()
 		setupHeaderStack()
 		setupHeaderStackDataSource()
-		setupTableView()
 
 		drugController
 			.activeDrugPublisher
@@ -93,10 +93,6 @@ class DosageTableViewController: UIViewController {
 		createFor.top = false
 		constraints += view.constrain(subview: tableView, createConstraintsFor: createFor, activate: false)
 
-		constraints += [
-			tableView.topAnchor.constraint(equalTo: headerStack.bottomAnchor)
-		]
-
 		tableView.delegate = self
 		tableView.dataSource = self
 
@@ -114,7 +110,13 @@ class DosageTableViewController: UIViewController {
 
 		var createFor: UIView.ConstraintEdgeToggle = true
 		createFor.bottom = false
-		constraints += view.constrain(subview: headerStack, safeArea: true, createConstraintsFor: createFor, activate: false)
+		let insets = NSDirectionalEdgeInsets(horizontal: 0, vertical: 8)
+		constraints += view.constrain(
+			subview: headerStack,
+			directionalInset: insets,
+			safeArea: true,
+			createConstraintsFor: createFor,
+			activate: false)
 
 		let label = UILabel()
 		label.text = "I just took a dose of..."
@@ -125,7 +127,8 @@ class DosageTableViewController: UIViewController {
 
 		headerStack.addArrangedSubview(drugSelectionCollection)
 		constraints += [
-			drugSelectionCollection.heightAnchor.constraint(equalToConstant: 44)
+			drugSelectionCollection.heightAnchor.constraint(equalToConstant: 44),
+			tableView.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 8),
 		]
 
 		let config = UICollectionViewCompositionalLayoutConfiguration()
