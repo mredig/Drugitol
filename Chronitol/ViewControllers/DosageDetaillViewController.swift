@@ -14,7 +14,7 @@ protocol DosageDetailViewControllerDelegate: AnyObject {
 }
 
 @MainActor
-class DosageDetailViewController: UIViewController {
+class DosageDetailViewController: UIViewController, Storyboarded {
 	@IBOutlet private var datePicker: UIDatePicker!
 	@IBOutlet private var selectedTimeDisplayLabel: UIBarButtonItem!
 

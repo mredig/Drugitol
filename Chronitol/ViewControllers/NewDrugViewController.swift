@@ -9,7 +9,7 @@
 import UIKit
 
 @MainActor
-class NewDrugViewController: UIViewController {
+class NewDrugViewController: UIViewController, Storyboarded {
 
 	@IBOutlet private weak var nameTextField: UITextField!
 	@IBOutlet private weak var alarmListStackView: UIStackView!

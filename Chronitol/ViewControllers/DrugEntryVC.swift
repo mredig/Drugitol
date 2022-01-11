@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 @MainActor
-class DrugEntryVC: UIViewController {
+class DrugEntryVC: UIViewController, Storyboarded {
 	@IBOutlet private weak var tableView: UITableView!
 	@IBOutlet private weak var createNewDrugButton: UIBarButtonItem!
 

@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 @MainActor
-class DosageTableViewController: UITableViewController {
+class DosageTableViewController: UITableViewController, Storyboarded {
 
 	let drugController = DrugController(context: .mainContext)
 

@@ -9,7 +9,7 @@
 import UIKit
 
 @MainActor
-class SettingsViewController: UIViewController {
+class SettingsViewController: UIViewController, Storyboarded {
 	@IBOutlet private weak var exportBackupButton: UIButton!
 
 	let drugController = DrugController(context: .mainContext)

@@ -9,7 +9,7 @@
 import UIKit
 
 @MainActor
-class TimeSelectionViewController: UIViewController {
+class TimeSelectionViewController: UIViewController, Storyboarded {
 	@IBOutlet private var selectedTimeLabel: UIBarButtonItem!
 
 	@IBOutlet private weak var datePicker: UIDatePicker!
