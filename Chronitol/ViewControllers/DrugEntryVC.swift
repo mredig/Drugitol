@@ -10,9 +10,14 @@ import UIKit
 import CoreData
 
 @MainActor
+protocol DrugEntryVCCoordinator: Coordinator {
+	func drugEntryVCTappedPlusButton(_ drugEntryVC: DrugEntryVC)
+}
+
+@MainActor
 class DrugEntryVC: UIViewController, Storyboarded {
 	@IBOutlet private weak var tableView: UITableView!
-	@IBOutlet private weak var createNewDrugButton: UIBarButtonItem!
+	private var createNewDrugButton: UIBarButtonItem?
 
 	let drugController = DrugController(context: .mainContext)
 
@@ -20,8 +25,12 @@ class DrugEntryVC: UIViewController, Storyboarded {
 
 	private var bag: Bag = []
 
+	weak var coordinator: DrugEntryVCCoordinator?
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		setupNewDrugButton()
 
 		setupTableView()
 		setupDataSource()
@@ -44,6 +53,15 @@ class DrugEntryVC: UIViewController, Storyboarded {
 				strongSelf.updateDataSource(from: snap)
 			})
 			.store(in: &bag)
+	}
+
+	private func setupNewDrugButton() {
+		let action = UIAction(handler: weakify { action, strongSelf in
+			strongSelf.coordinator?.drugEntryVCTappedPlusButton(strongSelf)
+		})
+
+		createNewDrugButton = UIBarButtonItem(systemItem: .add, primaryAction: action, menu: nil)
+		navigationItem.rightBarButtonItem = createNewDrugButton
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

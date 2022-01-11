@@ -59,15 +59,8 @@
                             <constraint firstAttribute="bottomMargin" secondItem="iVd-FZ-cSn" secondAttribute="bottom" id="pQC-DF-nK0"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Daily Meds" id="dkA-54-Vk7">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="9vG-T6-V6t">
-                            <connections>
-                                <segue destination="vPc-ZL-nEh" kind="show" identifier="NewDrugSegue" id="b3m-hH-Duf"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Daily Meds" id="dkA-54-Vk7"/>
                     <connections>
-                        <outlet property="createNewDrugButton" destination="9vG-T6-V6t" id="2Bf-89-DIk"/>
                         <outlet property="tableView" destination="iVd-FZ-cSn" id="hhE-Yh-6GA"/>
                     </connections>
                 </viewController>
@@ -427,9 +420,6 @@
             <point key="canvasLocation" x="3094" y="415"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="SlH-nc-Hnv"/>
-    </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

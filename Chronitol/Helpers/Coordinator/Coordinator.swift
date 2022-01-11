@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 @MainActor
-protocol Coordinator {
+protocol Coordinator: AnyObject {
 	var children: [Coordinator] { get }
 
 	func start()

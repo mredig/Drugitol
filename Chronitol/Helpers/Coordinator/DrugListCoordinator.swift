@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 class DrugListCoordinator: NavigationCoordinator {
 	var children: [Coordinator] = []
 
@@ -10,6 +11,8 @@ class DrugListCoordinator: NavigationCoordinator {
 
 	init() {
 		self.drugEntryViewController = DrugEntryVC.instantiate()
+
+		self.drugEntryViewController.coordinator = self
 	}
 
 	func start() {
@@ -17,5 +20,12 @@ class DrugListCoordinator: NavigationCoordinator {
 		navigationController.tabBarItem = tabBarItem
 
 		navigationController.pushViewController(drugEntryViewController, animated: false)
+	}
+}
+
+extension DrugListCoordinator: DrugEntryVCCoordinator {
+	func drugEntryVCTappedPlusButton(_ drugEntryVC: DrugEntryVC) {
+		let newDrugVC = NewDrugViewController.instantiate()
+		navigationController.pushViewController(newDrugVC, animated: true)
 	}
 }
