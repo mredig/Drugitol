@@ -27,11 +27,13 @@ class DrugListCoordinator: NavigationCoordinator {
 extension DrugListCoordinator: DrugEntryVCCoordinator {
 	func drugEntryVCTappedPlusButton(_ drugEntryVC: DrugEntryVC) {
 		let newDrugVC = NewDrugViewController.instantiate()
+		newDrugVC.drugController = drugController
 		navigationController.pushViewController(newDrugVC, animated: true)
 	}
 
 	func drugEntryVC(_ drugEntryVC: DrugEntryVC, tappedDrug drug: DrugEntry) {
 		let newDrugVC = NewDrugViewController.instantiate()
+		newDrugVC.drugController = drugController
 		newDrugVC.entry = drug
 
 		navigationController.pushViewController(newDrugVC, animated: true)
