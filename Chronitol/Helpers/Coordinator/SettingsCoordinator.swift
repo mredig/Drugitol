@@ -14,6 +14,7 @@ class SettingsCoordinator: NavigationCoordinator {
 		self.drugController = drugController
 
 		self.settingsViewController = SettingsViewController.instantiate(from: "Settings")
+		self.settingsViewController.drugController = drugController
 	}
 
 	func start() {

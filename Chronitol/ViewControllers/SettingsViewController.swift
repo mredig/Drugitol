@@ -12,7 +12,7 @@ import UIKit
 class SettingsViewController: UIViewController, Storyboarded {
 	@IBOutlet private weak var exportBackupButton: UIButton!
 
-	let drugController = DrugController(coreDataStack: .shared)
+	var drugController: DrugController!
 
 	@IBAction func exportBackupButtonPressed(_ sender: UIButton) {
 		sender.isEnabled = false
