@@ -18,7 +18,21 @@ class RootCoordinator: Coordinator {
 		window.makeKeyAndVisible()
 
 		let doseLogCoordinator = DoseLogCoordinator()
+		children.append(doseLogCoordinator)
 		doseLogCoordinator.start()
-		tabBarController.setViewControllers([doseLogCoordinator.rootCoordinator], animated: true)
+
+		let drugListCoordinator = DrugListCoordinator()
+		children.append(drugListCoordinator)
+		drugListCoordinator.start()
+
+		let settingsCoordiantor = SettingsCoordinator()
+		children.append(settingsCoordiantor)
+		settingsCoordiantor.start()
+
+		tabBarController.setViewControllers([
+			doseLogCoordinator.rootController,
+			drugListCoordinator.rootController,
+			settingsCoordiantor.rootController,
+		], animated: true)
 	}
 }

@@ -5,7 +5,7 @@ class DoseLogCoordinator: NavigationCoordinator {
 	var children: [Coordinator] = []
 
 	let navigationController = UINavigationController()
-	var rootCoordinator: UIViewController { navigationController }
+	var rootController: UIViewController { navigationController }
 	private var dosageTableViewController: DosageTableViewController!
 
 	init() {

@@ -37,6 +37,8 @@
 		33F4D621278D433600C0D821 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D620278D433600C0D821 /* Coordinator.swift */; };
 		33F4D623278D437900C0D821 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D622278D437900C0D821 /* RootCoordinator.swift */; };
 		33F4D625278D44BC00C0D821 /* DoseLogCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D624278D44BC00C0D821 /* DoseLogCoordinator.swift */; };
+		33F4D627278D47AC00C0D821 /* DrugListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D626278D47AC00C0D821 /* DrugListCoordinator.swift */; };
+		33F4D629278D485000C0D821 /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D628278D485000C0D821 /* SettingsCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +76,8 @@
 		33F4D620278D433600C0D821 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		33F4D622278D437900C0D821 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
 		33F4D624278D44BC00C0D821 /* DoseLogCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoseLogCoordinator.swift; sourceTree = "<group>"; };
+		33F4D626278D47AC00C0D821 /* DrugListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrugListCoordinator.swift; sourceTree = "<group>"; };
+		33F4D628278D485000C0D821 /* SettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +190,8 @@
 				33F4D620278D433600C0D821 /* Coordinator.swift */,
 				33F4D622278D437900C0D821 /* RootCoordinator.swift */,
 				33F4D624278D44BC00C0D821 /* DoseLogCoordinator.swift */,
+				33F4D626278D47AC00C0D821 /* DrugListCoordinator.swift */,
+				33F4D628278D485000C0D821 /* SettingsCoordinator.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -311,6 +317,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33F4D629278D485000C0D821 /* SettingsCoordinator.swift in Sources */,
 				3329A47623A8A05F007F10E2 /* DrugAlarm+Convenience.swift in Sources */,
 				3329A47823A8A395007F10E2 /* DrugController.swift in Sources */,
 				333F748A23A88ECA00E51514 /* CoreDataStack.swift in Sources */,
@@ -333,6 +340,7 @@
 				3335EB6F23B0037D00509A2F /* DoseEntry+Convenience.swift in Sources */,
 				333F746A23A888B400E51514 /* AppDelegate.swift in Sources */,
 				33F4D623278D437900C0D821 /* RootCoordinator.swift in Sources */,
+				33F4D627278D47AC00C0D821 /* DrugListCoordinator.swift in Sources */,
 				33F4D621278D433600C0D821 /* Coordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
