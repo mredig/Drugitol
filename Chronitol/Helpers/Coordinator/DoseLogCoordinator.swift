@@ -13,6 +13,7 @@ class DoseLogCoordinator: NavigationCoordinator {
 	init(drugController: DrugController) {
 		self.drugController = drugController
 		self.dosageTableViewController = DosageTableViewController.instantiate()
+		self.dosageTableViewController.drugController = drugController
 	}
 
 	func start() {
