@@ -41,6 +41,7 @@
 		33F4D629278D485000C0D821 /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D628278D485000C0D821 /* SettingsCoordinator.swift */; };
 		33FC4070278D6889001D70FB /* DrugSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FC406F278D6889001D70FB /* DrugSelectionView.swift */; };
 		33FC4072278D6943001D70FB /* LargeTitledNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FC4071278D6943001D70FB /* LargeTitledNavigationController.swift */; };
+		33FC407C278D71E4001D70FB /* pill_shake.caf in Resources */ = {isa = PBXBuildFile; fileRef = 33FC407B278D71E4001D70FB /* pill_shake.caf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,6 +83,7 @@
 		33F4D628278D485000C0D821 /* SettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinator.swift; sourceTree = "<group>"; };
 		33FC406F278D6889001D70FB /* DrugSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrugSelectionView.swift; sourceTree = "<group>"; };
 		33FC4071278D6943001D70FB /* LargeTitledNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeTitledNavigationController.swift; sourceTree = "<group>"; };
+		33FC407B278D71E4001D70FB /* pill_shake.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = pill_shake.caf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 		333F746823A888B400E51514 /* Chronitol */ = {
 			isa = PBXGroup;
 			children = (
+				33FC4079278D71B3001D70FB /* Resources */,
 				333F746923A888B400E51514 /* AppDelegate.swift */,
 				333F748523A88E4400E51514 /* ViewControllers */,
 				333F748F23A8901A00E51514 /* Views */,
@@ -202,6 +205,14 @@
 			path = Coordinator;
 			sourceTree = "<group>";
 		};
+		33FC4079278D71B3001D70FB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				33FC407B278D71E4001D70FB /* pill_shake.caf */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -272,6 +283,7 @@
 				333F747623A888B500E51514 /* LaunchScreen.storyboard in Resources */,
 				333F749123A8902D00E51514 /* AlarmView.xib in Resources */,
 				333F747323A888B500E51514 /* Assets.xcassets in Resources */,
+				33FC407C278D71E4001D70FB /* pill_shake.caf in Resources */,
 				333F747123A888B400E51514 /* Main.storyboard in Resources */,
 				335E562623BDCA1E008FE6A6 /* Settings.storyboard in Resources */,
 			);
