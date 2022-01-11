@@ -132,7 +132,7 @@ class DosageTableViewController: UIViewController {
 		config.scrollDirection = .horizontal
 		let size = NSCollectionLayoutSize(widthDimension: .estimated(100), heightDimension: .fractionalHeight(1))
 		let item = NSCollectionLayoutItem(layoutSize: size)
-		let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, subitem: item, count: 1)
+		let group = NSCollectionLayoutGroup.vertical(layoutSize: size, subitem: item, count: 1)
 		let section = NSCollectionLayoutSection(group: group)
 		section.interGroupSpacing = 8
 		section.contentInsets = NSDirectionalEdgeInsets(horizontal: 20, vertical: 0)
@@ -146,7 +146,7 @@ class DosageTableViewController: UIViewController {
 	private func setupHeaderStackDataSource() {
 		let drugCellProvider = UICollectionView.CellRegistration<UICollectionViewListCell, NSManagedObjectID>(
 			handler: weakify { cell, indexPath, objectID, strongSelf in
-				var config = UIListContentConfiguration.cell()
+				var config = DrugSelectionConfiguration(text: "Drug")
 
 				guard
 					let drugID = strongSelf.drugSelectionDataSource.itemIdentifier(for: indexPath),

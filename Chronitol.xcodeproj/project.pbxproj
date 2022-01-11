@@ -39,6 +39,7 @@
 		33F4D625278D44BC00C0D821 /* DoseLogCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D624278D44BC00C0D821 /* DoseLogCoordinator.swift */; };
 		33F4D627278D47AC00C0D821 /* DrugListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D626278D47AC00C0D821 /* DrugListCoordinator.swift */; };
 		33F4D629278D485000C0D821 /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D628278D485000C0D821 /* SettingsCoordinator.swift */; };
+		33FC4070278D6889001D70FB /* DrugSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FC406F278D6889001D70FB /* DrugSelectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 		33F4D624278D44BC00C0D821 /* DoseLogCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoseLogCoordinator.swift; sourceTree = "<group>"; };
 		33F4D626278D47AC00C0D821 /* DrugListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrugListCoordinator.swift; sourceTree = "<group>"; };
 		33F4D628278D485000C0D821 /* SettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinator.swift; sourceTree = "<group>"; };
+		33FC406F278D6889001D70FB /* DrugSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrugSelectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 			children = (
 				333F749023A8902D00E51514 /* AlarmView.xib */,
 				333F749223A8905100E51514 /* AlarmView.swift */,
+				33FC406F278D6889001D70FB /* DrugSelectionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -330,6 +333,7 @@
 				3335EB7123B0056900509A2F /* DosageTableViewController.swift in Sources */,
 				3329A47423A89AEC007F10E2 /* DrugEntry+Convenience.swift in Sources */,
 				3335EB7323B0341000509A2F /* DosageDetaillViewController.swift in Sources */,
+				33FC4070278D6889001D70FB /* DrugSelectionView.swift in Sources */,
 				333F748423A88E3000E51514 /* NewDrugViewController.swift in Sources */,
 				333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */,
 				335E562823BDCCC6008FE6A6 /* SettingsViewController.swift in Sources */,

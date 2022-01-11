@@ -136,3 +136,10 @@ extension NSDirectionalEdgeInsets: Hashable, ExpressibleByFloatLiteral, Expressi
 		hasher.combine(leading)
 	}
 }
+
+extension NSLayoutConstraint {
+	func withPriority(_ priority: UILayoutPriority) -> Self {
+		self.priority = priority
+		return self
+	}
+}
