@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iVd-FZ-cSn">
-                                <rect key="frame" x="0.0" y="44" width="375" height="623"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DrugEntryCell" textLabel="QPr-XH-uBU" detailTextLabel="ZzN-jH-UTg" style="IBUITableViewCellStyleSubtitle" id="Gl4-V7-GQq">
@@ -80,11 +80,11 @@
             <objects>
                 <viewController storyboardIdentifier="NewDrugViewController" id="vPc-ZL-nEh" customClass="NewDrugViewController" customModule="Chronitol" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TPV-Tl-JJz">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jQP-MF-kcp">
-                                <rect key="frame" x="0.0" y="96" width="375" height="571"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A5r-ZN-2TS">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="203"/>
@@ -268,25 +268,6 @@
             </objects>
             <point key="canvasLocation" x="3924" y="-346.77661169415296"/>
         </scene>
-        <!--Drug List-->
-        <scene sceneID="8VY-Hr-blm">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fjV-Df-Hr5" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Drug List" image="capsule pills-simple" id="6dW-nW-Xl3"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="2tF-5i-CLb">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="1sQ-pb-iHF"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Nbq-Gt-YBY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1349" y="-346"/>
-        </scene>
         <!--Dosage Log-->
         <scene sceneID="wHD-TX-Xo7">
             <objects>
@@ -450,7 +431,6 @@
         <segue reference="SlH-nc-Hnv"/>
     </inferredMetricsTieBreakers>
     <resources>
-        <image name="capsule pills-simple" width="24" height="24"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
