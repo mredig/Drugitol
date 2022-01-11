@@ -40,6 +40,7 @@
 		33F4D627278D47AC00C0D821 /* DrugListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D626278D47AC00C0D821 /* DrugListCoordinator.swift */; };
 		33F4D629278D485000C0D821 /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D628278D485000C0D821 /* SettingsCoordinator.swift */; };
 		33FC4070278D6889001D70FB /* DrugSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FC406F278D6889001D70FB /* DrugSelectionView.swift */; };
+		33FC4072278D6943001D70FB /* LargeTitledNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FC4071278D6943001D70FB /* LargeTitledNavigationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +81,7 @@
 		33F4D626278D47AC00C0D821 /* DrugListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrugListCoordinator.swift; sourceTree = "<group>"; };
 		33F4D628278D485000C0D821 /* SettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinator.swift; sourceTree = "<group>"; };
 		33FC406F278D6889001D70FB /* DrugSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrugSelectionView.swift; sourceTree = "<group>"; };
+		33FC4071278D6943001D70FB /* LargeTitledNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeTitledNavigationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,6 +197,7 @@
 				33F4D624278D44BC00C0D821 /* DoseLogCoordinator.swift */,
 				33F4D626278D47AC00C0D821 /* DrugListCoordinator.swift */,
 				33F4D628278D485000C0D821 /* SettingsCoordinator.swift */,
+				33FC4071278D6943001D70FB /* LargeTitledNavigationController.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -325,6 +328,7 @@
 				3329A47823A8A395007F10E2 /* DrugController.swift in Sources */,
 				333F748A23A88ECA00E51514 /* CoreDataStack.swift in Sources */,
 				33A38CE923B4379F00783926 /* LocalNotifications.swift in Sources */,
+				33FC4072278D6943001D70FB /* LargeTitledNavigationController.swift in Sources */,
 				33A38CE723B3073300783926 /* DefaultsManager.swift in Sources */,
 				333F748723A88E5D00E51514 /* TimeSelectionViewController.swift in Sources */,
 				33A38CEB23B43B3900783926 /* AlarmNumberConverter.swift in Sources */,
