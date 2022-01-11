@@ -16,7 +16,7 @@ class NewDrugViewController: UIViewController, Storyboarded {
 	@IBOutlet private weak var isActiveSwitch: UISwitch!
 
 
-	let drugController = DrugController(context: .mainContext)
+	let drugController = DrugController(coreDataStack: CoreDataStack.shared)
 
 	var entry: DrugEntry? {
 		didSet {

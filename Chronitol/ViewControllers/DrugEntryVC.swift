@@ -16,17 +16,27 @@ protocol DrugEntryVCCoordinator: Coordinator {
 }
 
 @MainActor
-class DrugEntryVC: UIViewController, Storyboarded {
-	@IBOutlet private weak var tableView: UITableView!
+class DrugEntryVC: UIViewController {
+	private let tableView = UITableView()
 	private var createNewDrugButton: UIBarButtonItem?
 
-	let drugController = DrugController(context: .mainContext)
+	let drugController: DrugController
 
 	private var dataSource: UITableViewDiffableDataSource<String, NSManagedObjectID>!
 
 	private var bag: Bag = []
 
-	weak var coordinator: DrugEntryVCCoordinator?
+	unowned let coordinator: DrugEntryVCCoordinator
+
+	init(coordinator: DrugEntryVCCoordinator, drugController: DrugController) {
+		self.coordinator = coordinator
+		self.drugController = drugController
+		super.init(nibName: nil, bundle: nil)
+	}
+
+		required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -38,7 +48,15 @@ class DrugEntryVC: UIViewController, Storyboarded {
 	}
 
 	private func setupTableView() {
+		var constraints: [NSLayoutConstraint] = []
+		defer { NSLayoutConstraint.activate(constraints) }
+
+		view.addSubview(tableView)
+		constraints += view.constrain(subview: tableView, activate: false)
+
 		tableView.delegate = self
+
+		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DrugEntryCell")
 	}
 
 	private func setupDataSource() {
@@ -58,30 +76,11 @@ class DrugEntryVC: UIViewController, Storyboarded {
 
 	private func setupNewDrugButton() {
 		let action = UIAction(handler: weakify { action, strongSelf in
-			strongSelf.coordinator?.drugEntryVCTappedPlusButton(strongSelf)
+			strongSelf.coordinator.drugEntryVCTappedPlusButton(strongSelf)
 		})
 
 		createNewDrugButton = UIBarButtonItem(systemItem: .add, primaryAction: action, menu: nil)
 		navigationItem.rightBarButtonItem = createNewDrugButton
-	}
-
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		super.prepare(for: segue, sender: sender)
-
-		if let destVC = segue.destination as? NewDrugViewController {
-			if segue.identifier == "NewDrugSegue" {
-			}
-
-			if segue.identifier == "EditDrugSegue" {
-				guard let indexPath = tableView.indexPathForSelectedRow else { return }
-
-				guard
-					let drugID = dataSource.itemIdentifier(for: indexPath),
-					let drug = drugController.drug(for: drugID)
-				else { return }
-				destVC.entry = drug
-			}
-		}
 	}
 
 	private func updateDataSource(from snap: NSDiffableDataSourceSnapshot<String, NSManagedObjectID>) {
@@ -103,7 +102,7 @@ extension DrugEntryVC: UITableViewDelegate {
 			let drugID = dataSource.itemIdentifier(for: indexPath),
 			let drug = drugController.drug(for: drugID)
 		else { return }
-		coordinator?.drugEntryVC(self, tappedDrug: drug)
+		coordinator.drugEntryVC(self, tappedDrug: drug)
 	}
 
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {

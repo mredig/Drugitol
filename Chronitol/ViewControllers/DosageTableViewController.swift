@@ -12,7 +12,7 @@ import CoreData
 @MainActor
 class DosageTableViewController: UITableViewController, Storyboarded {
 
-	let drugController = DrugController(context: .mainContext)
+	let drugController = DrugController(coreDataStack: CoreDataStack.shared)
 
 	@IBOutlet private weak var createNewDosageButton: UIBarButtonItem!
 	@IBOutlet private var drugPickerView: UIPickerView!

@@ -6,26 +6,31 @@ class RootCoordinator: Coordinator {
 	let window: UIWindow
 	let tabBarController: UITabBarController
 
-	let coreDataStack: CoreDataStack = CoreDataStack.shared
+	let coreDataStack: CoreDataStack
+	let drugController: DrugController
 
 	init(window: UIWindow, tabBarController: UITabBarController) {
 		self.window = window
 		self.tabBarController = tabBarController
+
+		let coreDataStack = CoreDataStack.shared
+		self.coreDataStack = coreDataStack
+		self.drugController = DrugController(coreDataStack: coreDataStack)
 	}
 
 	func start() {
 		window.rootViewController = tabBarController
 		window.makeKeyAndVisible()
 
-		let doseLogCoordinator = DoseLogCoordinator()
+		let doseLogCoordinator = DoseLogCoordinator(drugController: drugController)
 		children.append(doseLogCoordinator)
 		doseLogCoordinator.start()
 
-		let drugListCoordinator = DrugListCoordinator()
+		let drugListCoordinator = DrugListCoordinator(drugController: drugController)
 		children.append(drugListCoordinator)
 		drugListCoordinator.start()
 
-		let settingsCoordiantor = SettingsCoordinator()
+		let settingsCoordiantor = SettingsCoordinator(drugController: drugController)
 		children.append(settingsCoordiantor)
 		settingsCoordiantor.start()
 

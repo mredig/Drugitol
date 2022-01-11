@@ -8,7 +8,11 @@ class SettingsCoordinator: NavigationCoordinator {
 	var rootController: UIViewController { navigationController }
 	private let settingsViewController: SettingsViewController
 
-	init() {
+	let drugController: DrugController
+
+	init(drugController: DrugController) {
+		self.drugController = drugController
+
 		self.settingsViewController = SettingsViewController.instantiate(from: "Settings")
 	}
 

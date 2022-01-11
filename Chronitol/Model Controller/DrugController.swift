@@ -28,17 +28,20 @@ class DrugController: NSObject {
 	let context: NSManagedObjectContext
 	let localNotifications = LocalNotifications.shared
 
-	init(context: NSManagedObjectContext) {
-		self.context = context
+	let coreDataStack: CoreDataStack
+
+	init(coreDataStack: CoreDataStack) {
+		self.coreDataStack = coreDataStack
+		self.context = coreDataStack.mainContext
 
 		let allDrugsFetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		allDrugsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-		self.allDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: allDrugsFetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+		self.allDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: allDrugsFetchRequest, managedObjectContext: coreDataStack.mainContext, sectionNameKeyPath: nil, cacheName: nil)
 
 		let activeDrugsFetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		activeDrugsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
 		activeDrugsFetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
-		self.activeDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: activeDrugsFetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+		self.activeDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: activeDrugsFetchRequest, managedObjectContext: coreDataStack.mainContext, sectionNameKeyPath: nil, cacheName: nil)
 
 		super.init()
 		activeDrugsFRC.delegate = self
@@ -51,11 +54,13 @@ class DrugController: NSObject {
 		[
 			activeDrugsFRC,
 			allDrugsFRC,
-		].forEach {
-			do {
-				try $0.performFetch()
-			} catch {
-				NSLog("Error fetching frc: \(error)")
+		].forEach { frc in
+			frc.managedObjectContext.performAndWait {
+				do {
+					try frc.performFetch()
+				} catch {
+					NSLog("Error fetching frc: \(error)")
+				}
 			}
 		}
 	}

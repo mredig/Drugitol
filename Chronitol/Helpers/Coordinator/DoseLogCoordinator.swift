@@ -8,7 +8,10 @@ class DoseLogCoordinator: NavigationCoordinator {
 	var rootController: UIViewController { navigationController }
 	private var dosageTableViewController: DosageTableViewController!
 
-	init() {
+	let drugController: DrugController
+
+	init(drugController: DrugController) {
+		self.drugController = drugController
 		self.dosageTableViewController = DosageTableViewController.instantiate()
 	}
 

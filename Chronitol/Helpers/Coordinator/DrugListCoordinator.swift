@@ -9,10 +9,11 @@ class DrugListCoordinator: NavigationCoordinator {
 	var rootController: UIViewController { navigationController }
 	private var drugEntryViewController: DrugEntryVC!
 
-	init() {
-		self.drugEntryViewController = DrugEntryVC.instantiate()
+	let drugController: DrugController
 
-		self.drugEntryViewController.coordinator = self
+	init(drugController: DrugController) {
+		self.drugController = drugController
+		self.drugEntryViewController = DrugEntryVC(coordinator: self, drugController: drugController)
 	}
 
 	func start() {
