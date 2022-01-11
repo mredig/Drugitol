@@ -14,7 +14,6 @@ class DosageTableViewController: UIViewController {
 
 	let drugController: DrugController
 
-	private var createNewDosageButton: UIBarButtonItem?
 	private let tableView = UITableView()
 	private let	drugSelectionCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
@@ -46,7 +45,7 @@ class DosageTableViewController: UIViewController {
 		super.viewDidLoad()
 		navigationItem.title = "Dosage Log"
 
-		setupNewDosageButton()
+		setupDebugButton()
 		setupTableView()
 		setupHeaderStack()
 		setupHeaderStackDataSource()
@@ -56,16 +55,11 @@ class DosageTableViewController: UIViewController {
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: weakify { snap, strongSelf in
 				strongSelf.drugSelectionDataSource.apply(snap, animatingDifferences: true)
-				strongSelf.drugSelectionCollection.selectItem(at: IndexPath(item: DefaultsManager.lastSelectedDoseIndex, section: 0), animated: false, scrollPosition: .centeredHorizontally)
 			})
 			.store(in: &bag)
 	}
 
-	private func setupNewDosageButton() {
-		let createNewDosageButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonPressed))
-		self.createNewDosageButton = createNewDosageButton
-		navigationItem.rightBarButtonItem = createNewDosageButton
-
+	private func setupDebugButton() {
 		#if DEBUG
 		let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(pending))
 		navigationItem.rightBarButtonItems?.append(item)
@@ -78,7 +72,6 @@ class DosageTableViewController: UIViewController {
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		updateViews()
 
 		tableView.reloadData()
 	}
@@ -120,9 +113,14 @@ class DosageTableViewController: UIViewController {
 
 		let label = UILabel()
 		label.text = "I just took a dose of..."
-		label.font = .systemFont(ofSize: 17)
-		label.textAlignment = .center
-		headerStack.addArrangedSubview(label)
+		label.font = .italicSystemFont(ofSize: 14)
+
+		let labelContainer = UIView().forAutolayout()
+		labelContainer.addSubview(label)
+		let labelInset = NSDirectionalEdgeInsets(horizontal: 20, vertical: 0)
+		constraints += labelContainer.constrain(subview: label, directionalInset: labelInset, activate: false)
+		label.textAlignment = .natural
+		headerStack.addArrangedSubview(labelContainer)
 		headerStack.spacing = 16
 
 		headerStack.addArrangedSubview(drugSelectionCollection)
@@ -169,20 +167,7 @@ class DosageTableViewController: UIViewController {
 		})
 	}
 
-	private func updateViews() {
-		createNewDosageButton?.isEnabled = drugController.activeDrugIDs.hasContent
-	}
-
 	// MARK: - Actions
-	@IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-		guard
-			let currentSelection = drugSelectionCollection.indexPathsForSelectedItems?.first,
-			let drugID = drugSelectionDataSource.itemIdentifier(for: currentSelection),
-			let drug = drugController.drug(for: drugID)
-		else { return }
-
-		drugController.createDoseEntry(at: Date(), forDrug: drug)
-	}
 
 	func showDosageDetail(for doseEntry: DoseEntry) {
 		guard let dosageDetailVC = storyboard?.instantiateViewController(withIdentifier: "DosageDetailViewController") as? DosageDetailViewController else { return }
@@ -196,9 +181,15 @@ class DosageTableViewController: UIViewController {
 
 extension DosageTableViewController: UICollectionViewDelegate {
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-		DefaultsManager.lastSelectedDoseIndex = indexPath.item
+		guard
+			let drugID = drugSelectionDataSource.itemIdentifier(for: indexPath),
+			let drug = drugController.drug(for: drugID)
+		else { return }
+
+		drugController.createDoseEntry(at: Date(), forDrug: drug)
 	}
 }
+
 // MARK: - TableView stuff
 extension DosageTableViewController: UITableViewDelegate, UITableViewDataSource {
 
