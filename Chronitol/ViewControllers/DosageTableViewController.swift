@@ -240,12 +240,11 @@ extension DosageTableViewController: UICollectionViewDelegate {
 
 	func tappedItemOnDrugSelectionCollection(at indexPath: IndexPath) {
 		guard
-			let drugID = drugSelectionDataSource.itemIdentifier(for: indexPath),
-			let drug: DrugEntry = drugController.modelObject(for: drugID)
+			let drugID = drugSelectionDataSource.itemIdentifier(for: indexPath)
 		else { return }
 
 		Task {
-			await drugController.createDoseEntry(at: Date(), forDrug: drug)
+			await drugController.createDoseEntry(at: Date(), forDrugWithID: drugID)
 		}
 	}
 

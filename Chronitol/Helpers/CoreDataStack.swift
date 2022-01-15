@@ -61,12 +61,17 @@ extension CoreDataStack {
 			guard let self = self else { return }
 			guard let id = notification.userInfo?["id"] as? String else { return }
 			let drugController = DrugController(coreDataStack: self)
-			guard
-				let alarm = drugController.getAlarm(withID: id),
-				let drugID = alarm.drug?.objectID
-			else { return }
 
 			Task {
+				let context = self.container.newBackgroundContext()
+				var drugID: NSManagedObjectID?
+				context.performAndWait {
+					guard
+						let alarm = drugController.getAlarm(withID: id, on: context)
+					else { return }
+					drugID = alarm.drug?.objectID
+				}
+				guard let drugID = drugID else { return }
 				await drugController.createDoseEntry(at: Date(), forDrugWithID: drugID)
 			}
 		})

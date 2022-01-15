@@ -203,7 +203,8 @@ class DrugController: NSObject {
 		localNotifications.createDrugReminder(for: alarm)
 	}
 
-	func getAlarm(withID id: String) -> DrugAlarm? {
+	func getAlarm(withID id: String, on context: NSManagedObjectContext? = nil) -> DrugAlarm? {
+		let context = context ?? self.context
 		let fetchRequest: NSFetchRequest<DrugAlarm> = DrugAlarm.fetchRequest()
 
 		guard let uuid = UUID(uuidString: id) else { return nil }
