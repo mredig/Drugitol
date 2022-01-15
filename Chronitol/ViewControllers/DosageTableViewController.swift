@@ -244,7 +244,9 @@ extension DosageTableViewController: UICollectionViewDelegate {
 			let drug: DrugEntry = drugController.modelObject(for: drugID)
 		else { return }
 
-		drugController.createDoseEntry(at: Date(), forDrug: drug)
+		Task {
+			await drugController.createDoseEntry(at: Date(), forDrug: drug)
+		}
 	}
 
 	func tappedItemOnDosageList(at indexPath: IndexPath) {

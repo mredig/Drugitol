@@ -88,12 +88,24 @@ class DrugController: NSObject {
 	}
 
 	// MARK: - DoseEntry
+	func createDoseEntry(at timestamp: Date, forDrug wrongContextDrug: DrugEntry) async {
+		await createDoseEntry(at: timestamp, forDrugWithID: wrongContextDrug.objectID)
+	}
 
-	@discardableResult func createDoseEntry(at timestamp: Date, forDrug drug: DrugEntry) -> DoseEntry {
-		let entry = DoseEntry(timestamp: timestamp, for: drug, context: context)
+	func createDoseEntry(at timestamp: Date, forDrugWithID drugID: NSManagedObjectID) async {
+		let context = coreDataStack.container.newBackgroundContext()
 
-		save(withErrorLogging: "Failed saving new dose entry")
-		return entry
+		guard let drug: DrugEntry = modelObject(for: drugID, on: context) else { return }
+
+		_ = await context.perform {
+			DoseEntry(timestamp: timestamp, for: drug, context: context)
+
+			do {
+				try context.save()
+			} catch {
+				NSLog("Error saving context: \(error)")
+			}
+		}
 	}
 
 	func updateDoseEntry(_ entry: DoseEntry, timestamp: Date) {
@@ -113,13 +125,16 @@ class DrugController: NSObject {
 
 	// MARK: - DrugEntry
 	func modelObject<T: NSManagedObject>(for id: NSManagedObjectID, on context: NSManagedObjectContext = .mainContext) -> T? {
-		do {
-			let existingItem = try context.existingObject(with: id)
-			return existingItem as? T
-		} catch {
-			NSLog("Error fetching item: \(error)")
-			return nil
+		var item: T?
+		context.performAndWait {
+			do {
+				let existingItem = try context.existingObject(with: id)
+				item = existingItem as? T
+			} catch {
+				NSLog("Error fetching item: \(error)")
+			}
 		}
+		return item
 	}
 
 	@discardableResult func createDrugEntry(named name: String) -> DrugEntry {
@@ -205,7 +220,8 @@ class DrugController: NSObject {
 		return alarm
 	}
 
-	private func save(withErrorLogging errorLogging: String) {
+	private func save(context: NSManagedObjectContext? = nil, withErrorLogging errorLogging: String) {
+		let context = context ?? self.context
 		do {
 			try CoreDataStack.shared.save(context: context)
 		} catch {

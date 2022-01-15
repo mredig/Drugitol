@@ -27,6 +27,7 @@ extension DoseEntry {
 		self.date = date
 	}
 
+	@discardableResult
 	convenience init(timestamp: Date, for drug: DrugEntry, context: NSManagedObjectContext) {
 		self.init(context: context)
 		self.drug = drug
