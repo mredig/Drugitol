@@ -109,7 +109,7 @@ class LocalNotifications: NSObject {
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
-		content.sound = UNNotificationSound.default
+		content.sound = .criticalSoundNamed(UNNotificationSoundName("pill_shake.caf"))
 		content.categoryIdentifier = .drugNotificationCategoryIdentifier
 		content.userInfo = userInfo
 		content.interruptionLevel = .critical
