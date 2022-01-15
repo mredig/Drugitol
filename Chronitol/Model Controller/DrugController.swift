@@ -25,6 +25,9 @@ class DrugController: NSObject {
 		allDrugsPublisher.value.itemIdentifiers
 	}
 
+	private let dosageListFRC: NSFetchedResultsController<DoseEntry>
+	let dosageListPublisher = CurrentValueSubject<NSDiffableDataSourceSnapshot<String, NSManagedObjectID>, Never>(.init())
+
 	let context: NSManagedObjectContext
 	let localNotifications = LocalNotifications.shared
 
@@ -36,12 +39,28 @@ class DrugController: NSObject {
 
 		let allDrugsFetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		allDrugsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-		self.allDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: allDrugsFetchRequest, managedObjectContext: coreDataStack.mainContext, sectionNameKeyPath: nil, cacheName: nil)
+		self.allDrugsFRC = NSFetchedResultsController<DrugEntry>(
+			fetchRequest: allDrugsFetchRequest,
+			managedObjectContext: coreDataStack.mainContext,
+			sectionNameKeyPath: nil,
+			cacheName: nil)
 
 		let activeDrugsFetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		activeDrugsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
 		activeDrugsFetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
-		self.activeDrugsFRC = NSFetchedResultsController<DrugEntry>(fetchRequest: activeDrugsFetchRequest, managedObjectContext: coreDataStack.mainContext, sectionNameKeyPath: nil, cacheName: nil)
+		self.activeDrugsFRC = NSFetchedResultsController<DrugEntry>(
+			fetchRequest: activeDrugsFetchRequest,
+			managedObjectContext: coreDataStack.mainContext,
+			sectionNameKeyPath: nil,
+			cacheName: nil)
+
+		let fetchRequest: NSFetchRequest<DoseEntry> = DoseEntry.fetchRequest()
+		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false), NSSortDescriptor(key: "timestamp", ascending: false)]
+		self.dosageListFRC = NSFetchedResultsController(
+			fetchRequest: fetchRequest,
+			managedObjectContext: coreDataStack.mainContext,
+			sectionNameKeyPath: "date",
+			cacheName: nil)
 
 		super.init()
 		activeDrugsFRC.delegate = self
@@ -51,10 +70,12 @@ class DrugController: NSObject {
 	}
 
 	private func fetchFRCs() {
-		[
+		let frcs: [NSFetchedResultsController<NSManagedObject>]? = [
 			activeDrugsFRC,
 			allDrugsFRC,
-		].forEach { frc in
+			dosageListFRC,
+		] as? [NSFetchedResultsController<NSManagedObject>]
+		frcs?.forEach { frc in
 			frc.managedObjectContext.performAndWait {
 				do {
 					try frc.performFetch()
@@ -219,6 +240,8 @@ extension DrugController: NSFetchedResultsControllerDelegate {
 			activeDrugPublisher.send(snap)
 		case allDrugsFRC:
 			allDrugsPublisher.send(snap)
+		case dosageListFRC:
+			dosageListPublisher.send(snap)
 		default: break
 		}
 	}
