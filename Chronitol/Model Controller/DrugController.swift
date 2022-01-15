@@ -130,7 +130,7 @@ class DrugController: NSObject {
 	}
 
 	// MARK: - DrugEntry
-	func drug(for id: NSManagedObjectID, on context: NSManagedObjectContext = .mainContext) -> DrugEntry? {
+	func modelObject(for id: NSManagedObjectID, on context: NSManagedObjectContext = .mainContext) -> DrugEntry? {
 		do {
 			let existingItem = try context.existingObject(with: id)
 			return existingItem as? DrugEntry
@@ -267,7 +267,7 @@ extension DrugController {
 		var rawDict = [[String: Any]]()
 		context.performAndWait {
 			for drugID in drugIDs {
-				guard let drug = self.drug(for: drugID, on: context) else { continue }
+				guard let drug = self.modelObject(for: drugID, on: context) else { continue }
 				let alarms: [[String: Any]] = drug.drugAlarms.map {
 					["id": $0.id?.uuidString as Any,
 					 "alarmHour": $0.alarmHour,

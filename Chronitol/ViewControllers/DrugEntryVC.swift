@@ -103,7 +103,7 @@ class DrugEntryVC: UIViewController {
 
 extension DrugEntryVC: UICollectionViewDelegate {
 	private func configureDrugCell(_ cell: UICollectionViewListCell, indexPath: IndexPath, objectID: NSManagedObjectID) {
-		guard let drug = drugController.drug(for: objectID) else { return }
+		guard let drug = drugController.modelObject(for: objectID) else { return }
 		let alarms = drug.alarms?.compactMap { $0 as? DrugAlarm } ?? []
 
 		var config = cell.defaultContentConfiguration()
@@ -117,7 +117,7 @@ extension DrugEntryVC: UICollectionViewDelegate {
 		collectionView.deselectItem(at: indexPath, animated: false)
 		guard
 			let drugID = dataSource.itemIdentifier(for: indexPath),
-			let drug = drugController.drug(for: drugID)
+			let drug = drugController.modelObject(for: drugID)
 		else { return }
 		coordinator.drugEntryVC(self, tappedDrug: drug)
 	}
@@ -128,7 +128,7 @@ extension DrugEntryVC: UICollectionViewDelegate {
 			defer { completion(successful) }
 			guard
 				let drugID = strongSelf.dataSource.itemIdentifier(for: indexPath),
-				let drug = strongSelf.drugController.drug(for: drugID)
+				let drug = strongSelf.drugController.modelObject(for: drugID)
 			else { return }
 			strongSelf.drugController.deleteDrugEntry(drug)
 			successful = true
