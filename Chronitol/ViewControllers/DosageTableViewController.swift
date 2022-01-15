@@ -151,7 +151,7 @@ class DosageTableViewController: UIViewController {
 
 				guard
 					let drugID = strongSelf.drugSelectionDataSource.itemIdentifier(for: indexPath),
-					let drug = strongSelf.drugController.modelObject(for: drugID)
+					let drug: DrugEntry = strongSelf.drugController.modelObject(for: drugID)
 				else { return }
 
 				config.text = drug.name
@@ -172,7 +172,7 @@ extension DosageTableViewController: UICollectionViewDelegate {
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		guard
 			let drugID = drugSelectionDataSource.itemIdentifier(for: indexPath),
-			let drug = drugController.modelObject(for: drugID)
+			let drug: DrugEntry = drugController.modelObject(for: drugID)
 		else { return }
 
 		drugController.createDoseEntry(at: Date(), forDrug: drug)
