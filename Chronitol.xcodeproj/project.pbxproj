@@ -72,6 +72,7 @@
 		335E562723BDCCC6008FE6A6 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		3363402D278BFBBA00EFEF51 /* SimpleConveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleConveniences.swift; sourceTree = "<group>"; };
 		3363402F278BFC7500EFEF51 /* Weakify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Weakify.swift; sourceTree = "<group>"; };
+		338D4C2E27935C9B00EE111F /* Chronitol.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chronitol.entitlements; sourceTree = "<group>"; };
 		33A38CE623B3073300783926 /* DefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsManager.swift; sourceTree = "<group>"; };
 		33A38CE823B4379F00783926 /* LocalNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotifications.swift; sourceTree = "<group>"; };
 		33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmNumberConverter.swift; sourceTree = "<group>"; };
@@ -127,6 +128,7 @@
 		333F746823A888B400E51514 /* Chronitol */ = {
 			isa = PBXGroup;
 			children = (
+				338D4C2E27935C9B00EE111F /* Chronitol.entitlements */,
 				33FC4079278D71B3001D70FB /* Resources */,
 				333F746923A888B400E51514 /* AppDelegate.swift */,
 				333F748523A88E4400E51514 /* ViewControllers */,
@@ -507,6 +509,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Chronitol/Chronitol.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5UZAT7KA9;
@@ -528,6 +531,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Chronitol/Chronitol.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5UZAT7KA9;
