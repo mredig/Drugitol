@@ -11,7 +11,7 @@ class DosageTableViewController: UIViewController {
 
 	let drugController: DrugController
 
-	private let tableView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+	private let dosageListCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 	private let	drugSelectionCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
 	private var drugSelectionDataSource: UICollectionViewDiffableDataSource<String, NSManagedObjectID>!
@@ -81,20 +81,20 @@ class DosageTableViewController: UIViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
-		tableView.reloadData()
+		dosageListCollection.reloadData()
 	}
 
 	private func setupTableView() {
 		var constraints: [NSLayoutConstraint] = []
 		defer { NSLayoutConstraint.activate(constraints) }
 
-		view.addSubview(tableView)
+		view.addSubview(dosageListCollection)
 
 		var createFor: UIView.ConstraintEdgeToggle = true
 		createFor.top = false
-		constraints += view.constrain(subview: tableView, createConstraintsFor: createFor, activate: false)
+		constraints += view.constrain(subview: dosageListCollection, createConstraintsFor: createFor, activate: false)
 
-		tableView.delegate = self
+		dosageListCollection.delegate = self
 
 		var config = UICollectionLayoutListConfiguration(appearance: .grouped)
 		config.headerMode = .supplementary
@@ -102,7 +102,7 @@ class DosageTableViewController: UIViewController {
 			strongSelf.trailingSwipeActionsConfiguration(forRowAt: indexPath)
 		}
 		let layout = UICollectionViewCompositionalLayout.list(using: config)
-		tableView.collectionViewLayout = layout
+		dosageListCollection.collectionViewLayout = layout
 	}
 
 	private func setupDosageListDataSource() {
@@ -126,7 +126,7 @@ class DosageTableViewController: UIViewController {
 				cell.contentConfiguration = config
 			})
 
-		dosageListDataSource = .init(collectionView: tableView, cellProvider: { collectionView, indexPath, objectID in
+		dosageListDataSource = .init(collectionView: dosageListCollection, cellProvider: { collectionView, indexPath, objectID in
 			collectionView.dequeueConfiguredReusableCell(using: cellProvider, for: indexPath, item: objectID)
 		})
 
@@ -185,7 +185,7 @@ class DosageTableViewController: UIViewController {
 		headerStack.addArrangedSubview(drugSelectionCollection)
 		constraints += [
 			drugSelectionCollection.heightAnchor.constraint(equalToConstant: 44),
-			tableView.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 8),
+			dosageListCollection.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 8),
 		]
 
 		let config = UICollectionViewCompositionalLayoutConfiguration()
@@ -232,7 +232,7 @@ extension DosageTableViewController: UICollectionViewDelegate {
 		switch collectionView {
 		case drugSelectionCollection:
 			tappedItemOnDrugSelectionCollection(at: indexPath)
-		case tableView:
+		case dosageListCollection:
 			tappedItemOnDosageList(at: indexPath)
 		default: break
 		}
