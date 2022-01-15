@@ -1,13 +1,10 @@
-//
-//  DosageTableViewController.swift
-//  Drugitol
-//
-//  Created by Michael Redig on 12/22/19.
-//  Copyright © 2019 Red_Egg Productions. All rights reserved.
-//
-
 import UIKit
 import CoreData
+
+@MainActor
+protocol DosageTableViewControllerCoordinator: Coordinator {
+	func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, tappedDosage dosage: DoseEntry)
+}
 
 @MainActor
 class DosageTableViewController: UIViewController {
@@ -31,8 +28,11 @@ class DosageTableViewController: UIViewController {
 
 	private var bag: Bag = []
 
-	init(drugController: DrugController) {
+	private unowned let coordinator: DosageTableViewControllerCoordinator
+
+	init(drugController: DrugController, coordinator: DosageTableViewControllerCoordinator) {
 		self.drugController = drugController
+		self.coordinator = coordinator
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -166,17 +166,6 @@ class DosageTableViewController: UIViewController {
 			collectionView.dequeueConfiguredReusableCell(using: drugCellProvider, for: indexPath, item: itemIdentifier)
 		})
 	}
-
-	// MARK: - Actions
-
-	func showDosageDetail(for doseEntry: DoseEntry) {
-		let dosageDetailVC = DosageDetailViewController.instantiate()
-		dosageDetailVC.drugController = drugController
-		dosageDetailVC.doseEntry = doseEntry
-		dosageDetailVC.delegate = self
-		dosageDetailVC.modalPresentationStyle = .overFullScreen
-		present(dosageDetailVC, animated: true)
-	}
 }
 
 extension DosageTableViewController: UICollectionViewDelegate {
@@ -224,7 +213,8 @@ extension DosageTableViewController: UITableViewDelegate, UITableViewDataSource 
 	}
 
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		showDosageDetail(for: dosageFetchedResultsController.object(at: indexPath))
+		let doseEntry = dosageFetchedResultsController.object(at: indexPath)
+		coordinator.dosageTableViewController(self, tappedDosage: doseEntry)
 	}
 
 	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -287,10 +277,3 @@ extension DosageTableViewController: NSFetchedResultsControllerDelegate {
 	}
 }
 
-extension DosageTableViewController: DosageDetailViewControllerDelegate {
-	// sometimes the frc doesn't trigger a refresh when an entry is updated, so this will do so when that happens
-	func dosageDetailVCDidFinish(_ dosageDetailVC: DosageDetailViewController) {
-		guard let indexPath = tableView.indexPathForSelectedRow else { return }
-		tableView.reloadRows(at: [indexPath], with: .automatic)
-	}
-}
