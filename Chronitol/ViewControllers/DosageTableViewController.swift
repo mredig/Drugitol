@@ -170,7 +170,7 @@ class DosageTableViewController: UIViewController {
 	// MARK: - Actions
 
 	func showDosageDetail(for doseEntry: DoseEntry) {
-		guard let dosageDetailVC = storyboard?.instantiateViewController(withIdentifier: "DosageDetailViewController") as? DosageDetailViewController else { return }
+		let dosageDetailVC = DosageDetailViewController.instantiate()
 		dosageDetailVC.drugController = drugController
 		dosageDetailVC.doseEntry = doseEntry
 		dosageDetailVC.delegate = self
