@@ -65,6 +65,7 @@ class DrugController: NSObject {
 		super.init()
 		activeDrugsFRC.delegate = self
 		allDrugsFRC.delegate = self
+		dosageListFRC.delegate = self
 
 		fetchFRCs()
 	}
@@ -84,25 +85,6 @@ class DrugController: NSObject {
 				}
 			}
 		}
-	}
-
-	// MARK: - FRC
-	func createDosageFetchedResultsController(withDelegate delegate: NSFetchedResultsControllerDelegate) -> NSFetchedResultsController<DoseEntry> {
-		let fetchRequest: NSFetchRequest<DoseEntry> = DoseEntry.fetchRequest()
-		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false), NSSortDescriptor(key: "timestamp", ascending: false)]
-
-		let moc = CoreDataStack.shared.mainContext
-		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-																  managedObjectContext: moc,
-																  sectionNameKeyPath: "date",
-																  cacheName: nil)
-		fetchedResultsController.delegate = delegate
-		do {
-			try fetchedResultsController.performFetch()
-		} catch {
-			print("error performing initial fetch for frc: \(error)")
-		}
-		return fetchedResultsController
 	}
 
 	// MARK: - DoseEntry

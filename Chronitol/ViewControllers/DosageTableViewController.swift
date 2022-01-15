@@ -11,14 +11,14 @@ class DosageTableViewController: UIViewController {
 
 	let drugController: DrugController
 
-	private let tableView = UITableView()
+	private let tableView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 	private let	drugSelectionCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
 	private var drugSelectionDataSource: UICollectionViewDiffableDataSource<String, NSManagedObjectID>!
 
 	private let headerStack = UIStackView().forAutolayout()
 
-	lazy var dosageFetchedResultsController = drugController.createDosageFetchedResultsController(withDelegate: self)
+	private var dosageListDataSource: UICollectionViewDiffableDataSource<String, NSManagedObjectID>!
 
 	private static let sectionHeadFormatter: DateFormatter = {
 		let formatter = DateFormatter()
@@ -47,6 +47,7 @@ class DosageTableViewController: UIViewController {
 
 		setupDebugButton()
 		setupTableView()
+		setupDosageListDataSource()
 		setupHeaderStack()
 		setupHeaderStackDataSource()
 
@@ -55,6 +56,13 @@ class DosageTableViewController: UIViewController {
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: weakify { snap, strongSelf in
 				strongSelf.drugSelectionDataSource.apply(snap, animatingDifferences: true)
+			})
+			.store(in: &bag)
+
+		drugController
+			.dosageListPublisher
+			.sink(receiveValue: weakify { snap, strongSelf in
+				strongSelf.dosageListDataSource.apply(snap, animatingDifferences: true)
 			})
 			.store(in: &bag)
 	}
@@ -87,9 +95,60 @@ class DosageTableViewController: UIViewController {
 		constraints += view.constrain(subview: tableView, createConstraintsFor: createFor, activate: false)
 
 		tableView.delegate = self
-		tableView.dataSource = self
 
-		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DoseCell")
+		var config = UICollectionLayoutListConfiguration(appearance: .grouped)
+		config.headerMode = .supplementary
+		config.trailingSwipeActionsConfigurationProvider = weakify { indexPath, strongSelf in
+			strongSelf.trailingSwipeActionsConfiguration(forRowAt: indexPath)
+		}
+		let layout = UICollectionViewCompositionalLayout.list(using: config)
+		tableView.collectionViewLayout = layout
+	}
+
+	private func setupDosageListDataSource() {
+		let cellProvider = UICollectionView.CellRegistration<UICollectionViewListCell, NSManagedObjectID>(
+			handler: weakify { cell, indexPath, itemIdentifier, strongSelf in
+
+				guard
+					let dosageEntryID = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath), //dosageFetchedResultsController.object(at: indexPath)
+					let dosageEntry: DoseEntry = strongSelf.drugController.modelObject(for: dosageEntryID)
+				else { return }
+				let drugEntry = dosageEntry.drug
+
+				let drugName = drugEntry?.name ?? "A drug"
+				let drugNameAttributed = NSMutableAttributedString(string: drugName, attributes: [.font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)])
+
+				let timeAttributed = NSAttributedString(string: ": \(dosageEntry.timeString)")
+				drugNameAttributed.append(timeAttributed)
+
+				var config = cell.defaultContentConfiguration()
+				config.attributedText = drugNameAttributed
+				cell.contentConfiguration = config
+			})
+
+		dosageListDataSource = .init(collectionView: tableView, cellProvider: { collectionView, indexPath, objectID in
+			collectionView.dequeueConfiguredReusableCell(using: cellProvider, for: indexPath, item: objectID)
+		})
+
+		let headerProvider = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(
+			elementKind: UICollectionView.elementKindSectionHeader,
+			handler: weakify { header, kind, indexPath, strongSelf in
+				var headerText = "unsure"
+				if
+					let id = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath),
+					let dosageEntry: DoseEntry = strongSelf.drugController.modelObject(for: id),
+					let date = dosageEntry.date {
+
+					headerText = Self.sectionHeadFormatter.string(from: date)
+				}
+
+				var config = header.defaultContentConfiguration()
+				config.text = headerText
+				header.contentConfiguration = config
+			})
+		dosageListDataSource.supplementaryViewProvider = weakify { collectionView, kind, indexPath, strongSelf in
+			collectionView.dequeueConfiguredReusableSupplementary(using: headerProvider, for: indexPath)
+		}
 	}
 
 	private func setupHeaderStack() {
@@ -170,6 +229,16 @@ class DosageTableViewController: UIViewController {
 
 extension DosageTableViewController: UICollectionViewDelegate {
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		switch collectionView {
+		case drugSelectionCollection:
+			tappedItemOnDrugSelectionCollection(at: indexPath)
+		case tableView:
+			tappedItemOnDosageList(at: indexPath)
+		default: break
+		}
+	}
+
+	func tappedItemOnDrugSelectionCollection(at indexPath: IndexPath) {
 		guard
 			let drugID = drugSelectionDataSource.itemIdentifier(for: indexPath),
 			let drug: DrugEntry = drugController.modelObject(for: drugID)
@@ -177,103 +246,27 @@ extension DosageTableViewController: UICollectionViewDelegate {
 
 		drugController.createDoseEntry(at: Date(), forDrug: drug)
 	}
-}
 
-// MARK: - TableView stuff
-extension DosageTableViewController: UITableViewDelegate, UITableViewDataSource {
-
-	func numberOfSections(in tableView: UITableView) -> Int {
-		dosageFetchedResultsController.sections?.count ?? 0
-	}
-
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "DoseCell", for: indexPath)
-
-		let dosageEntry = dosageFetchedResultsController.object(at: indexPath)
-		let drugEntry = dosageEntry.drug
-
-		let drugName = drugEntry?.name ?? "A drug"
-		let drugNameAttributed = NSMutableAttributedString(string: drugName, attributes: [.font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)])
-
-		let timeAttributed = NSAttributedString(string: ": \(dosageEntry.timeString)")
-		drugNameAttributed.append(timeAttributed)
-		cell.textLabel?.attributedText = drugNameAttributed
-		return cell
-	}
-
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return dosageFetchedResultsController.sections?[section].numberOfObjects ?? 0
-	}
-
-	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-		if editingStyle == .delete {
-			let entry = dosageFetchedResultsController.object(at: indexPath)
-			drugController.deleteDoseEntry(entry)
-		}
-	}
-
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let doseEntry = dosageFetchedResultsController.object(at: indexPath)
+	func tappedItemOnDosageList(at indexPath: IndexPath) {
+		guard
+			let doseID = dosageListDataSource.itemIdentifier(for: indexPath),
+			let doseEntry: DoseEntry = drugController.modelObject(for: doseID)
+		else { return }
 		coordinator.dosageTableViewController(self, tappedDosage: doseEntry)
 	}
 
-	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		let doseEntry = dosageFetchedResultsController.object(at: IndexPath(row: 0, section: section))
-		guard let date = doseEntry.date else { return nil }
-		return DosageTableViewController.sectionHeadFormatter.string(from: date)
-	}
-}
-
-// MARK: - FetchedResultsController Delegate
-extension DosageTableViewController: NSFetchedResultsControllerDelegate {
-	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		tableView.beginUpdates()
-	}
-
-	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		tableView.endUpdates()
-	}
-
-	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-					didChange sectionInfo: NSFetchedResultsSectionInfo,
-					atSectionIndex sectionIndex: Int,
-					for type: NSFetchedResultsChangeType) {
-		let indexSet = IndexSet([sectionIndex])
-		switch type {
-		case .insert:
-			tableView.insertSections(indexSet, with: .automatic)
-		case .delete:
-			tableView.deleteSections(indexSet, with: .automatic)
-		default:
-			print(#line, #file, "unexpected NSFetchedResultsChangeType: \(type)")
-		}
-	}
-
-	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-					didChange anObject: Any,
-					at indexPath: IndexPath?,
-					for type: NSFetchedResultsChangeType,
-					newIndexPath: IndexPath?) {
-		switch type {
-		case .insert:
-			guard let newIndexPath = newIndexPath else { return }
-			tableView.insertRows(at: [newIndexPath], with: .automatic)
-		case .move:
-			guard let newIndexPath = newIndexPath, let indexPath = indexPath else { return }
-			tableView.moveRow(at: indexPath, to: newIndexPath)
-		case .update:
-			guard let indexPath = indexPath else { return }
-			tableView.reloadRows(at: [indexPath], with: .automatic)
-		case .delete:
-			guard let indexPath = indexPath else { return }
-			tableView.deleteRows(at: [indexPath], with: .automatic)
-		@unknown default:
-			print(#line, #file, "unknown NSFetchedResultsChangeType: \(type)")
-		}
-	}
-
-	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, sectionIndexTitleForSectionName sectionName: String) -> String? {
-		nil
+	func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+		let action = UIContextualAction(style: .destructive, title: "Delete", handler: weakify { action, view, completion, strongSelf in
+			var successful = false
+			defer { completion(successful) }
+			guard
+				let doseID = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath),
+				let dose: DoseEntry = strongSelf.drugController.modelObject(for: doseID)
+			else { return }
+			strongSelf.drugController.deleteDoseEntry(dose)
+			successful = true
+		})
+		return UISwipeActionsConfiguration(actions: [action])
 	}
 }
 
