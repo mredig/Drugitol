@@ -197,7 +197,11 @@ class DrugController: NSObject {
 
 	private func setupAlarmNotification(_ alarm: DrugAlarm) {
 		Task {
-			await localNotifications.createDrugReminder(forDrugAlarmWithID: alarm.objectID, using: self)
+			do {
+				try await localNotifications.createDrugReminder(forDrugAlarmWithID: alarm.objectID, using: self)
+			} catch {
+				NSLog("Error setting up alarm: \(error)")
+			}
 		}
 	}
 

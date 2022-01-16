@@ -67,22 +67,21 @@ class LocalNotifications: NSObject {
 		}
 	}
 
-	func createDrugReminder(forDrugAlarmWithID alarmID: NSManagedObjectID, using drugController: DrugController) async {
+	func createDrugReminder(forDrugAlarmWithID alarmID: NSManagedObjectID, using drugController: DrugController) async throws {
 		let context = drugController.coreDataStack.container.newBackgroundContext()
-		guard let info = await context.perform(
-			{ () -> (name: String, minute: Int, hour: Int, id: String, drugURI: URL)? in
+		let info = try await context.perform(
+			{ () -> (name: String, minute: Int, hour: Int, id: String, drugURI: URL) in
 				guard
 					let drugAlarm: DrugAlarm = drugController.modelObject(for: alarmID, on: context),
 					let name = drugAlarm.drug?.name,
 					let drugURI = drugAlarm.drug?.objectID.uriRepresentation(),
 					let alarmID = drugAlarm.id?.uuidString
-				else { return nil }
+				else { throw NotificationError.noAssociatedItemFound }
 				let minute = drugAlarm.alarmMinute
 				let hour = drugAlarm.alarmHour
 
 				return (name, minute, hour, alarmID, drugURI)
 			})
-		else { return }
 
 		let userInfo: [AnyHashable: Any] = [
 			"drugName": info.name,
@@ -205,6 +204,12 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
 			completionHandler([.banner, .sound, .list])
 		}
+}
+
+enum NotificationError: Error, LocalizedError {
+	case noAssociatedItemFound
+
+	var errorDescription: String? { "\(NotificationError.noAssociatedItemFound)" }
 }
 
 fileprivate extension String {
