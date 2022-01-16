@@ -148,11 +148,17 @@ class DrugController: NSObject {
 			entry.addToAlarms(NSSet(array: alarms))
 		}
 
-		alarms.forEach {
-			guard let id = $0.id?.uuidString else { return }
+		alarms.forEach { alarm in
+			guard let id = alarm.id?.uuidString else { return }
 			localNotifications.deleteDrugAlarm(withID: id)
 			if isActive {
-				setupAlarmNotification($0)
+				Task {
+					do {
+						try await setupAlarmNotification(alarm.objectID)
+					} catch {
+						NSLog("Error setting up alarm: \(error)")
+					}
+				}
 			}
 		}
 
@@ -195,14 +201,8 @@ class DrugController: NSObject {
 		return alarm
 	}
 
-	private func setupAlarmNotification(_ alarm: DrugAlarm) {
-		Task {
-			do {
-				try await localNotifications.createDrugReminder(forDrugAlarmWithID: alarm.objectID, using: self)
-			} catch {
-				NSLog("Error setting up alarm: \(error)")
-			}
-		}
+	private func setupAlarmNotification(_ alarmID: NSManagedObjectID) async throws {
+		try await localNotifications.createDrugReminder(forDrugAlarmWithID: alarmID, using: self)
 	}
 
 	func getAlarm(withID id: String, on context: NSManagedObjectContext? = nil) -> DrugAlarm? {
