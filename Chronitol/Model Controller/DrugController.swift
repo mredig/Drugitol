@@ -150,7 +150,7 @@ class DrugController: NSObject {
 
 		alarms.forEach { alarm in
 			guard let id = alarm.id?.uuidString else { return }
-			localNotifications.deleteDrugAlarm(withID: id)
+			localNotifications.deleteDrugAlarmNotification(withID: id)
 			if isActive {
 				Task {
 					do {
@@ -171,7 +171,7 @@ class DrugController: NSObject {
 		context.performAndWait {
 			entry.removeFromAlarms(alarm)
 		}
-		localNotifications.deleteDrugAlarm(withID: alarm.id?.uuidString ?? "noid")
+		localNotifications.deleteDrugAlarmNotification(withID: alarm.id?.uuidString ?? "noid")
 		save(withErrorLogging: "Failed removing alarm '\(alarm)' from entry '\(entry)'")
 	}
 

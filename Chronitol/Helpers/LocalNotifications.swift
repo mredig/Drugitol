@@ -137,13 +137,13 @@ class LocalNotifications: NSObject {
 		try await nc.add(request)
 	}
 
-	func deleteDrugAlarm(withID id: String) {
+	func deleteDrugAlarmNotification(withID id: String) {
 		nc.removeDeliveredNotifications(withIdentifiers: [id])
 		nc.removePendingNotificationRequests(withIdentifiers: [id])
 	}
 
-	func deleteDrugAlarm(request: UNNotificationRequest) {
-		deleteDrugAlarm(withID: request.identifier)
+	func deleteDrugAlarmNotification(request: UNNotificationRequest) {
+		deleteDrugAlarmNotification(withID: request.identifier)
 	}
 
 	func deleteDeliveredReminders() {
@@ -163,7 +163,7 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 			let userInfo = content.userInfo
 			let request = response.notification.request
 			if request.trigger is UNTimeIntervalNotificationTrigger {
-				deleteDrugAlarm(request: response.notification.request)
+				deleteDrugAlarmNotification(request: response.notification.request)
 			}
 
 			let delayedTitle: String
