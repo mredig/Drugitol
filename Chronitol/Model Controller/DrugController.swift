@@ -88,10 +88,6 @@ class DrugController: NSObject {
 	}
 
 	// MARK: - DoseEntry
-	func createDoseEntry(at timestamp: Date, forDrug wrongContextDrug: DrugEntry) async {
-		await createDoseEntry(at: timestamp, forDrugWithID: wrongContextDrug.objectID)
-	}
-
 	func createDoseEntry(at timestamp: Date, forDrugWithID drugID: NSManagedObjectID) async {
 		let context = coreDataStack.container.newBackgroundContext()
 
@@ -200,7 +196,9 @@ class DrugController: NSObject {
 	}
 
 	private func setupAlarmNotification(_ alarm: DrugAlarm) {
-		localNotifications.createDrugReminder(for: alarm)
+		Task {
+			await localNotifications.createDrugReminder(forDrugAlarmWithID: alarm.objectID, using: self)
+		}
 	}
 
 	func getAlarm(withID id: String, on context: NSManagedObjectContext? = nil) -> DrugAlarm? {

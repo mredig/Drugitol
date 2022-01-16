@@ -8,6 +8,7 @@
 
 import UIKit
 import UserNotifications
+import CoreData
 
 class LocalNotifications: NSObject {
 	let nc = UNUserNotificationCenter.current()
@@ -66,37 +67,41 @@ class LocalNotifications: NSObject {
 		}
 	}
 
-	func createDrugReminder(for drugAlarm: DrugAlarm?) {
-		guard let drugAlarm = drugAlarm else { return }
-		var name = "A drug"
-		var minute: Int?
-		var hour: Int?
-		var id: String?
+	func createDrugReminder(forDrugAlarmWithID alarmID: NSManagedObjectID, using drugController: DrugController) async {
+		let context = drugController.coreDataStack.container.newBackgroundContext()
+		guard let info = await context.perform(
+			{ () -> (name: String, minute: Int, hour: Int, id: String, drugURI: URL)? in
+				guard
+					let drugAlarm: DrugAlarm = drugController.modelObject(for: alarmID, on: context),
+					let name = drugAlarm.drug?.name,
+					let drugURI = drugAlarm.drug?.objectID.uriRepresentation(),
+					let alarmID = drugAlarm.id?.uuidString
+				else { return nil }
+				let minute = drugAlarm.alarmMinute
+				let hour = drugAlarm.alarmHour
 
-		drugAlarm.managedObjectContext?.performAndWait {
-			let drug = drugAlarm.drug
-			name = drug?.name ?? name
-			minute = drugAlarm.alarmMinute
-			hour = drugAlarm.alarmHour
-			id = drugAlarm.id?.uuidString
-		}
-		guard let alarmHour = hour, let alarmMinute = minute, let alarmID = id else { return }
+				return (name, minute, hour, alarmID, drugURI)
+			})
+		else { return }
 
-		let userInfo = ["drugName": name]
-		let title = "Time to take \(name)!"
+		let userInfo: [AnyHashable: Any] = [
+			"drugName": info.name,
+			"alarmObjectID": alarmID.uriRepresentation().absoluteString,
+			"drugObjectID": info.drugURI.absoluteString,
+		]
+		let title = "Time to take \(info.name)!"
 		let body = "Be sure to take it soon OR YOU'LL DIE"
-		Task {
-			do {
-				try await createDrugReminder(
-					titled: title,
-					body: body,
-					scheduleInfo: .specificTime(hour: alarmHour, minute: alarmMinute),
-					id: alarmID,
-					userInfo: userInfo)
-			} catch {
-				let string = "\(title) \(body) at \(alarmHour):\(alarmMinute) \(alarmID)"
-				NSLog("Error creating alarm for drug - '\(string)': \(error)")
-			}
+
+		do {
+			try await createDrugReminder(
+				titled: title,
+				body: body,
+				scheduleInfo: .specificTime(hour: info.hour, minute: info.minute),
+				id: info.id,
+				userInfo: userInfo)
+		} catch {
+			let string = "\(title) \(body) at \(info.hour):\(info.minute) \(alarmID)"
+			NSLog("Error creating alarm for drug - '\(string)': \(error)")
 		}
 	}
 
