@@ -227,7 +227,6 @@
 				333F746223A888B400E51514 /* Sources */,
 				333F746323A888B400E51514 /* Frameworks */,
 				333F746423A888B400E51514 /* Resources */,
-				333F747D23A8894F00E51514 /* Run Script - Build Number */,
 				333F747E23A8897400E51514 /* Run Script - swiftlint */,
 			);
 			buildRules = (
@@ -298,24 +297,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		333F747D23A8894F00E51514 /* Run Script - Build Number */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script - Build Number";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\nbN=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbN=$((bN += 1))\nbN=$(printf \"%d\" $bN)\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $bN\" \"$INFOPLIST_FILE\"\n";
-		};
 		333F747E23A8897400E51514 /* Run Script - swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
