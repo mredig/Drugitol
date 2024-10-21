@@ -1,17 +1,13 @@
-//
-//  LocalNotifications.swift
-//  Poopmaster
-//
-//  Created by Michael Redig on 9/27/19.
-//  Copyright © 2019 Michael Redig. All rights reserved.
-//
-
 import UIKit
 import UserNotifications
 import CoreData
 
 class LocalNotifications: NSObject {
 	let nc = UNUserNotificationCenter.current()
+
+	static let drugNameKey = "drugName"
+	static let alarmObjectIDKey = "alarmObjectID"
+	static let drugObjectIDKey = "drugObjectID"
 
 	var pendingNotifications: [UNNotificationRequest] {
 		get async {
@@ -84,9 +80,9 @@ class LocalNotifications: NSObject {
 			})
 
 		let userInfo: [AnyHashable: Any] = [
-			"drugName": info.name,
-			"alarmObjectID": alarmID.uriRepresentation().absoluteString,
-			"drugObjectID": info.drugURI.absoluteString,
+			Self.drugNameKey: info.name,
+			Self.alarmObjectIDKey: alarmID.uriRepresentation().absoluteString,
+			Self.drugObjectIDKey: info.drugURI.absoluteString,
 		]
 		let title = "Time to take \(info.name)!"
 		let body = "Be sure to take it soon OR YOU'LL DIE"
@@ -137,13 +133,41 @@ class LocalNotifications: NSObject {
 		try await nc.add(request)
 	}
 
-	func deleteDrugAlarmNotification(withID id: String) {
-		nc.removeDeliveredNotifications(withIdentifiers: [id])
-		nc.removePendingNotificationRequests(withIdentifiers: [id])
+	func deleteDrugAlarmNotification(withAlarmID alarmID: NSManagedObjectID) async {
+		let notificationRequests = await withTaskGroup(
+			of: [UNNotificationRequest].self,
+			body: { [nc] group -> [UNNotificationRequest] in
+				group.addTask {
+					await nc.pendingNotificationRequests()
+				}
+				group.addTask {
+					await nc.deliveredNotifications().map(\.request)
+				}
+
+				var out: [UNNotificationRequest] = []
+				for await array in group {
+					out.append(contentsOf: array)
+				}
+				return out
+			})
+
+		let alarmIDStr = alarmID.uriRepresentation().absoluteString
+		let alarmNotifications = notificationRequests
+			.filter { request in
+				request.content.userInfo[Self.alarmObjectIDKey] as? String == alarmIDStr
+			}
+		alarmNotifications.forEach { request in
+			deleteDrugAlarmNotification(request: request)
+		}
 	}
 
 	func deleteDrugAlarmNotification(request: UNNotificationRequest) {
 		deleteDrugAlarmNotification(withID: request.identifier)
+	}
+
+	func deleteDrugAlarmNotification(withID id: String) {
+		nc.removeDeliveredNotifications(withIdentifiers: [id])
+		nc.removePendingNotificationRequests(withIdentifiers: [id])
 	}
 
 	func deleteDeliveredReminders() {
