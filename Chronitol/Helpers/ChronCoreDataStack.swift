@@ -10,8 +10,8 @@
 import Foundation
 import CoreData
 
-class CoreDataStack {
-	static let shared = CoreDataStack()
+class ChronCoreDataStack {
+	static let shared = ChronCoreDataStack()
 	
 	private init() {
 		setupNotificationObservers()
@@ -54,7 +54,7 @@ class CoreDataStack {
 }
 
 // MARK: - custom stuff
-extension CoreDataStack {
+extension ChronCoreDataStack {
 	private func setupNotificationObservers() {
 		_ = NotificationCenter.default.addObserver(forName: .dosageTakenNotification, object: nil, queue: nil, using: { [weak self] notification in
 			print("got notification \(notification)")
@@ -79,5 +79,5 @@ extension CoreDataStack {
 }
 
 extension NSManagedObjectContext {
-	static let mainContext = CoreDataStack.shared.mainContext
+	static let mainContext = ChronCoreDataStack.shared.mainContext
 }

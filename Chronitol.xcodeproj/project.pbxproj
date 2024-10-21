@@ -21,7 +21,7 @@
 		333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748123A88D3B00E51514 /* DrugEntryVC.swift */; };
 		333F748423A88E3000E51514 /* NewDrugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748323A88E3000E51514 /* NewDrugViewController.swift */; };
 		333F748723A88E5D00E51514 /* TimeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748623A88E5D00E51514 /* TimeSelectionViewController.swift */; };
-		333F748A23A88ECA00E51514 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748923A88ECA00E51514 /* CoreDataStack.swift */; };
+		333F748A23A88ECA00E51514 /* ChronCoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F748923A88ECA00E51514 /* ChronCoreDataStack.swift */; };
 		333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */; };
 		333F749123A8902D00E51514 /* AlarmView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 333F749023A8902D00E51514 /* AlarmView.xib */; };
 		333F749323A8905100E51514 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F749223A8905100E51514 /* AlarmView.swift */; };
@@ -61,7 +61,7 @@
 		333F748123A88D3B00E51514 /* DrugEntryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrugEntryVC.swift; sourceTree = "<group>"; };
 		333F748323A88E3000E51514 /* NewDrugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDrugViewController.swift; sourceTree = "<group>"; };
 		333F748623A88E5D00E51514 /* TimeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectionViewController.swift; sourceTree = "<group>"; };
-		333F748923A88ECA00E51514 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		333F748923A88ECA00E51514 /* ChronCoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChronCoreDataStack.swift; sourceTree = "<group>"; };
 		333F748D23A88EE900E51514 /* Drugs.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Drugs.xcdatamodel; sourceTree = "<group>"; };
 		333F749023A8902D00E51514 /* AlarmView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlarmView.xib; sourceTree = "<group>"; };
 		333F749223A8905100E51514 /* AlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmView.swift; sourceTree = "<group>"; };
@@ -163,7 +163,7 @@
 			children = (
 				33F4D61D278D426000C0D821 /* Coordinator */,
 				33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */,
-				333F748923A88ECA00E51514 /* CoreDataStack.swift */,
+				333F748923A88ECA00E51514 /* ChronCoreDataStack.swift */,
 				33A38CE623B3073300783926 /* DefaultsManager.swift */,
 				33A38CE823B4379F00783926 /* LocalNotifications.swift */,
 				3363402D278BFBBA00EFEF51 /* SimpleConveniences.swift */,
@@ -340,7 +340,7 @@
 				33F4D629278D485000C0D821 /* SettingsCoordinator.swift in Sources */,
 				3329A47623A8A05F007F10E2 /* DrugAlarm+Convenience.swift in Sources */,
 				3329A47823A8A395007F10E2 /* DrugController.swift in Sources */,
-				333F748A23A88ECA00E51514 /* CoreDataStack.swift in Sources */,
+				333F748A23A88ECA00E51514 /* ChronCoreDataStack.swift in Sources */,
 				33A38CE923B4379F00783926 /* LocalNotifications.swift in Sources */,
 				33FC4072278D6943001D70FB /* LargeTitledNavigationController.swift in Sources */,
 				33A38CE723B3073300783926 /* DefaultsManager.swift in Sources */,

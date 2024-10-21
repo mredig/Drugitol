@@ -6,14 +6,14 @@ class RootCoordinator: Coordinator {
 	let window: UIWindow
 	let tabBarController: UITabBarController
 
-	let coreDataStack: CoreDataStack
+	let coreDataStack: ChronCoreDataStack
 	let drugController: DrugController
 
 	init(window: UIWindow, tabBarController: UITabBarController) {
 		self.window = window
 		self.tabBarController = tabBarController
 
-		let coreDataStack = CoreDataStack.shared
+		let coreDataStack = ChronCoreDataStack.shared
 		self.coreDataStack = coreDataStack
 		self.drugController = DrugController(coreDataStack: coreDataStack)
 	}

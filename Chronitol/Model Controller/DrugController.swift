@@ -31,9 +31,9 @@ class DrugController: NSObject {
 	let context: NSManagedObjectContext
 	let localNotifications = LocalNotifications.shared
 
-	let coreDataStack: CoreDataStack
+	let coreDataStack: ChronCoreDataStack
 
-	init(coreDataStack: CoreDataStack) {
+	init(coreDataStack: ChronCoreDataStack) {
 		self.coreDataStack = coreDataStack
 		self.context = coreDataStack.mainContext
 
@@ -226,7 +226,7 @@ class DrugController: NSObject {
 	private func save(context: NSManagedObjectContext? = nil, withErrorLogging errorLogging: String) {
 		let context = context ?? self.context
 		do {
-			try CoreDataStack.shared.save(context: context)
+			try ChronCoreDataStack.shared.save(context: context)
 		} catch {
 			NSLog("\(errorLogging): \(error)")
 		}
