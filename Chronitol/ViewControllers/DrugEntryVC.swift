@@ -46,7 +46,7 @@ class DrugEntryVC: UIViewController {
 		defer { NSLayoutConstraint.activate(constraints) }
 
 		view.addSubview(collectionView)
-		constraints += view.constrain(subview: collectionView, activate: false)
+		constraints += view.constrain(collectionView)
 
 		var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
 		config.trailingSwipeActionsConfigurationProvider = weakify { indexPath, strongSelf in

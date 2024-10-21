@@ -570,7 +570,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mredig/SwiftPizzaSnips";
 			requirement = {
-				branch = 0.4.27a;
+				branch = 0.4.27b;
 				kind = branch;
 			};
 		};

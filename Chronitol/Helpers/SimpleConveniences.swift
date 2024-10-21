@@ -39,40 +39,6 @@ extension UIView {
 		var trailing: Bool
 	}
 
-	@discardableResult func constrain(
-		subview: UIView,
-		directionalInset inset: NSDirectionalEdgeInsets = .zero,
-		safeArea: ConstraintEdgeToggle = false,
-		createConstraintsFor createConstraints: ConstraintEdgeToggle = true,
-		activate: Bool = true) -> [NSLayoutConstraint] {
-
-		var constraints: [NSLayoutConstraint] = []
-
-		guard subview.isDescendant(of: self) else {
-			print("Need to add subview: \(subview) to parent: \(self) first.")
-			return constraints
-		}
-
-		defer {
-			if activate {
-				NSLayoutConstraint.activate(constraints)
-			}
-		}
-
-		subview.forAutolayout()
-
-		let topAnchor = safeArea.top ? self.safeAreaLayoutGuide.topAnchor : self.topAnchor
-		let bottomAnchor = safeArea.bottom ? self.safeAreaLayoutGuide.bottomAnchor : self.bottomAnchor
-		let leadingAnchor = safeArea.leading ? self.safeAreaLayoutGuide.leadingAnchor : self.leadingAnchor
-		let trailingAnchor = safeArea.trailing ? self.safeAreaLayoutGuide.trailingAnchor : self.trailingAnchor
-
-		if createConstraints.top { constraints.append(subview.topAnchor.constraint(equalTo: topAnchor, constant: inset.top)) }
-		if createConstraints.leading { constraints.append(subview.leadingAnchor.constraint(equalTo: leadingAnchor, constant: inset.leading)) }
-		if createConstraints.bottom { constraints.append(bottomAnchor.constraint(equalTo: subview.bottomAnchor, constant: inset.bottom)) }
-		if createConstraints.trailing { constraints.append(trailingAnchor.constraint(equalTo: subview.trailingAnchor, constant: inset.trailing)) }
-
-		return constraints
-	}
 }
 
 extension UIView.ConstraintEdgeToggle: ExpressibleByBooleanLiteral {
@@ -91,4 +57,3 @@ extension UIView.ConstraintEdgeToggle: ExpressibleByBooleanLiteral {
 		self.init(uniform: booleanLiteral)
 	}
 }
-

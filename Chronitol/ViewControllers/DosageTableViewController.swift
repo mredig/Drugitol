@@ -113,9 +113,9 @@ class DosageTableViewController: UIViewController {
 
 		view.addSubview(dosageListCollection)
 
-		var createFor: UIView.ConstraintEdgeToggle = true
-		createFor.top = false
-		constraints += view.constrain(subview: dosageListCollection, createConstraintsFor: createFor, activate: false)
+		var direction = DirectionalToggle.all
+		direction.top = .skip
+		constraints += view.constrain(dosageListCollection, directions: direction)
 
 		dosageListCollection.delegate = self
 
@@ -194,15 +194,10 @@ class DosageTableViewController: UIViewController {
 		headerStack.alignment = .fill
 		headerStack.distribution = .fill
 
-		var createFor: UIView.ConstraintEdgeToggle = true
-		createFor.bottom = false
+		var directions = DirectionalToggle.all
+		directions.bottom = .skip
 		let insets = NSDirectionalEdgeInsets(horizontal: 0, vertical: 8)
-		constraints += view.constrain(
-			subview: headerStack,
-			directionalInset: insets,
-			safeArea: true,
-			createConstraintsFor: createFor,
-			activate: false)
+		constraints += view.constrain(headerStack, inset: insets, safeAreaDirections: .all, directions: directions)
 
 		let label = UILabel()
 		label.text = "I just took a dose of..."
@@ -211,7 +206,7 @@ class DosageTableViewController: UIViewController {
 		let labelContainer = UIView().forAutolayout()
 		labelContainer.addSubview(label)
 		let labelInset = NSDirectionalEdgeInsets(horizontal: 20, vertical: 0)
-		constraints += labelContainer.constrain(subview: label, directionalInset: labelInset, activate: false)
+		constraints += labelContainer.constrain(label, inset: labelInset)
 		label.textAlignment = .natural
 		headerStack.addArrangedSubview(labelContainer)
 		headerStack.spacing = 16

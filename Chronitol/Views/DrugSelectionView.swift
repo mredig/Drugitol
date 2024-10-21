@@ -38,7 +38,7 @@ class DrugSelectionView: UIView, UIContentView {
 		defer { NSLayoutConstraint.activate(constraints) }
 
 		addSubview(label)
-		constraints += constrain(subview: label, directionalInset: NSDirectionalEdgeInsets(horizontal: 16, vertical: 8))
+		constraints += constrain(label, inset: NSDirectionalEdgeInsets(horizontal: 16, vertical: 8))
 		constraints += [
 			widthAnchor.constraint(equalToConstant: 200).withPriority(.required - 1)
 		]
