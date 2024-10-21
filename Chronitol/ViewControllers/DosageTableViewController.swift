@@ -1,5 +1,6 @@
 import UIKit
 import CoreData
+import SwiftPizzaSnips
 
 @MainActor
 protocol DosageTableViewControllerCoordinator: Coordinator {
@@ -18,7 +19,20 @@ class DosageTableViewController: UIViewController {
 
 	private let headerStack = UIStackView().forAutolayout()
 
-	private var dosageListDataSource: UICollectionViewDiffableDataSource<String, NSManagedObjectID>!
+	private var dosageListDataSource: UICollectionViewDiffableDataSource<DosageSection, DosageItem>!
+	private var _mostRecentSnapshot: NSDiffableDataSourceSnapshot<DosageSection, DosageItem>?
+
+	private enum DosageSection: Sendable, Hashable {
+		case pending
+		case fetchedResultsHeader(String)
+	}
+
+	public enum DosageItem: Sendable, Hashable {
+		case pendingDosage(PendingDosageInfo)
+		case history(NSManagedObjectID)
+	}
+
+	typealias PendingDosageInfo = String
 
 	private static let sectionHeadFormatter: DateFormatter = {
 		let formatter = DateFormatter()
@@ -62,7 +76,7 @@ class DosageTableViewController: UIViewController {
 		drugController
 			.dosageListPublisher
 			.sink(receiveValue: weakify { snap, strongSelf in
-				strongSelf.dosageListDataSource.apply(snap, animatingDifferences: true)
+				strongSelf.updateTable(from: snap)
 			})
 			.store(in: &bag)
 	}
@@ -70,12 +84,21 @@ class DosageTableViewController: UIViewController {
 	private func setupDebugButton() {
 		#if DEBUG
 		let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(pending))
-		navigationItem.rightBarButtonItems?.append(item)
+		navigationItem.rightBarButtonItem = item
 		#endif
 	}
 
 	@objc func pending() {
-		LocalNotifications.shared.pendInfo()
+		Task {
+			let pending = await LocalNotifications.shared.pendingNotifications
+
+			pending
+				.map {
+					($0.identifier, $0.trigger, $0.content.title, $0.content.body, $0.content.subtitle, $0.content.categoryIdentifier)
+				}
+				.forEach { print($0) }
+
+		}
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -106,12 +129,10 @@ class DosageTableViewController: UIViewController {
 	}
 
 	private func setupDosageListDataSource() {
-		let cellProvider = UICollectionView.CellRegistration<UICollectionViewListCell, NSManagedObjectID>(
-			handler: weakify { cell, indexPath, itemIdentifier, strongSelf in
-
+		let historyCellProvider = UICollectionView.CellRegistration<UICollectionViewListCell, NSManagedObjectID>(
+			handler: weakify { cell, indexPath, objectID, strongSelf in
 				guard
-					let dosageEntryID = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath), //dosageFetchedResultsController.object(at: indexPath)
-					let dosageEntry: DoseEntry = strongSelf.drugController.modelObject(for: dosageEntryID)
+					let dosageEntry: DoseEntry = strongSelf.drugController.modelObject(for: objectID)
 				else { return }
 				let drugEntry = dosageEntry.drug
 
@@ -126,8 +147,20 @@ class DosageTableViewController: UIViewController {
 				cell.contentConfiguration = config
 			})
 
+		let pendingCellProvider = UICollectionView.CellRegistration<UICollectionViewListCell, PendingDosageInfo>(
+			handler: weakify { cell, indexPath, dosageInfo, strongSelf in
+				var config = cell.defaultContentConfiguration()
+				config.text = "pending"
+				cell.contentConfiguration = config
+			})
+
 		dosageListDataSource = .init(collectionView: dosageListCollection, cellProvider: { collectionView, indexPath, objectID in
-			collectionView.dequeueConfiguredReusableCell(using: cellProvider, for: indexPath, item: objectID)
+			switch objectID {
+			case .history(let objectID):
+				return collectionView.dequeueConfiguredReusableCell(using: historyCellProvider, for: indexPath, item: objectID)
+			case .pendingDosage(let pending):
+				return collectionView.dequeueConfiguredReusableCell(using: pendingCellProvider, for: indexPath, item: pending)
+			}
 		})
 
 		let headerProvider = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(
@@ -135,7 +168,8 @@ class DosageTableViewController: UIViewController {
 			handler: weakify { header, kind, indexPath, strongSelf in
 				var headerText = "unsure"
 				if
-					let id = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath),
+					let item = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath),
+					case .history(let id) = item,
 					let dosageEntry: DoseEntry = strongSelf.drugController.modelObject(for: id),
 					let date = dosageEntry.date {
 
@@ -225,6 +259,56 @@ class DosageTableViewController: UIViewController {
 			collectionView.dequeueConfiguredReusableCell(using: drugCellProvider, for: indexPath, item: itemIdentifier)
 		})
 	}
+
+	private func updateTable(from snap: NSDiffableDataSourceSnapshot<String, NSManagedObjectID>) {
+		updateTable(from: snap, and: nil)
+	}
+
+	private func updateTable(withPendingDosages pendingDosages: [String]) {
+		updateTable(from: nil, and: pendingDosages)
+	}
+
+	private func updateTable(from historySnap: NSDiffableDataSourceSnapshot<String, NSManagedObjectID>?, and pendingDosages: [String]?) {
+		var newSnap = NSDiffableDataSourceSnapshot<DosageSection, DosageItem>()
+		let pendingDosages: [DosageItem]? = {
+			if let out = pendingDosages?.map(DosageItem.pendingDosage) {
+				return out
+			} else if let recent = _mostRecentSnapshot, recent.indexOfSection(.pending) != nil {
+				let out = recent.itemIdentifiers(inSection: .pending)
+				return out
+			}
+			return nil
+		}()
+		if let pendingDosages {
+			newSnap.appendSections([.pending])
+			newSnap.appendItems(pendingDosages, toSection: .pending)
+		}
+
+		if let historySnap {
+			newSnap.appendSections(historySnap.sectionIdentifiers.map(DosageSection.fetchedResultsHeader))
+			for sectionID in historySnap.sectionIdentifiers {
+				let sectionItems = historySnap.itemIdentifiers(inSection: sectionID)
+				newSnap.appendItems(sectionItems.map(DosageItem.history), toSection: DosageSection.fetchedResultsHeader(sectionID))
+			}
+			if historySnap.reloadedItemIdentifiers.isOccupied {
+				newSnap.reloadItems(historySnap.reloadedItemIdentifiers.map(DosageItem.history))
+			}
+			if historySnap.reconfiguredItemIdentifiers.isOccupied {
+				newSnap.reconfigureItems(historySnap.reconfiguredItemIdentifiers.map(DosageItem.history))
+			}
+			if historySnap.reloadedSectionIdentifiers.isOccupied {
+				newSnap.reloadSections(historySnap.reloadedSectionIdentifiers.map(DosageSection.fetchedResultsHeader))
+			}
+		} else if let recentSnap = _mostRecentSnapshot, recentSnap.sectionIdentifiers.contains(where: { $0 != .pending }) {
+			newSnap.appendSections(recentSnap.sectionIdentifiers)
+			for sectionID in recentSnap.sectionIdentifiers {
+				newSnap.appendItems(recentSnap.itemIdentifiers(inSection: sectionID), toSection: sectionID)
+			}
+		}
+
+		_mostRecentSnapshot = newSnap
+		dosageListDataSource.apply(newSnap, animatingDifferences: true)
+	}
 }
 
 extension DosageTableViewController: UICollectionViewDelegate {
@@ -250,10 +334,15 @@ extension DosageTableViewController: UICollectionViewDelegate {
 
 	func tappedItemOnDosageList(at indexPath: IndexPath) {
 		guard
-			let doseID = dosageListDataSource.itemIdentifier(for: indexPath),
-			let doseEntry: DoseEntry = drugController.modelObject(for: doseID)
+			let item = dosageListDataSource.itemIdentifier(for: indexPath)
 		else { return }
-		coordinator.dosageTableViewController(self, tappedDosage: doseEntry)
+		switch item {
+		case .pendingDosage(_):
+			break
+		case .history(let doseID):
+			guard let doseEntry: DoseEntry = drugController.modelObject(for: doseID) else { return }
+			coordinator.dosageTableViewController(self, tappedDosage: doseEntry)
+		}
 	}
 
 	func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -261,11 +350,18 @@ extension DosageTableViewController: UICollectionViewDelegate {
 			var successful = false
 			defer { completion(successful) }
 			guard
-				let doseID = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath),
-				let dose: DoseEntry = strongSelf.drugController.modelObject(for: doseID)
+				let item = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath)
 			else { return }
-			strongSelf.drugController.deleteDoseEntry(dose)
-			successful = true
+			switch item {
+			case .pendingDosage(let pendingDosageInfo):
+				break
+			case .history(let doseID):
+				guard
+					let dose: DoseEntry = strongSelf.drugController.modelObject(for: doseID)
+				else { return }
+				strongSelf.drugController.deleteDoseEntry(dose)
+				successful = true
+			}
 		})
 		return UISwipeActionsConfiguration(actions: [action])
 	}
