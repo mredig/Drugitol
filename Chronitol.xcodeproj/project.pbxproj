@@ -33,6 +33,7 @@
 		33A38CE723B3073300783926 /* DefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CE623B3073300783926 /* DefaultsManager.swift */; };
 		33A38CE923B4379F00783926 /* LocalNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CE823B4379F00783926 /* LocalNotifications.swift */; };
 		33A38CEB23B43B3900783926 /* AlarmNumberConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */; };
+		33B8D27C2CC70D3300462CC6 /* SwiftPizzaSnips in Frameworks */ = {isa = PBXBuildFile; productRef = 33B8D27B2CC70D3300462CC6 /* SwiftPizzaSnips */; };
 		33F4D61F278D426C00C0D821 /* Storyboarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D61E278D426C00C0D821 /* Storyboarded.swift */; };
 		33F4D621278D433600C0D821 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D620278D433600C0D821 /* Coordinator.swift */; };
 		33F4D623278D437900C0D821 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D622278D437900C0D821 /* RootCoordinator.swift */; };
@@ -93,6 +94,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				33634033278C1FD400EFEF51 /* DateBuilder in Frameworks */,
+				33B8D27C2CC70D3300462CC6 /* SwiftPizzaSnips in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,6 +237,7 @@
 			name = Chronitol;
 			packageProductDependencies = (
 				33634032278C1FD400EFEF51 /* DateBuilder */,
+				33B8D27B2CC70D3300462CC6 /* SwiftPizzaSnips */,
 			);
 			productName = Drugitol;
 			productReference = 333F746623A888B400E51514 /* Chronitol.app */;
@@ -266,6 +269,7 @@
 			mainGroup = 333F745D23A888B400E51514;
 			packageReferences = (
 				33634031278C1FD400EFEF51 /* XCRemoteSwiftPackageReference "DateBuilder" */,
+				33B8D27A2CC70D3300462CC6 /* XCRemoteSwiftPackageReference "SwiftPizzaSnips" */,
 			);
 			productRefGroup = 333F746723A888B400E51514 /* Products */;
 			projectDirPath = "";
@@ -581,6 +585,14 @@
 				minimumVersion = 0.1.0;
 			};
 		};
+		33B8D27A2CC70D3300462CC6 /* XCRemoteSwiftPackageReference "SwiftPizzaSnips" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mredig/SwiftPizzaSnips";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.26;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -588,6 +600,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 33634031278C1FD400EFEF51 /* XCRemoteSwiftPackageReference "DateBuilder" */;
 			productName = DateBuilder;
+		};
+		33B8D27B2CC70D3300462CC6 /* SwiftPizzaSnips */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 33B8D27A2CC70D3300462CC6 /* XCRemoteSwiftPackageReference "SwiftPizzaSnips" */;
+			productName = SwiftPizzaSnips;
 		};
 /* End XCSwiftPackageProductDependency section */
 
