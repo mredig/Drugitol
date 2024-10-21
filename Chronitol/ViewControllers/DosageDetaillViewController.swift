@@ -1,11 +1,3 @@
-//
-//  DosageCreationViewController.swift
-//  Drugitol
-//
-//  Created by Michael Redig on 12/22/19.
-//  Copyright © 2019 Red_Egg Productions. All rights reserved.
-//
-
 import UIKit
 
 @MainActor

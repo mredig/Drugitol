@@ -1,11 +1,3 @@
-//
-//  SimpleConveniences.swift
-//  Chronitol
-//
-//  Created by Michael Redig on 1/9/22.
-//  Copyright © 2022 Red_Egg Productions. All rights reserved.
-//
-
 import Foundation
 
 public extension Array {
