@@ -11,6 +11,8 @@ class SettingsCoordinator: NavigationCoordinator, ObservableObject {
 	let viewModel = SettingsView.ViewModel()
 	let drugController: DrugController
 
+	private var docDelegate: DocumentDelegate?
+
 	@Published
 	private var isExportEnabled = true
 
@@ -59,7 +61,76 @@ extension SettingsCoordinator: SettingsView.Coordinator {
 			}
 			navigationController.present(sheet, animated: true)
 
-			viewModel.isExportEnabled = true
+			viewModel.areButtonsEnabled = true
+		}
+	}
+
+	func settingsViewDidPressResetAndImportBackupButton(_ settingsView: SettingsView) {
+		Task {
+			do {
+				try await importBackup(withReset: true)
+			} catch {
+				print("Error \(#function): \(error)")
+			}
+		}
+	}
+
+	func settingsViewDidPressImportBackupButton(_ settingsView: SettingsView) {
+		Task {
+			do {
+				try await importBackup(withReset: false)
+			} catch {
+				print("Error \(#function): \(error)")
+			}
+		}
+	}
+
+	private func importBackup(withReset flag: Bool) async throws {
+		let delegate = DocumentDelegate(
+			drugController: drugController,
+			beforeOpen: { [drugController] in
+				if flag {
+					try await drugController.clearDB()
+				}
+			},
+			onComplete: {
+				self.viewModel.areButtonsEnabled = true
+				self.docDelegate = nil
+			})
+		self.docDelegate = delegate
+
+		let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.propertyList])
+		documentPicker.delegate = delegate
+		navigationController.present(documentPicker, animated: true)
+	}
+
+	private class DocumentDelegate: NSObject, UIDocumentPickerDelegate {
+		let beforeOpen: () async throws -> Void
+		let onComplete: () -> Void
+		let drugController: DrugController
+
+		init(drugController: DrugController, beforeOpen: @escaping () async throws -> Void, onComplete: @escaping () -> Void) {
+			self.beforeOpen = beforeOpen
+			self.drugController = drugController
+			self.onComplete = onComplete
+		}
+
+		func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+			Task {
+				defer { onComplete() }
+
+				guard let backupURL = urls.first else { return }
+				let data = try Data(contentsOf: backupURL)
+				try await beforeOpen()
+				try await drugController.importFromPlistData(data)
+			}
+			controller.dismiss(animated: true)
+		}
+
+		func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+			defer { onComplete() }
+			controller.dismiss(animated: true)
 		}
 	}
 }
+
