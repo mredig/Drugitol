@@ -5,6 +5,9 @@ import SwiftPizzaSnips
 @MainActor
 protocol DosageTableViewControllerCoordinator: Coordinator {
 	func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, tappedDosage dosage: DoseEntry)
+	func dosageTableViewController(
+		_ dosageTableViewController: DosageTableViewController,
+		tappedPendingDosage dosage: LocalNotifications.PendingDosageInfo)
 }
 
 @MainActor
@@ -424,7 +427,7 @@ extension DosageTableViewController: UICollectionViewDelegate {
 		else { return }
 		switch item {
 		case .pendingDosage(let doseInfo), .dueDosage(let doseInfo):
-			print(doseInfo.drugID)
+			coordinator.dosageTableViewController(self, tappedPendingDosage: doseInfo)
 		case .history(let doseID):
 			guard let doseEntry: DoseEntry = drugController.modelObject(for: doseID) else { return }
 			coordinator.dosageTableViewController(self, tappedDosage: doseEntry)

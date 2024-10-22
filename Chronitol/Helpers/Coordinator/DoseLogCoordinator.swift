@@ -34,6 +34,13 @@ extension DoseLogCoordinator: DosageTableViewControllerCoordinator {
 		dosageDetailVC.modalPresentationStyle = .overFullScreen
 		rootController.present(dosageDetailVC, animated: true)
 	}
+
+	func dosageTableViewController(
+		_ dosageTableViewController: DosageTableViewController,
+		tappedPendingDosage dosage: LocalNotifications.PendingDosageInfo
+	) {
+		print("tapped \(dosage.drugName)")
+	}
 }
 //extension DosageTableViewController: DosageDetailViewControllerDelegate {
 //	// sometimes the frc doesn't trigger a refresh when an entry is updated, so this will do so when that happens
