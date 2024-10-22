@@ -58,6 +58,7 @@ class DosageTableViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		navigationItem.title = "Dosage Log"
+		view.backgroundColor = .systemBackground
 
 		setupDebugButton()
 		setupTableView()
