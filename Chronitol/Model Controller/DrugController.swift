@@ -297,8 +297,8 @@ extension DrugController {
 					guard
 						let idStr = alarm["id"] as? String,
 						let id = UUID(uuidString: idStr),
-						let alarmHour = alarm["hour"] as? Int,
-						let alarmMinute = alarm["minute"] as? Int
+						let alarmHour = alarm["alarmHour"] as? Int,
+						let alarmMinute = alarm["alarmMinute"] as? Int
 					else { return nil }
 					let alarm = DrugAlarm(alarmHour: alarmHour, alarmMinute: alarmMinute, context: context)
 					alarm.id = id
