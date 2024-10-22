@@ -25,8 +25,6 @@
 		333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 333F748C23A88EE900E51514 /* Drugs.xcdatamodeld */; };
 		333F749123A8902D00E51514 /* AlarmView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 333F749023A8902D00E51514 /* AlarmView.xib */; };
 		333F749323A8905100E51514 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333F749223A8905100E51514 /* AlarmView.swift */; };
-		335E562623BDCA1E008FE6A6 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 335E562523BDCA1E008FE6A6 /* Settings.storyboard */; };
-		335E562823BDCCC6008FE6A6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335E562723BDCCC6008FE6A6 /* SettingsViewController.swift */; };
 		3363402E278BFBBA00EFEF51 /* SimpleConveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3363402D278BFBBA00EFEF51 /* SimpleConveniences.swift */; };
 		33634030278BFC7500EFEF51 /* Weakify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3363402F278BFC7500EFEF51 /* Weakify.swift */; };
 		33634033278C1FD400EFEF51 /* DateBuilder in Frameworks */ = {isa = PBXBuildFile; productRef = 33634032278C1FD400EFEF51 /* DateBuilder */; };
@@ -34,6 +32,7 @@
 		33A38CE923B4379F00783926 /* LocalNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CE823B4379F00783926 /* LocalNotifications.swift */; };
 		33A38CEB23B43B3900783926 /* AlarmNumberConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */; };
 		33B8D27C2CC70D3300462CC6 /* SwiftPizzaSnips in Frameworks */ = {isa = PBXBuildFile; productRef = 33B8D27B2CC70D3300462CC6 /* SwiftPizzaSnips */; };
+		33B8D27F2CC769E300462CC6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B8D27E2CC769E300462CC6 /* SettingsView.swift */; };
 		33F4D61F278D426C00C0D821 /* Storyboarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D61E278D426C00C0D821 /* Storyboarded.swift */; };
 		33F4D621278D433600C0D821 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D620278D433600C0D821 /* Coordinator.swift */; };
 		33F4D623278D437900C0D821 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D622278D437900C0D821 /* RootCoordinator.swift */; };
@@ -69,14 +68,13 @@
 		334D094823B2A2D80074FFF6 /* Drugs 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 2.xcdatamodel"; sourceTree = "<group>"; };
 		334D094923B2AEFA0074FFF6 /* Drugs 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Drugs 3.xcdatamodel"; sourceTree = "<group>"; };
 		335E562323BD7DE3008FE6A6 /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
-		335E562523BDCA1E008FE6A6 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
-		335E562723BDCCC6008FE6A6 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		3363402D278BFBBA00EFEF51 /* SimpleConveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleConveniences.swift; sourceTree = "<group>"; };
 		3363402F278BFC7500EFEF51 /* Weakify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Weakify.swift; sourceTree = "<group>"; };
 		338D4C2E27935C9B00EE111F /* Chronitol.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chronitol.entitlements; sourceTree = "<group>"; };
 		33A38CE623B3073300783926 /* DefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsManager.swift; sourceTree = "<group>"; };
 		33A38CE823B4379F00783926 /* LocalNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotifications.swift; sourceTree = "<group>"; };
 		33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmNumberConverter.swift; sourceTree = "<group>"; };
+		33B8D27E2CC769E300462CC6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		33F4D61E278D426C00C0D821 /* Storyboarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboarded.swift; sourceTree = "<group>"; };
 		33F4D620278D433600C0D821 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		33F4D622278D437900C0D821 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
@@ -139,7 +137,6 @@
 				333F748B23A88ED800E51514 /* Model */,
 				333F748823A88EBE00E51514 /* Helpers */,
 				333F746F23A888B400E51514 /* Main.storyboard */,
-				335E562523BDCA1E008FE6A6 /* Settings.storyboard */,
 				333F747223A888B500E51514 /* Assets.xcassets */,
 				333F747423A888B500E51514 /* LaunchScreen.storyboard */,
 				333F747723A888B500E51514 /* Info.plist */,
@@ -155,7 +152,7 @@
 				333F748623A88E5D00E51514 /* TimeSelectionViewController.swift */,
 				3335EB7023B0056900509A2F /* DosageTableViewController.swift */,
 				3335EB7223B0341000509A2F /* DosageDetaillViewController.swift */,
-				335E562723BDCCC6008FE6A6 /* SettingsViewController.swift */,
+				33B8D27D2CC769DB00462CC6 /* Settings */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -193,6 +190,14 @@
 				33FC406F278D6889001D70FB /* DrugSelectionView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		33B8D27D2CC769DB00462CC6 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				33B8D27E2CC769E300462CC6 /* SettingsView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		33F4D61D278D426000C0D821 /* Coordinator */ = {
@@ -290,7 +295,6 @@
 				333F747323A888B500E51514 /* Assets.xcassets in Resources */,
 				33FC407C278D71E4001D70FB /* pill_shake.caf in Resources */,
 				333F747123A888B400E51514 /* Main.storyboard in Resources */,
-				335E562623BDCA1E008FE6A6 /* Settings.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,6 +335,7 @@
 				33A38CE723B3073300783926 /* DefaultsManager.swift in Sources */,
 				333F748723A88E5D00E51514 /* TimeSelectionViewController.swift in Sources */,
 				33A38CEB23B43B3900783926 /* AlarmNumberConverter.swift in Sources */,
+				33B8D27F2CC769E300462CC6 /* SettingsView.swift in Sources */,
 				33F4D61F278D426C00C0D821 /* Storyboarded.swift in Sources */,
 				3363402E278BFBBA00EFEF51 /* SimpleConveniences.swift in Sources */,
 				3335EB7123B0056900509A2F /* DosageTableViewController.swift in Sources */,
@@ -339,7 +344,6 @@
 				33FC4070278D6889001D70FB /* DrugSelectionView.swift in Sources */,
 				333F748423A88E3000E51514 /* NewDrugViewController.swift in Sources */,
 				333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */,
-				335E562823BDCCC6008FE6A6 /* SettingsViewController.swift in Sources */,
 				33F4D625278D44BC00C0D821 /* DoseLogCoordinator.swift in Sources */,
 				333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */,
 				333F749323A8905100E51514 /* AlarmView.swift in Sources */,
