@@ -44,16 +44,32 @@ class DosageTableViewController: UIViewController {
 
 	private unowned let coordinator: DosageTableViewControllerCoordinator
 
+	private var listenerTask: Task<Void, Never>!
+
 	init(drugController: DrugController, coordinator: DosageTableViewControllerCoordinator) {
 		self.drugController = drugController
 		self.coordinator = coordinator
 		super.init(nibName: nil, bundle: nil)
+		self.listenerTask = Task { [weak self] in
+			var pub = NotificationCenter
+				.default
+				.publisher(for: UIApplication.willEnterForegroundNotification)
+				.values
+				.makeAsyncIterator()
+			while await pub.next() != nil {
+				self?.updatePendingDosages()
+			}
+		}
 	}
 	
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
-	
+
+	deinit {
+		listenerTask?.cancel()
+	}
+
 	// MARK: - Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -103,6 +119,7 @@ class DosageTableViewController: UIViewController {
 		super.viewWillAppear(animated)
 
 		dosageListCollection.reloadData()
+		updatePendingDosages()
 	}
 
 	private func setupTableView() {
@@ -265,6 +282,13 @@ class DosageTableViewController: UIViewController {
 
 	private func updateTable(from snap: NSDiffableDataSourceSnapshot<String, NSManagedObjectID>) {
 		updateTable(from: snap, and: nil)
+	}
+
+	private func updatePendingDosages() {
+		Task {
+			let dosages = try await LocalNotifications.shared.getPendingDosageInfo()
+			updateTable(withPendingDosages: dosages)
+		}
 	}
 
 	private func updateTable(withPendingDosages pendingDosages: [PendingDosageInfo]) {

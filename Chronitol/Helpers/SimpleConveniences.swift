@@ -57,3 +57,5 @@ extension UIView.ConstraintEdgeToggle: ExpressibleByBooleanLiteral {
 		self.init(uniform: booleanLiteral)
 	}
 }
+
+extension Notification: @retroactive @unchecked Sendable {}
