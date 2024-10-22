@@ -234,6 +234,7 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		willPresent notification: UNNotification,
 		withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
 			completionHandler([.banner, .sound, .list])
+			NotificationCenter.default.post(name: .dosageReminderNotificationShown, object: nil)
 		}
 
 	struct PendingDosageInfo: Codable, Hashable, Sendable {
@@ -283,4 +284,5 @@ fileprivate extension String {
 
 extension NSNotification.Name {
 	static let dosageTakenNotification = NSNotification.Name(rawValue: "com.redeggproductions.dosageTaken")
+	static let dosageReminderNotificationShown = NSNotification.Name(rawValue: "com.redeggproductions.reminderShown")
 }

@@ -46,16 +46,27 @@ class DosageTableViewController: UIViewController {
 
 	private unowned let coordinator: DosageTableViewControllerCoordinator
 
-	private var listenerTask: Task<Void, Never>!
+	private var foregroundingListenerTask: Task<Void, Never>!
+	private var notificationShownListenerTask: Task<Void, Never>!
 
 	init(drugController: DrugController, coordinator: DosageTableViewControllerCoordinator) {
 		self.drugController = drugController
 		self.coordinator = coordinator
 		super.init(nibName: nil, bundle: nil)
-		self.listenerTask = Task { [weak self] in
+		self.foregroundingListenerTask = Task { [weak self] in
 			var pub = NotificationCenter
 				.default
 				.publisher(for: UIApplication.willEnterForegroundNotification)
+				.values
+				.makeAsyncIterator()
+			while await pub.next() != nil {
+				self?.updatePendingDosages()
+			}
+		}
+		self.foregroundingListenerTask = Task { [weak self] in
+			var pub = NotificationCenter
+				.default
+				.publisher(for: .dosageReminderNotificationShown)
 				.values
 				.makeAsyncIterator()
 			while await pub.next() != nil {
@@ -69,7 +80,7 @@ class DosageTableViewController: UIViewController {
 	}
 
 	deinit {
-		listenerTask?.cancel()
+		foregroundingListenerTask?.cancel()
 	}
 
 	// MARK: - Lifecycle
