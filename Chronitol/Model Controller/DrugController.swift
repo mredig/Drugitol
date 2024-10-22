@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import CoreData
 import Combine
+import SwiftPizzaSnips
 
 class DrugController: NSObject {
 
@@ -242,8 +243,79 @@ extension DrugController: NSFetchedResultsControllerDelegate {
 
 // MARK: - Import/Export
 extension DrugController {
-	func importFromPlistData(_ data: Data) {
+	func clearDB() async throws {
+		let dosesFR = DoseEntry.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
+		dosesFR.resultType = .managedObjectIDResultType
+		let dosesBatch = NSBatchDeleteRequest(fetchRequest: dosesFR)
 
+		let alarmsFR = DrugAlarm.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
+		alarmsFR.resultType = .managedObjectIDResultType
+		let alarmsBatch = NSBatchDeleteRequest(fetchRequest: alarmsFR)
+
+		let drugFR = DrugEntry.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
+		drugFR.resultType = .managedObjectIDResultType
+		let drugBatch = NSBatchDeleteRequest(fetchRequest: drugFR)
+
+		let context = ChronCoreDataStack.shared.container.newBackgroundContext()
+		try await context.perform {
+			func process(result: NSPersistentStoreResult) {
+				guard
+					let deleteResult = result as? NSBatchDeleteResult,
+					let objectIDs = deleteResult.result as? [NSManagedObjectID]
+				else { return }
+
+				NSManagedObjectContext.mergeChanges(
+					fromRemoteContextSave: [NSDeletedObjectIDsKey: objectIDs],
+					into: [context, ChronCoreDataStack.shared.mainContext])
+			}
+
+			let doseResult = try context.execute(dosesBatch)
+			process(result: doseResult)
+			let alarmsResult = try context.execute(alarmsBatch)
+			process(result: alarmsResult)
+			let drugResult = try context.execute(drugBatch)
+			process(result: drugResult)
+		}
+	}
+
+	func importFromPlistData(_ data: Data) async throws {
+		let drugEntries = try (try PropertyListSerialization.propertyList(from: data, format: nil) as? [[String: Any]]).unwrap()
+
+		let context = ChronCoreDataStack.shared.container.newBackgroundContext()
+		try await context.perform {
+			for drugEntryDict in drugEntries {
+				guard
+					let name = drugEntryDict["name"] as? String,
+					let isActive = drugEntryDict["isActive"] as? Bool,
+					let alarms = drugEntryDict["alarms"] as? [[String: Any]],
+					let dosages = drugEntryDict["takenDosages"] as? [[String: Any]]
+				else { continue }
+
+				let newDrug = DrugEntry(name: name, isActive: isActive, context: context)
+
+				let drugAlarms: [DrugAlarm] = alarms.compactMap { alarm in
+					guard
+						let idStr = alarm["id"] as? String,
+						let id = UUID(uuidString: idStr),
+						let alarmHour = alarm["hour"] as? Int,
+						let alarmMinute = alarm["minute"] as? Int
+					else { return nil }
+					let alarm = DrugAlarm(alarmHour: alarmHour, alarmMinute: alarmMinute, context: context)
+					alarm.id = id
+					return alarm
+				}
+				newDrug.alarms = NSSet(array: drugAlarms)
+
+				for dosage in dosages {
+					guard
+						let timestamp = dosage["timestamp"] as? Date
+					else { continue }
+
+					_ = DoseEntry(timestamp: timestamp, for: newDrug, context: context)
+				}
+			}
+			try context.save()
+		}
 	}
 
 	/// doesn't actually export, but provides the data that can then BE exported
