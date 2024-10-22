@@ -183,6 +183,18 @@ class DosageTableViewController: UIViewController {
 				var config = cell.defaultContentConfiguration()
 				config.text = dosageInfo.drugName
 				config.secondaryText = dosageInfo.dueTimestampString
+				let color: UIColor
+				let timeDistance = abs(dosageInfo.dueTimestamp.date.timeIntervalSince(.now))
+				if timeDistance < 15 * 60 {
+					color = .systemGreen
+				} else if timeDistance < 60 * 60 {
+					color = .systemYellow
+				} else if timeDistance < 120 * 60 {
+					color = .systemOrange
+				} else {
+					color = .systemRed
+				}
+				config.image = UIImage(systemName: "circle.fill")?.withTintColor(color, renderingMode: .alwaysOriginal)
 				cell.contentConfiguration = config
 			})
 
@@ -314,6 +326,7 @@ class DosageTableViewController: UIViewController {
 						return willBeDue.addingTimeInterval(60 * -60) < .now
 					}
 				}
+				.sorted(by: { $0.dueTimestamp.date < $1.dueTimestamp.date })
 
 			updateTable(withPendingDosages: dosages)
 		}
@@ -365,10 +378,12 @@ class DosageTableViewController: UIViewController {
 		if let dueDoses = pendingDosages?[.due] {
 			newSnap.appendSections([.due])
 			newSnap.appendItems(dueDoses, toSection: .due)
+			newSnap.reconfigureItems(dueDoses)
 		}
 		if let upcomingDoses = pendingDosages?[.upcoming] {
 			newSnap.appendSections([.upcoming])
 			newSnap.appendItems(upcomingDoses, toSection: .upcoming)
+			newSnap.reconfigureItems(upcomingDoses)
 		}
 
 		if let historySnap {
