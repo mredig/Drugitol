@@ -140,6 +140,7 @@ class DrugController: NSObject {
 			entry.isActive = isActive
 			entry.addToAlarms(NSSet(array: alarms))
 		}
+		save(withErrorLogging: "Failed saving drug entry '\(entry)'")
 
 		alarms.forEach { alarm in
 			guard let id = alarm.id?.uuidString else { return }
