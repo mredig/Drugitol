@@ -59,7 +59,7 @@ class LocalNotifications: NSObject {
 				let name = request.content.userInfo[Self.drugNameKey] as? String ?? request.content.title
 				let id = (request.content.userInfo[Self.drugObjectIDKey] as? String).flatMap(URL.init(string:))
 				return PendingDosageInfo(
-					alarmID: request.identifier,
+					notificationID: request.identifier,
 					drugID: id,
 					dueTimestamp: .upcoming(trigger?.nextTriggerDate() ?? .now.addingTimeInterval(-60)),
 					drugName: name)
@@ -70,7 +70,7 @@ class LocalNotifications: NSObject {
 				let name = request.content.userInfo[Self.drugNameKey] as? String ?? request.content.title
 				let id = (request.content.userInfo[Self.drugObjectIDKey] as? String).flatMap(URL.init(string:))
 				return PendingDosageInfo(
-					alarmID: request.identifier,
+					notificationID: request.identifier,
 					drugID: id,
 					dueTimestamp: .due(notification.date),
 					drugName: name)
@@ -130,6 +130,7 @@ class LocalNotifications: NSObject {
 		id: String,
 		userInfo: [AnyHashable: Any]
 	) async throws {
+		defer { NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil) }
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
@@ -192,10 +193,17 @@ class LocalNotifications: NSObject {
 	func deleteDrugAlarmNotification(withID id: String) {
 		nc.removeDeliveredNotifications(withIdentifiers: [id])
 		nc.removePendingNotificationRequests(withIdentifiers: [id])
+		NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil)
+	}
+
+	func resolveDeliveredNotification(withID id: String) {
+		nc.removeDeliveredNotifications(withIdentifiers: [id])
+		NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil)
 	}
 
 	func deleteDeliveredReminders() {
 		nc.removeAllDeliveredNotifications()
+		NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil)
 	}
 
 	@MainActor
@@ -257,7 +265,7 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		}
 
 	struct PendingDosageInfo: Codable, Hashable, Sendable {
-		let alarmID: String
+		let notificationID: String
 		let drugID: URL?
 		let dueTimestamp: TimeRelativity
 		enum TimeRelativity: Codable, Hashable, Sendable {

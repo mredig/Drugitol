@@ -40,6 +40,24 @@ extension DoseLogCoordinator: DosageTableViewControllerCoordinator {
 		tappedPendingDosage dosage: LocalNotifications.PendingDosageInfo
 	) {
 		print("tapped \(dosage.drugName)")
+		switch dosage.dueTimestamp {
+		case .due:
+			Task {
+				guard
+					let idURL = dosage.drugID,
+					let drugObjectID = ChronCoreDataStack
+						.shared
+						.mainContext
+						.persistentStoreCoordinator?
+						.managedObjectID(forURIRepresentation: idURL)
+				else { return }
+
+				await drugController.createDoseEntry(at: .now, forDrugWithID: drugObjectID)
+				LocalNotifications.shared.resolveDeliveredNotification(withID: dosage.notificationID)
+			}
+		case .upcoming:
+			break
+		}
 	}
 }
 //extension DosageTableViewController: DosageDetailViewControllerDelegate {
