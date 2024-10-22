@@ -31,9 +31,9 @@ class LocalNotifications: NSObject {
 
 	private func setupActions() {
 
-		let remind30Action = UNNotificationAction(identifier: .drugNotificationRemind30ActionID, title: "Remind me in 30 minutes", options: [])
-		let remind15Action = UNNotificationAction(identifier: .drugNotificationRemind15ActionID, title: "Remind me in 15 minutes", options: [])
-		let remind5Action = UNNotificationAction(identifier: .drugNotificationRemind5ActionID, title: "Remind me in 5 minutes", options: [])
+		let remind30Action = UNNotificationAction(identifier: NotificationDelay.remindIn30.rawValue, title: "Remind me in 30 minutes", options: [])
+		let remind15Action = UNNotificationAction(identifier: NotificationDelay.remindIn15.rawValue, title: "Remind me in 15 minutes", options: [])
+		let remind5Action = UNNotificationAction(identifier: NotificationDelay.remindIn5.rawValue, title: "Remind me in 5 minutes", options: [])
 		let dosageTakenAction = UNNotificationAction(identifier: .drugNotificationDosageTakenActionID, title: "I'm taking it now!", options: [])
 		let dosageIgnoredAction = UNNotificationAction(identifier: .drugNotificationDosageIgnoredActionID, title: "Ignore this dose", options: [.destructive])
 
@@ -73,6 +73,7 @@ class LocalNotifications: NSObject {
 		return await deliveredNotifications + pendingNotifications
 	}
 
+	@MainActor
 	func createDrugReminder(forDrugAlarmWithID alarmID: NSManagedObjectID, using drugController: DrugController) async throws {
 		let context = drugController.coreDataStack.container.newBackgroundContext()
 		let info = try await context.perform(
@@ -115,7 +116,14 @@ class LocalNotifications: NSObject {
 		case specificTime(hour: Int, minute: Int)
 	}
 
-	func createDrugReminder(titled title: String, body: String, scheduleInfo: SchedulingInfo, id: String, userInfo: [AnyHashable: Any]) async throws {
+	@MainActor
+	func createDrugReminder(
+		titled title: String,
+		body: String,
+		scheduleInfo: SchedulingInfo,
+		id: String,
+		userInfo: [AnyHashable: Any]
+	) async throws {
 		let content = UNMutableNotificationContent()
 		content.title = title
 		content.body = body
@@ -183,6 +191,23 @@ class LocalNotifications: NSObject {
 	func deleteDeliveredReminders() {
 		nc.removeAllDeliveredNotifications()
 	}
+
+	@MainActor
+	func createDelayedReminder(from request: UNNotificationRequest, delay: NotificationDelay) async throws {
+		let content = request.content
+		let delayedTitle = {
+			guard
+				let drugName = content.userInfo[Self.drugNameKey] as? String
+			else { return content.title }
+			return "Have you taken your \(drugName) yet?"
+		}()
+		try await createDrugReminder(
+			titled: delayedTitle,
+			body: content.body,
+			scheduleInfo: .delayedFromNow(seconds: delay.seconds),
+			id: request.identifier,
+			userInfo: content.userInfo)
+	}
 }
 
 extension LocalNotifications: UNUserNotificationCenterDelegate {
@@ -193,39 +218,23 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 			print("did receive: \(response.actionIdentifier)")
 			defer { completionHandler() }
 
-			let content = response.notification.request.content
-			let userInfo = content.userInfo
 			let request = response.notification.request
 			if request.trigger is UNTimeIntervalNotificationTrigger {
 				deleteDrugAlarmNotification(request: response.notification.request)
 			}
 
-			let delayedTitle: String
-			if let drugName = userInfo["drugName"] as? String {
-				delayedTitle = "Have you taken your \(drugName) yet?"
-			} else {
-				delayedTitle = content.title
-			}
-
-			let identifier = request.identifier.replacingOccurrences(of: ##"\:.*"##, with: "", options: .regularExpression, range: nil)
+			let cleanIdentifier = request.identifier.replacingOccurrences(of: ##"\:.*"##, with: "", options: .regularExpression, range: nil)
 
 			Task {
-				switch response.actionIdentifier {
-				case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier, UNNotificationDefaultActionIdentifier:
-					try await createDrugReminder(titled: delayedTitle, body: content.body, scheduleInfo: .delayedFromNow(seconds: 5 * 60), id: identifier, userInfo: userInfo)
-					print("delay 5")
-				case .drugNotificationRemind15ActionID:
-					try await createDrugReminder(titled: delayedTitle, body: content.body, scheduleInfo: .delayedFromNow(seconds: 15 * 60), id: identifier, userInfo: userInfo)
-					print("delay 15")
-				case .drugNotificationRemind30ActionID:
-					try await createDrugReminder(titled: delayedTitle, body: content.body, scheduleInfo: .delayedFromNow(seconds: 30 * 60), id: identifier, userInfo: userInfo)
-					print("delay 30")
-				case .drugNotificationDosageTakenActionID:
-					NotificationCenter.default.post(name: .dosageTakenNotification, object: nil, userInfo: ["id": identifier])
-					print("sent notification: \(identifier)")
-				default:
-					break
+				guard
+					let delay = NotificationDelay(rawValue: response.actionIdentifier)
+				else {
+					guard response.actionIdentifier == .drugNotificationDosageTakenActionID else { return }
+					NotificationCenter.default.post(name: .dosageTakenNotification, object: nil, userInfo: ["id": cleanIdentifier])
+					print("sent notification: \(cleanIdentifier)")
+					return
 				}
+				return try await createDelayedReminder(from: request, delay: delay)
 			}
 		}
 
@@ -275,9 +284,6 @@ enum NotificationError: Error, LocalizedError {
 fileprivate extension String {
 	static let drugNotificationCategoryIdentifier = "com.redeggproductions.drugNotificationActions"
 
-	static let drugNotificationRemind30ActionID = "com.redeggproductions.drugNotificationRemind30"
-	static let drugNotificationRemind15ActionID = "com.redeggproductions.drugNotificationRemind15"
-	static let drugNotificationRemind5ActionID = "com.redeggproductions.drugNotificationRemind5"
 	static let drugNotificationDosageTakenActionID = "com.redeggproductions.drugNotificationDosageTaken"
 	static let drugNotificationDosageIgnoredActionID = "com.redeggproductions.drugNotificationDosageIgnored"
 }
@@ -285,4 +291,21 @@ fileprivate extension String {
 extension NSNotification.Name {
 	static let dosageTakenNotification = NSNotification.Name(rawValue: "com.redeggproductions.dosageTaken")
 	static let dosageReminderNotificationShown = NSNotification.Name(rawValue: "com.redeggproductions.reminderShown")
+}
+
+enum NotificationDelay: String, Sendable, Hashable, CaseIterable {
+	case remindIn30 = "com.redeggproductions.drugNotificationRemind30"
+	case remindIn15 = "com.redeggproductions.drugNotificationRemind15"
+	case remindIn5 = "com.redeggproductions.drugNotificationRemind5"
+
+	var seconds: Double {
+		switch self {
+		case .remindIn5:
+			5 * 60
+		case .remindIn15:
+			15 * 60
+		case .remindIn30:
+			30 * 60
+		}
+	}
 }
