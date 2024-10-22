@@ -359,13 +359,13 @@ class DosageTableViewController: UIViewController {
 			}
 			return nil
 		}()
-		if let upcomingDoses = pendingDosages?[.upcoming] {
-			newSnap.appendSections([.upcoming])
-			newSnap.appendItems(upcomingDoses, toSection: .upcoming)
-		}
 		if let dueDoses = pendingDosages?[.due] {
 			newSnap.appendSections([.due])
 			newSnap.appendItems(dueDoses, toSection: .due)
+		}
+		if let upcomingDoses = pendingDosages?[.upcoming] {
+			newSnap.appendSections([.upcoming])
+			newSnap.appendItems(upcomingDoses, toSection: .upcoming)
 		}
 
 		if let historySnap {
