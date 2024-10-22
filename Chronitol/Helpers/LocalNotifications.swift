@@ -1,5 +1,6 @@
 import UIKit
 import UserNotifications
+import Foundation
 import CoreData
 
 class LocalNotifications: NSObject {
@@ -8,12 +9,6 @@ class LocalNotifications: NSObject {
 	static let drugNameKey = "drugName"
 	static let alarmObjectIDKey = "alarmObjectID"
 	static let drugObjectIDKey = "drugObjectID"
-
-	var pendingNotifications: [UNNotificationRequest] {
-		get async {
-			await nc.pendingNotificationRequests()
-		}
-	}
 
 	static let shared = LocalNotifications()
 
@@ -61,6 +56,21 @@ class LocalNotifications: NSObject {
 			print("delivered")
 			notifications.forEach { print($0) }
 		}
+	}
+
+	func getPendingDosageInfo() async throws -> [PendingDosageInfo] {
+		async let pendingNotifications = nc.pendingNotificationRequests()
+			.asyncConcurrentMap { request in
+				let trigger = request.trigger as? UNCalendarNotificationTrigger
+				return PendingDosageInfo(drugID: request.identifier, nextDueDate: trigger?.nextTriggerDate() ?? .now, drugName: request.content.title)
+			}
+		async let deliveredNotifications = nc.deliveredNotifications()
+			.asyncConcurrentMap { notification in
+				let request = notification.request
+				return PendingDosageInfo(drugID: request.identifier, nextDueDate: notification.date, drugName: request.content.title)
+			}
+
+		return await deliveredNotifications + pendingNotifications
 	}
 
 	func createDrugReminder(forDrugAlarmWithID alarmID: NSManagedObjectID, using drugController: DrugController) async throws {
@@ -228,6 +238,21 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
 			completionHandler([.banner, .sound, .list])
 		}
+
+	struct PendingDosageInfo: Codable, Hashable, Sendable {
+		let drugID: String
+		let nextDueDate: Date
+		let drugName: String
+		var nextDueDateString: String {
+			Self.dateFormatter.string(from: nextDueDate)
+		}
+
+		private static let dateFormatter = DateFormatter().with {
+			$0.dateStyle = .short
+			$0.timeStyle = .short
+			$0.doesRelativeDateFormatting = true
+		}
+	}
 }
 
 enum NotificationError: Error, LocalizedError {

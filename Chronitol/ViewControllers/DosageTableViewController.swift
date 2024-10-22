@@ -32,7 +32,7 @@ class DosageTableViewController: UIViewController {
 		case history(NSManagedObjectID)
 	}
 
-	typealias PendingDosageInfo = String
+	typealias PendingDosageInfo = LocalNotifications.PendingDosageInfo
 
 	private static let sectionHeadFormatter: DateFormatter = {
 		let formatter = DateFormatter()
@@ -91,12 +91,9 @@ class DosageTableViewController: UIViewController {
 
 	@objc func pending() {
 		Task {
-			let pending = await LocalNotifications.shared.pendingNotifications
+			let pending = try await LocalNotifications.shared.getPendingDosageInfo()
 
 			pending
-				.map {
-					($0.identifier, $0.trigger, $0.content.title, $0.content.body, $0.content.subtitle, $0.content.categoryIdentifier)
-				}
 				.forEach { print($0) }
 
 		}
@@ -151,7 +148,8 @@ class DosageTableViewController: UIViewController {
 		let pendingCellProvider = UICollectionView.CellRegistration<UICollectionViewListCell, PendingDosageInfo>(
 			handler: weakify { cell, indexPath, dosageInfo, strongSelf in
 				var config = cell.defaultContentConfiguration()
-				config.text = "pending"
+				config.text = dosageInfo.drugName
+				config.secondaryText = dosageInfo.nextDueDateString
 				cell.contentConfiguration = config
 			})
 
@@ -167,19 +165,28 @@ class DosageTableViewController: UIViewController {
 		let headerProvider = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(
 			elementKind: UICollectionView.elementKindSectionHeader,
 			handler: weakify { header, kind, indexPath, strongSelf in
-				var headerText = "unsure"
-				if
-					let item = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath),
-					case .history(let id) = item,
-					let dosageEntry: DoseEntry = strongSelf.drugController.modelObject(for: id),
-					let date = dosageEntry.date {
-
-					headerText = Self.sectionHeadFormatter.string(from: date)
-				}
-
 				var config = header.defaultContentConfiguration()
-				config.text = headerText
-				header.contentConfiguration = config
+				defer { header.contentConfiguration = config }
+
+				guard
+					let section = strongSelf.dosageListDataSource.sectionIdentifier(for: indexPath.section)
+				else { return }
+
+				switch section {
+				case .pending:
+					config.text = "Pending Dosages"
+				case .fetchedResultsHeader:
+					guard
+						let item = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath),
+						case .history(let id) = item,
+						let dosageEntry: DoseEntry = strongSelf.drugController.modelObject(for: id),
+						let date = dosageEntry.date
+					else { 
+						config.text = "Unknown Date"
+						return
+					}
+					config.text = Self.sectionHeadFormatter.string(from: date)
+				}
 			})
 		dosageListDataSource.supplementaryViewProvider = weakify { collectionView, kind, indexPath, strongSelf in
 			collectionView.dequeueConfiguredReusableSupplementary(using: headerProvider, for: indexPath)
@@ -260,11 +267,11 @@ class DosageTableViewController: UIViewController {
 		updateTable(from: snap, and: nil)
 	}
 
-	private func updateTable(withPendingDosages pendingDosages: [String]) {
+	private func updateTable(withPendingDosages pendingDosages: [PendingDosageInfo]) {
 		updateTable(from: nil, and: pendingDosages)
 	}
 
-	private func updateTable(from historySnap: NSDiffableDataSourceSnapshot<String, NSManagedObjectID>?, and pendingDosages: [String]?) {
+	private func updateTable(from historySnap: NSDiffableDataSourceSnapshot<String, NSManagedObjectID>?, and pendingDosages: [PendingDosageInfo]?) {
 		var newSnap = NSDiffableDataSourceSnapshot<DosageSection, DosageItem>()
 		let pendingDosages: [DosageItem]? = {
 			if let out = pendingDosages?.map(DosageItem.pendingDosage) {
@@ -295,9 +302,10 @@ class DosageTableViewController: UIViewController {
 			if historySnap.reloadedSectionIdentifiers.isOccupied {
 				newSnap.reloadSections(historySnap.reloadedSectionIdentifiers.map(DosageSection.fetchedResultsHeader))
 			}
-		} else if let recentSnap = _mostRecentSnapshot, recentSnap.sectionIdentifiers.contains(where: { $0 != .pending }) {
-			newSnap.appendSections(recentSnap.sectionIdentifiers)
-			for sectionID in recentSnap.sectionIdentifiers {
+		} else if let recentSnap = _mostRecentSnapshot {
+			let ids = recentSnap.sectionIdentifiers.filter { $0 != .pending }
+			newSnap.appendSections(ids)
+			for sectionID in ids {
 				newSnap.appendItems(recentSnap.itemIdentifiers(inSection: sectionID), toSection: sectionID)
 			}
 		}
