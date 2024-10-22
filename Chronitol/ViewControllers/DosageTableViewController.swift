@@ -23,12 +23,14 @@ class DosageTableViewController: UIViewController {
 	private var _mostRecentSnapshot: NSDiffableDataSourceSnapshot<DosageSection, DosageItem>?
 
 	private enum DosageSection: Sendable, Hashable {
-		case pending
+		case upcoming
+		case due
 		case fetchedResultsHeader(String)
 	}
 
 	public enum DosageItem: Sendable, Hashable {
 		case pendingDosage(PendingDosageInfo)
+		case dueDosage(PendingDosageInfo)
 		case history(NSManagedObjectID)
 	}
 
@@ -174,8 +176,8 @@ class DosageTableViewController: UIViewController {
 			switch objectID {
 			case .history(let objectID):
 				return collectionView.dequeueConfiguredReusableCell(using: historyCellProvider, for: indexPath, item: objectID)
-			case .pendingDosage(let pending):
-				return collectionView.dequeueConfiguredReusableCell(using: pendingCellProvider, for: indexPath, item: pending)
+			case .pendingDosage(let dosageInfo), .dueDosage(let dosageInfo):
+				return collectionView.dequeueConfiguredReusableCell(using: pendingCellProvider, for: indexPath, item: dosageInfo)
 			}
 		})
 
@@ -190,8 +192,10 @@ class DosageTableViewController: UIViewController {
 				else { return }
 
 				switch section {
-				case .pending:
-					config.text = "Pending Dosages"
+				case .upcoming:
+					config.text = "Upcoming Dosages"
+				case .due:
+					config.text = "Due Dosages"
 				case .fetchedResultsHeader:
 					guard
 						let item = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath),
@@ -286,29 +290,71 @@ class DosageTableViewController: UIViewController {
 
 	private func updatePendingDosages() {
 		Task {
-			let dosages = try await LocalNotifications.shared.getPendingDosageInfo()
+			let dosages = try await LocalNotifications
+				.shared
+				.getPendingDosageInfo()
+				.filter {
+					switch $0.dueTimestamp {
+					case .due: return true
+					case .upcoming(let willBeDue):
+						return willBeDue.addingTimeInterval(60 * -60) < .now
+					}
+				}
+
 			updateTable(withPendingDosages: dosages)
 		}
 	}
 
 	private func updateTable(withPendingDosages pendingDosages: [PendingDosageInfo]) {
-		updateTable(from: nil, and: pendingDosages)
+		let dosagessss: [DosageSection: [DosageItem]] = pendingDosages
+			.nfurcate { info in
+				switch info.dueTimestamp {
+				case .due:
+					return DosageSection.due
+				case .upcoming:
+					return DosageSection.upcoming
+				}
+			}
+			.mapValues { infoList in
+				guard let first = infoList.first else {
+					return []
+				}
+				switch first.dueTimestamp {
+				case .due:
+					return infoList.map(DosageItem.dueDosage)
+				case .upcoming:
+					return infoList.map(DosageItem.pendingDosage)
+				}
+			}
+
+		updateTable(from: nil, and: dosagessss)
 	}
 
-	private func updateTable(from historySnap: NSDiffableDataSourceSnapshot<String, NSManagedObjectID>?, and pendingDosages: [PendingDosageInfo]?) {
+	private func updateTable(from historySnap: NSDiffableDataSourceSnapshot<String, NSManagedObjectID>?, and pendingDosages: [DosageSection: [DosageItem]]?) {
 		var newSnap = NSDiffableDataSourceSnapshot<DosageSection, DosageItem>()
-		let pendingDosages: [DosageItem]? = {
-			if let out = pendingDosages?.map(DosageItem.pendingDosage) {
+		let pendingDosages: [DosageSection: [DosageItem]]? = {
+			if let out = pendingDosages {
 				return out
-			} else if let recent = _mostRecentSnapshot, recent.indexOfSection(.pending) != nil {
-				let out = recent.itemIdentifiers(inSection: .pending)
+			} else if let recent = _mostRecentSnapshot {
+				var out: [DosageSection: [DosageItem]] = [:]
+				if recent.indexOfSection(.upcoming) != nil {
+					out[.upcoming] = recent.itemIdentifiers(inSection: .upcoming)
+				}
+				if recent.indexOfSection(.due) != nil {
+					out[.due] = recent.itemIdentifiers(inSection: .due)
+				}
+
 				return out
 			}
 			return nil
 		}()
-		if let pendingDosages {
-			newSnap.appendSections([.pending])
-			newSnap.appendItems(pendingDosages, toSection: .pending)
+		if let upcomingDoses = pendingDosages?[.upcoming] {
+			newSnap.appendSections([.upcoming])
+			newSnap.appendItems(upcomingDoses, toSection: .upcoming)
+		}
+		if let dueDoses = pendingDosages?[.due] {
+			newSnap.appendSections([.due])
+			newSnap.appendItems(dueDoses, toSection: .due)
 		}
 
 		if let historySnap {
@@ -327,7 +373,8 @@ class DosageTableViewController: UIViewController {
 				newSnap.reloadSections(historySnap.reloadedSectionIdentifiers.map(DosageSection.fetchedResultsHeader))
 			}
 		} else if let recentSnap = _mostRecentSnapshot {
-			let ids = recentSnap.sectionIdentifiers.filter { $0 != .pending }
+			let disclude = Set([DosageSection.due, .upcoming])
+			let ids = recentSnap.sectionIdentifiers.filter { disclude.contains($0) == false }
 			newSnap.appendSections(ids)
 			for sectionID in ids {
 				newSnap.appendItems(recentSnap.itemIdentifiers(inSection: sectionID), toSection: sectionID)
@@ -365,7 +412,7 @@ extension DosageTableViewController: UICollectionViewDelegate {
 			let item = dosageListDataSource.itemIdentifier(for: indexPath)
 		else { return }
 		switch item {
-		case .pendingDosage(let doseInfo):
+		case .pendingDosage(let doseInfo), .dueDosage(let doseInfo):
 			print(doseInfo.drugID)
 		case .history(let doseID):
 			guard let doseEntry: DoseEntry = drugController.modelObject(for: doseID) else { return }
@@ -381,7 +428,7 @@ extension DosageTableViewController: UICollectionViewDelegate {
 				let item = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath)
 			else { return }
 			switch item {
-			case .pendingDosage(let pendingDosageInfo):
+			case .pendingDosage(let doseInfo), .dueDosage(let doseInfo):
 				break
 			case .history(let doseID):
 				guard
