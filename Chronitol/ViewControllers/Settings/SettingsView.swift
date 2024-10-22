@@ -13,7 +13,7 @@ struct SettingsView: View {
 	var viewModel: ViewModel
 
 	var body: some View {
-		VStack {
+		VStack(spacing: 24) {
 			backupButton
 
 			importButton
