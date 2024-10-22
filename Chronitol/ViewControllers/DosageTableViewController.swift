@@ -166,7 +166,7 @@ class DosageTableViewController: UIViewController {
 			handler: weakify { cell, indexPath, dosageInfo, strongSelf in
 				var config = cell.defaultContentConfiguration()
 				config.text = dosageInfo.drugName
-				config.secondaryText = dosageInfo.nextDueDateString
+				config.secondaryText = dosageInfo.dueTimestampString
 				cell.contentConfiguration = config
 			})
 
@@ -365,8 +365,8 @@ extension DosageTableViewController: UICollectionViewDelegate {
 			let item = dosageListDataSource.itemIdentifier(for: indexPath)
 		else { return }
 		switch item {
-		case .pendingDosage(_):
-			break
+		case .pendingDosage(let doseInfo):
+			print(doseInfo.drugID)
 		case .history(let doseID):
 			guard let doseEntry: DoseEntry = drugController.modelObject(for: doseID) else { return }
 			coordinator.dosageTableViewController(self, tappedDosage: doseEntry)

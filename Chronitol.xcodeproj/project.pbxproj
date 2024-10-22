@@ -33,6 +33,7 @@
 		33A38CEB23B43B3900783926 /* AlarmNumberConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */; };
 		33B8D27C2CC70D3300462CC6 /* SwiftPizzaSnips in Frameworks */ = {isa = PBXBuildFile; productRef = 33B8D27B2CC70D3300462CC6 /* SwiftPizzaSnips */; };
 		33B8D27F2CC769E300462CC6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B8D27E2CC769E300462CC6 /* SettingsView.swift */; };
+		33B8D2812CC7872B00462CC6 /* UNNotifications+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B8D2802CC7872300462CC6 /* UNNotifications+Common.swift */; };
 		33F4D61F278D426C00C0D821 /* Storyboarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D61E278D426C00C0D821 /* Storyboarded.swift */; };
 		33F4D621278D433600C0D821 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D620278D433600C0D821 /* Coordinator.swift */; };
 		33F4D623278D437900C0D821 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D622278D437900C0D821 /* RootCoordinator.swift */; };
@@ -75,6 +76,7 @@
 		33A38CE823B4379F00783926 /* LocalNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotifications.swift; sourceTree = "<group>"; };
 		33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmNumberConverter.swift; sourceTree = "<group>"; };
 		33B8D27E2CC769E300462CC6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		33B8D2802CC7872300462CC6 /* UNNotifications+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotifications+Common.swift"; sourceTree = "<group>"; };
 		33F4D61E278D426C00C0D821 /* Storyboarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboarded.swift; sourceTree = "<group>"; };
 		33F4D620278D433600C0D821 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		33F4D622278D437900C0D821 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 				333F748923A88ECA00E51514 /* ChronCoreDataStack.swift */,
 				33A38CE623B3073300783926 /* DefaultsManager.swift */,
 				33A38CE823B4379F00783926 /* LocalNotifications.swift */,
+				33B8D2802CC7872300462CC6 /* UNNotifications+Common.swift */,
 				3363402D278BFBBA00EFEF51 /* SimpleConveniences.swift */,
 				3363402F278BFC7500EFEF51 /* Weakify.swift */,
 			);
@@ -346,6 +349,7 @@
 				333F748E23A88EE900E51514 /* Drugs.xcdatamodeld in Sources */,
 				33F4D625278D44BC00C0D821 /* DoseLogCoordinator.swift in Sources */,
 				333F748223A88D3B00E51514 /* DrugEntryVC.swift in Sources */,
+				33B8D2812CC7872B00462CC6 /* UNNotifications+Common.swift in Sources */,
 				333F749323A8905100E51514 /* AlarmView.swift in Sources */,
 				33634030278BFC7500EFEF51 /* Weakify.swift in Sources */,
 				3335EB6F23B0037D00509A2F /* DoseEntry+Convenience.swift in Sources */,

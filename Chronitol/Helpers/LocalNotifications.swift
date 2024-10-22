@@ -27,7 +27,6 @@ class LocalNotifications: NSObject {
 				NSLog("There was an error requesting notification permission: \(error)")
 			}
 		}
-//		pendInfo()
 	}
 
 	private func setupActions() {
@@ -38,36 +37,37 @@ class LocalNotifications: NSObject {
 		let dosageTakenAction = UNNotificationAction(identifier: .drugNotificationDosageTakenActionID, title: "I'm taking it now!", options: [])
 		let dosageIgnoredAction = UNNotificationAction(identifier: .drugNotificationDosageIgnoredActionID, title: "Ignore this dose", options: [.destructive])
 
-		let category = UNNotificationCategory(identifier: .drugNotificationCategoryIdentifier,
-											  actions: [dosageTakenAction, remind5Action, remind15Action, remind30Action, dosageIgnoredAction],
-											  intentIdentifiers: [],
-											  options: [.customDismissAction])
+		let category = UNNotificationCategory(
+			identifier: .drugNotificationCategoryIdentifier,
+			actions: [dosageTakenAction, remind5Action, remind15Action, remind30Action, dosageIgnoredAction],
+			intentIdentifiers: [],
+			options: [.customDismissAction])
 
 		nc.setNotificationCategories([category])
-	}
-
-	func pendInfo() {
-		nc.getPendingNotificationRequests { requests in
-			print("pending")
-			requests.forEach { print($0) }
-		}
-
-		nc.getDeliveredNotifications { notifications in
-			print("delivered")
-			notifications.forEach { print($0) }
-		}
 	}
 
 	func getPendingDosageInfo() async throws -> [PendingDosageInfo] {
 		async let pendingNotifications = nc.pendingNotificationRequests()
 			.asyncConcurrentMap { request in
-				let trigger = request.trigger as? UNCalendarNotificationTrigger
-				return PendingDosageInfo(drugID: request.identifier, nextDueDate: trigger?.nextTriggerDate() ?? .now, drugName: request.content.title)
+				let trigger = request.trigger as? TimeNotificationTrigger
+				let name = request.content.userInfo[Self.drugNameKey] as? String ?? request.content.title
+				let id = (request.content.userInfo[Self.drugObjectIDKey] as? String).flatMap(URL.init(string:))
+				return PendingDosageInfo(
+					alarmID: request.identifier,
+					drugID: id,
+					dueTimestamp: .upcoming(trigger?.nextTriggerDate() ?? .now.addingTimeInterval(-60)),
+					drugName: name)
 			}
 		async let deliveredNotifications = nc.deliveredNotifications()
 			.asyncConcurrentMap { notification in
 				let request = notification.request
-				return PendingDosageInfo(drugID: request.identifier, nextDueDate: notification.date, drugName: request.content.title)
+				let name = request.content.userInfo[Self.drugNameKey] as? String ?? request.content.title
+				let id = (request.content.userInfo[Self.drugObjectIDKey] as? String).flatMap(URL.init(string:))
+				return PendingDosageInfo(
+					alarmID: request.identifier,
+					drugID: id,
+					dueTimestamp: .due(notification.date),
+					drugName: name)
 			}
 
 		return await deliveredNotifications + pendingNotifications
@@ -211,10 +211,7 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 
 			Task {
 				switch response.actionIdentifier {
-				case UNNotificationDefaultActionIdentifier:
-					print("Default")
-					try await createDrugReminder(titled: delayedTitle, body: content.body, scheduleInfo: .delayedFromNow(seconds: 5 * 60), id: identifier, userInfo: userInfo)
-				case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier:
+				case .drugNotificationRemind5ActionID, UNNotificationDismissActionIdentifier, UNNotificationDefaultActionIdentifier:
 					try await createDrugReminder(titled: delayedTitle, body: content.body, scheduleInfo: .delayedFromNow(seconds: 5 * 60), id: identifier, userInfo: userInfo)
 					print("delay 5")
 				case .drugNotificationRemind15ActionID:
@@ -240,11 +237,24 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		}
 
 	struct PendingDosageInfo: Codable, Hashable, Sendable {
-		let drugID: String
-		let nextDueDate: Date
+		let alarmID: String
+		let drugID: URL?
+		let dueTimestamp: TimeRelativity
+		enum TimeRelativity: Codable, Hashable, Sendable {
+			case upcoming(Date)
+			case due(Date)
+
+			var date: Date {
+				switch self {
+				case .upcoming(let date), .due(let date):
+					date
+				}
+			}
+		}
+
 		let drugName: String
-		var nextDueDateString: String {
-			Self.dateFormatter.string(from: nextDueDate)
+		var dueTimestampString: String {
+			Self.dateFormatter.string(from: dueTimestamp.date)
 		}
 
 		private static let dateFormatter = DateFormatter().with {
