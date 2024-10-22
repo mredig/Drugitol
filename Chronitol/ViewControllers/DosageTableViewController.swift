@@ -69,7 +69,7 @@ class DosageTableViewController: UIViewController {
 		self.foregroundingListenerTask = Task { [weak self] in
 			var pub = NotificationCenter
 				.default
-				.publisher(for: .dosageReminderNotificationShown)
+				.publisher(for: .dosageReminderNotificationsChanged)
 				.values
 				.makeAsyncIterator()
 			while await pub.next() != nil {

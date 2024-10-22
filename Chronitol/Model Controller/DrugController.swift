@@ -242,6 +242,20 @@ extension DrugController: NSFetchedResultsControllerDelegate {
 	}
 }
 
+extension DrugController: LocalNotifications.Delegate {
+	func localNotifications(_ localNotifications: LocalNotifications, didReceiveDosageTaken dosageID: String) async throws {
+		let context = ChronCoreDataStack.shared.container.newBackgroundContext()
+		guard
+			let drugID = await context.perform({
+				let alarm = self.getAlarm(withID: dosageID, on: context)
+				return alarm?.drug?.objectID
+			})
+		else { return }
+
+		await createDoseEntry(at: .now, forDrugWithID: drugID)
+	}
+}
+
 // MARK: - Import/Export
 extension DrugController {
 	func clearDB() async throws {

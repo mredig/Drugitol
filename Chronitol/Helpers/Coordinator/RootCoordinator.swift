@@ -16,6 +16,8 @@ class RootCoordinator: Coordinator {
 		let coreDataStack = ChronCoreDataStack.shared
 		self.coreDataStack = coreDataStack
 		self.drugController = DrugController(coreDataStack: coreDataStack)
+
+		LocalNotifications.shared.delegate = drugController
 	}
 
 	func start() {

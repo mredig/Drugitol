@@ -4,6 +4,10 @@ import Foundation
 import CoreData
 
 class LocalNotifications: NSObject {
+	protocol Delegate: AnyObject {
+		func localNotifications(_ localNotifications: LocalNotifications, didReceiveDosageTaken dosageID: String) async throws
+	}
+
 	let nc = UNUserNotificationCenter.current()
 
 	static let drugNameKey = "drugName"
@@ -11,6 +15,8 @@ class LocalNotifications: NSObject {
 	static let drugObjectIDKey = "drugObjectID"
 
 	static let shared = LocalNotifications()
+
+	weak var delegate: Delegate?
 
 	override private init() {
 		super.init()
@@ -223,15 +229,19 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 				deleteDrugAlarmNotification(request: response.notification.request)
 			}
 
-			let cleanIdentifier = request.identifier.replacingOccurrences(of: ##"\:.*"##, with: "", options: .regularExpression, range: nil)
+			let cleanIdentifier = String(request.identifier.prefix(while: { $0 != ":" }))
 
 			Task {
+				defer { NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil) }
 				guard
 					let delay = NotificationDelay(rawValue: response.actionIdentifier)
 				else {
 					guard response.actionIdentifier == .drugNotificationDosageTakenActionID else { return }
-					NotificationCenter.default.post(name: .dosageTakenNotification, object: nil, userInfo: ["id": cleanIdentifier])
-					print("sent notification: \(cleanIdentifier)")
+					guard let delegate else {
+						return NSLog("No delegate when trying to mark dosage taken!")
+					}
+					try await delegate.localNotifications(self, didReceiveDosageTaken: cleanIdentifier)
+					print("marked as taken: \(cleanIdentifier)")
 					return
 				}
 				return try await createDelayedReminder(from: request, delay: delay)
@@ -243,7 +253,7 @@ extension LocalNotifications: UNUserNotificationCenterDelegate {
 		willPresent notification: UNNotification,
 		withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
 			completionHandler([.banner, .sound, .list])
-			NotificationCenter.default.post(name: .dosageReminderNotificationShown, object: nil)
+			NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil)
 		}
 
 	struct PendingDosageInfo: Codable, Hashable, Sendable {
@@ -289,8 +299,7 @@ fileprivate extension String {
 }
 
 extension NSNotification.Name {
-	static let dosageTakenNotification = NSNotification.Name(rawValue: "com.redeggproductions.dosageTaken")
-	static let dosageReminderNotificationShown = NSNotification.Name(rawValue: "com.redeggproductions.reminderShown")
+	static let dosageReminderNotificationsChanged = NSNotification.Name(rawValue: "com.redeggproductions.remindersChanged")
 }
 
 enum NotificationDelay: String, Sendable, Hashable, CaseIterable {
