@@ -34,6 +34,8 @@
 		33B8D27C2CC70D3300462CC6 /* SwiftPizzaSnips in Frameworks */ = {isa = PBXBuildFile; productRef = 33B8D27B2CC70D3300462CC6 /* SwiftPizzaSnips */; };
 		33B8D27F2CC769E300462CC6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B8D27E2CC769E300462CC6 /* SettingsView.swift */; };
 		33B8D2812CC7872B00462CC6 /* UNNotifications+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B8D2802CC7872300462CC6 /* UNNotifications+Common.swift */; };
+		33B8D2872CC874FB00462CC6 /* TaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B8D2862CC874FA00462CC6 /* TaskManager.swift */; };
+		33B8D28A2CC8771C00462CC6 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 33B8D2892CC8771C00462CC6 /* Logging */; };
 		33F4D61F278D426C00C0D821 /* Storyboarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D61E278D426C00C0D821 /* Storyboarded.swift */; };
 		33F4D621278D433600C0D821 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D620278D433600C0D821 /* Coordinator.swift */; };
 		33F4D623278D437900C0D821 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F4D622278D437900C0D821 /* RootCoordinator.swift */; };
@@ -77,6 +79,7 @@
 		33A38CEA23B43B3900783926 /* AlarmNumberConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmNumberConverter.swift; sourceTree = "<group>"; };
 		33B8D27E2CC769E300462CC6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		33B8D2802CC7872300462CC6 /* UNNotifications+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotifications+Common.swift"; sourceTree = "<group>"; };
+		33B8D2862CC874FA00462CC6 /* TaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskManager.swift; sourceTree = "<group>"; };
 		33F4D61E278D426C00C0D821 /* Storyboarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboarded.swift; sourceTree = "<group>"; };
 		33F4D620278D433600C0D821 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		33F4D622278D437900C0D821 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
@@ -93,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33B8D28A2CC8771C00462CC6 /* Logging in Frameworks */,
 				33634033278C1FD400EFEF51 /* DateBuilder in Frameworks */,
 				33B8D27C2CC70D3300462CC6 /* SwiftPizzaSnips in Frameworks */,
 			);
@@ -170,6 +174,7 @@
 				33B8D2802CC7872300462CC6 /* UNNotifications+Common.swift */,
 				3363402D278BFBBA00EFEF51 /* SimpleConveniences.swift */,
 				3363402F278BFC7500EFEF51 /* Weakify.swift */,
+				33B8D2862CC874FA00462CC6 /* TaskManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -245,6 +250,7 @@
 			packageProductDependencies = (
 				33634032278C1FD400EFEF51 /* DateBuilder */,
 				33B8D27B2CC70D3300462CC6 /* SwiftPizzaSnips */,
+				33B8D2892CC8771C00462CC6 /* Logging */,
 			);
 			productName = Drugitol;
 			productReference = 333F746623A888B400E51514 /* Chronitol.app */;
@@ -277,6 +283,7 @@
 			packageReferences = (
 				33634031278C1FD400EFEF51 /* XCRemoteSwiftPackageReference "DateBuilder" */,
 				33B8D27A2CC70D3300462CC6 /* XCRemoteSwiftPackageReference "SwiftPizzaSnips" */,
+				33B8D2882CC8771C00462CC6 /* XCRemoteSwiftPackageReference "swift-log" */,
 			);
 			productRefGroup = 333F746723A888B400E51514 /* Products */;
 			projectDirPath = "";
@@ -340,6 +347,7 @@
 				33A38CEB23B43B3900783926 /* AlarmNumberConverter.swift in Sources */,
 				33B8D27F2CC769E300462CC6 /* SettingsView.swift in Sources */,
 				33F4D61F278D426C00C0D821 /* Storyboarded.swift in Sources */,
+				33B8D2872CC874FB00462CC6 /* TaskManager.swift in Sources */,
 				3363402E278BFBBA00EFEF51 /* SimpleConveniences.swift in Sources */,
 				3335EB7123B0056900509A2F /* DosageTableViewController.swift in Sources */,
 				3329A47423A89AEC007F10E2 /* DrugEntry+Convenience.swift in Sources */,
@@ -507,7 +515,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5UZAT7KA9;
 				INFOPLIST_FILE = Chronitol/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -529,7 +537,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5UZAT7KA9;
 				INFOPLIST_FILE = Chronitol/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -582,6 +590,14 @@
 				kind = branch;
 			};
 		};
+		33B8D2882CC8771C00462CC6 /* XCRemoteSwiftPackageReference "swift-log" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-log.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -594,6 +610,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 33B8D27A2CC70D3300462CC6 /* XCRemoteSwiftPackageReference "SwiftPizzaSnips" */;
 			productName = SwiftPizzaSnips;
+		};
+		33B8D2892CC8771C00462CC6 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 33B8D2882CC8771C00462CC6 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
 		};
 /* End XCSwiftPackageProductDependency section */
 
