@@ -1,4 +1,6 @@
+import Logging
 import SwiftUI
+import SwiftPizzaSnips
 
 class SettingsCoordinator: NavigationCoordinator, ObservableObject {
 	var children: [Coordinator] = []
@@ -12,6 +14,8 @@ class SettingsCoordinator: NavigationCoordinator, ObservableObject {
 	let drugController: DrugController
 
 	private var docDelegate: DocumentDelegate?
+
+	let log = Logger(label: "SettingsCoordinator")
 
 	@Published
 	private var isExportEnabled = true
@@ -91,6 +95,8 @@ extension SettingsCoordinator: SettingsView.Coordinator {
 			beforeOpen: { [drugController] in
 				if flag {
 					try await drugController.clearDB()
+					DefaultsManager.shared.reset(key: .delayedAlarms)
+					LocalNotifications.shared.deleteAllReminders()
 				}
 			},
 			onComplete: {
@@ -108,6 +114,7 @@ extension SettingsCoordinator: SettingsView.Coordinator {
 		let beforeOpen: () async throws -> Void
 		let onComplete: () -> Void
 		let drugController: DrugController
+		let log = Logger(label: "DocumentDelegate")
 
 		init(drugController: DrugController, beforeOpen: @escaping () async throws -> Void, onComplete: @escaping () -> Void) {
 			self.beforeOpen = beforeOpen
@@ -119,10 +126,18 @@ extension SettingsCoordinator: SettingsView.Coordinator {
 			Task {
 				defer { onComplete() }
 
-				guard let backupURL = urls.first else { return }
-				let data = try Data(contentsOf: backupURL)
-				try await beforeOpen()
-				try await drugController.importFromPlistData(data)
+				do {
+					guard let backupURL = urls.first else { return }
+					guard
+						backupURL.startAccessingSecurityScopedResource()
+					else { throw SimpleError(message: "Cannot start secure access") }
+					defer { backupURL.stopAccessingSecurityScopedResource() }
+					let data = try Data(contentsOf: backupURL)
+					try await beforeOpen()
+					try await drugController.importFromPlistData(data)
+				} catch {
+					log.error("Error importing backup", metadata: ["error": .stringConvertible(error as CustomStringConvertible)])
+				}
 			}
 			controller.dismiss(animated: true)
 		}

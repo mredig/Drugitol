@@ -198,13 +198,19 @@ class LocalNotifications: NSObject {
 		NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil)
 	}
 
-	func resolveDeliveredNotification(withID id: String) {
-		nc.removeDeliveredNotifications(withIdentifiers: [id])
+	func deleteDeliveredReminders() {
+		nc.removeAllDeliveredNotifications()
 		NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil)
 	}
 
-	func deleteDeliveredReminders() {
+	func deleteAllReminders() {
 		nc.removeAllDeliveredNotifications()
+		nc.removeAllPendingNotificationRequests()
+		NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil)
+	}
+
+	func resolveDeliveredNotification(withID id: String) {
+		nc.removeDeliveredNotifications(withIdentifiers: [id])
 		NotificationCenter.default.post(name: .dosageReminderNotificationsChanged, object: nil)
 	}
 

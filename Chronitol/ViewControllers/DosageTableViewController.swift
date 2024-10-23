@@ -130,6 +130,12 @@ class DosageTableViewController: UIViewController {
 			pending
 				.forEach { print($0) }
 
+			DefaultsManager.shared[.delayedAlarms]
+				.forEach {
+					print($0)
+				}
+
+			updatePendingDosages()
 		}
 	}
 
@@ -278,7 +284,7 @@ class DosageTableViewController: UIViewController {
 		config.scrollDirection = .horizontal
 		let size = NSCollectionLayoutSize(widthDimension: .estimated(100), heightDimension: .fractionalHeight(1))
 		let item = NSCollectionLayoutItem(layoutSize: size)
-		let group = NSCollectionLayoutGroup.vertical(layoutSize: size, subitem: item, count: 1)
+		let group = NSCollectionLayoutGroup.vertical(layoutSize: size, repeatingSubitem: item, count: 1)
 		let section = NSCollectionLayoutSection(group: group)
 		section.interGroupSpacing = 8
 		section.contentInsets = NSDirectionalEdgeInsets(horizontal: 20, vertical: 0)
