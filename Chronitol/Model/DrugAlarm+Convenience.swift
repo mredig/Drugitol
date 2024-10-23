@@ -1,4 +1,5 @@
 import Foundation
+import SwiftPizzaSnips
 import CoreData
 
 extension DrugAlarm {
@@ -31,5 +32,12 @@ extension DrugAlarm {
 		let secondsFromMidnight = TimeInterval(minutesFromMidnight * 60)
 		let time = Date(timeIntervalSince1970: secondsFromMidnight)
 		return DrugAlarm.formatter.string(from: time)
+	}
+
+	public override func prepareForDeletion() {
+		super.prepareForDeletion()
+
+		let idURL = objectID.uriRepresentation()
+		DefaultsManager.shared[.delayedAlarms].removeAll(where: { $0.alarmIDURL == idURL })
 	}
 }
