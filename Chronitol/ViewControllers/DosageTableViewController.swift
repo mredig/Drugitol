@@ -176,13 +176,11 @@ class DosageTableViewController: UIViewController {
 				let drugEntry = dosageEntry.drug
 
 				let drugName = drugEntry?.name ?? "A drug"
-				let drugNameAttributed = NSMutableAttributedString(string: drugName, attributes: [.font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)])
-
-				let timeAttributed = NSAttributedString(string: ": \(dosageEntry.timeString)")
-				drugNameAttributed.append(timeAttributed)
 
 				var config = cell.defaultContentConfiguration()
-				config.attributedText = drugNameAttributed
+				config.text = drugName
+				config.secondaryText = dosageEntry.timeString
+				config.prefersSideBySideTextAndSecondaryText = true
 				cell.contentConfiguration = config
 			})
 
