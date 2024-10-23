@@ -1,4 +1,6 @@
 import UIKit
+import SwiftPizzaSnips
+import Logging
 
 class RootCoordinator: Coordinator {
 	var children: [Coordinator] = []
@@ -8,6 +10,8 @@ class RootCoordinator: Coordinator {
 
 	let coreDataStack: ChronCoreDataStack
 	let drugController: DrugController
+
+	let log = Logger(label: "RootCoordinator")
 
 	init(window: UIWindow, tabBarController: UITabBarController) {
 		self.window = window
@@ -41,5 +45,32 @@ class RootCoordinator: Coordinator {
 			drugListCoordinator.rootController,
 			settingsCoordiantor.rootController,
 		], animated: true)
+
+		Task {
+			await setupTaskManager()
+		}
+	}
+
+	private func setupTaskManager() async {
+		await TaskManager.addTask(59) { [weak self] in
+			let delayedAlarms = DefaultsManager.shared[.delayedAlarms]
+			guard let self else { return }
+
+			for alarm in delayedAlarms {
+				guard alarm.scheduleAfter < .now else { continue }
+
+				defer { DefaultsManager.shared[.delayedAlarms].removeAll(where: { $0 == alarm }) }
+				do {
+					guard
+						let objectID = self.coreDataStack.container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: alarm.alarmIDURL)
+					else { continue }
+					try await LocalNotifications.shared.createDrugReminder(forDrugAlarmWithID: objectID, using: self.drugController)
+				} catch {
+					log.error("Error creating delayed drug reminder", metadata: ["error": .stringConvertible(error as CustomStringConvertible)])
+				}
+			}
+		}
+
+		await TaskManager.start()
 	}
 }

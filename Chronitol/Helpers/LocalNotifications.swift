@@ -1,4 +1,5 @@
 import UIKit
+import SwiftPizzaSnips
 import UserNotifications
 import Foundation
 import CoreData
@@ -146,10 +147,11 @@ class LocalNotifications: NSObject {
 			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
 
 			request = UNNotificationRequest(identifier: id + ":delayed", content: content, trigger: trigger)
-		case .specificTime(let hour, let minute):
+		case .specificTime(hour: let hour, minute: let minute):
 			var components = DateComponents()
 			components.hour = hour
 			components.minute = minute
+
 			let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
 
 			request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
@@ -221,6 +223,15 @@ class LocalNotifications: NSObject {
 			scheduleInfo: .delayedFromNow(seconds: delay.seconds),
 			id: request.identifier,
 			userInfo: content.userInfo)
+	}
+
+	@MainActor
+	func createDelayedReminder(from dosageInfo: PendingDosageInfo, delayedUntilAfter: Date) throws {
+		let alarmIDURL = try dosageInfo.drugID.unwrap("No drug ID URL")
+		let delayedInfo = DelayedAlarmInfo(
+			scheduleAfter: delayedUntilAfter,
+			alarmIDURL: alarmIDURL)
+		DefaultsManager.shared[.delayedAlarms].append(delayedInfo)
 	}
 }
 

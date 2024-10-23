@@ -1,5 +1,7 @@
 import Foundation
+import CoreData
 import UIKit
+import Logging
 
 class DoseLogCoordinator: NavigationCoordinator {
 	var children: [Coordinator] = []
@@ -9,6 +11,8 @@ class DoseLogCoordinator: NavigationCoordinator {
 	private var dosageTableViewController: DosageTableViewController!
 
 	let drugController: DrugController
+
+	let log = Logger(label: "DoseLogCoordinator")
 
 	init(drugController: DrugController) {
 		self.drugController = drugController
@@ -24,7 +28,7 @@ class DoseLogCoordinator: NavigationCoordinator {
 	}
 }
 
-extension DoseLogCoordinator: DosageTableViewControllerCoordinator {
+extension DoseLogCoordinator: DosageTableViewController.Coordinator {
 	func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, tappedDosage dosage: DoseEntry) {
 		let dosageDetailVC = DosageDetailViewController.instantiate()
 		dosageDetailVC.drugController = drugController
@@ -59,11 +63,25 @@ extension DoseLogCoordinator: DosageTableViewControllerCoordinator {
 			break
 		}
 	}
+
+	func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, deletedPendingDosage dosage: LocalNotifications.PendingDosageInfo) {
+		switch dosage.dueTimestamp {
+		case .due:
+			LocalNotifications.shared.resolveDeliveredNotification(withID: dosage.notificationID)
+		case .upcoming(let dueDate):
+			LocalNotifications.shared.deleteDrugAlarmNotification(withID: dosage.notificationID)
+			do {
+				try LocalNotifications.shared.createDelayedReminder(from: dosage, delayedUntilAfter: dueDate.addingTimeInterval(30))
+			} catch {
+				log.error("Error creating delayed reminder", metadata: ["error": .stringConvertible(error as CustomStringConvertible)])
+			}
+		}
+	}
+
+	func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, deleteDosageEntryWithID dosageID: NSManagedObjectID) {
+		guard
+			let dose: DoseEntry = drugController.modelObject(for: dosageID)
+		else { return }
+		drugController.deleteDoseEntry(dose)
+	}
 }
-//extension DosageTableViewController: DosageDetailViewControllerDelegate {
-//	// sometimes the frc doesn't trigger a refresh when an entry is updated, so this will do so when that happens
-//	func dosageDetailVCDidFinish(_ dosageDetailVC: DosageDetailViewController) {
-//		guard let indexPath = tableView.indexPathForSelectedRow else { return }
-//		tableView.reloadRows(at: [indexPath], with: .automatic)
-//	}
-//}

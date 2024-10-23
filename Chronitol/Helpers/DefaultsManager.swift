@@ -1,34 +1,17 @@
 import Foundation
+import SwiftPizzaSnips
 
-class DefaultsManager {
-	private static let shared = DefaultsManager()
-
-	private init() {
-		migrateDefaults()
-	}
-
-	var defaultsVersion: Int {
-		get { defaults.integer(forKey: .defaultsVersionKey) }
-		set { defaults.set(newValue, forKey: .defaultsVersionKey) }
-	}
-
-	static var lastSelectedDoseIndex: Int {
-		get { shared.defaults.integer(forKey: .lastSelectedDoseIndexKey) }
-		set { shared.defaults.set(newValue, forKey: .lastSelectedDoseIndexKey) }
-	}
-
-	// MARK: - Private utilities
-	private func migrateDefaults() {
-		if defaultsVersion == 0 {
-			defaults.set(1, forKey: .defaultsVersionKey)
-		}
-	}
-
-	fileprivate let defaults = UserDefaults.standard
+struct DelayedAlarmInfo: Sendable, Codable, Hashable {
+	let scheduleAfter: Date
+	let alarmIDURL: URL
 }
-
-// MARK: - Keys
-fileprivate extension String {
-	static let defaultsVersionKey = "com.redeggproductions.defaultsVersion"
-	static let lastSelectedDoseIndexKey = "com.redeggproductions.lastSelectedDoseIndex"
+extension DefaultsManager.KeyWithDefault where Value == [DelayedAlarmInfo], StoredValue == Data {
+	static let delayedAlarms = Self.init("delayedAlarms", defaultValue: [])
+		.withTransform(
+			get: {
+				try DefaultsManager.defaultDecoder.decode([DelayedAlarmInfo].self, from: $0)
+			},
+			set: {
+				try DefaultsManager.defaultEncoder.encode($0)
+			})
 }

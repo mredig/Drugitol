@@ -2,16 +2,18 @@ import UIKit
 import CoreData
 import SwiftPizzaSnips
 
-@MainActor
-protocol DosageTableViewControllerCoordinator: Coordinator {
-	func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, tappedDosage dosage: DoseEntry)
-	func dosageTableViewController(
-		_ dosageTableViewController: DosageTableViewController,
-		tappedPendingDosage dosage: LocalNotifications.PendingDosageInfo)
-}
 
 @MainActor
 class DosageTableViewController: UIViewController {
+	@MainActor
+	protocol Coordinator: Chronitol.Coordinator {
+		func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, tappedDosage dosage: DoseEntry)
+		func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, deleteDosageEntryWithID dosageID: NSManagedObjectID)
+		func dosageTableViewController(
+			_ dosageTableViewController: DosageTableViewController,
+			tappedPendingDosage dosage: LocalNotifications.PendingDosageInfo)
+		func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, deletedPendingDosage dosage: LocalNotifications.PendingDosageInfo)
+	}
 
 	let drugController: DrugController
 
@@ -47,12 +49,12 @@ class DosageTableViewController: UIViewController {
 
 	private var bag: Bag = []
 
-	private unowned let coordinator: DosageTableViewControllerCoordinator
+	private unowned let coordinator: Coordinator
 
 	private var foregroundingListenerTask: Task<Void, Never>!
 	private var notificationShownListenerTask: Task<Void, Never>!
 
-	init(drugController: DrugController, coordinator: DosageTableViewControllerCoordinator) {
+	init(drugController: DrugController, coordinator: Coordinator) {
 		self.drugController = drugController
 		self.coordinator = coordinator
 		super.init(nibName: nil, bundle: nil)
@@ -450,24 +452,32 @@ extension DosageTableViewController: UICollectionViewDelegate {
 	}
 
 	func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-		let action = UIContextualAction(style: .destructive, title: "Delete", handler: weakify { action, view, completion, strongSelf in
-			var successful = false
-			defer { completion(successful) }
-			guard
-				let item = strongSelf.dosageListDataSource.itemIdentifier(for: indexPath)
-			else { return }
-			switch item {
-			case .pendingDosage(let doseInfo), .dueDosage(let doseInfo):
-				break
-			case .history(let doseID):
-				guard
-					let dose: DoseEntry = strongSelf.drugController.modelObject(for: doseID)
-				else { return }
-				strongSelf.drugController.deleteDoseEntry(dose)
+		guard let item = dosageListDataSource.itemIdentifier(for: indexPath) else { return nil }
+
+		let actions: [UIContextualAction]
+		switch item {
+		case .pendingDosage(let doseInfo), .dueDosage(let doseInfo):
+			let deleteAction = UIContextualAction(style: .destructive, title: "Delete", handler: weakify { action, view, completion, strongSelf in
+				var successful = false
+				defer { completion(successful) }
+
+				strongSelf.coordinator.dosageTableViewController(strongSelf, deletedPendingDosage: doseInfo)
 				successful = true
-			}
-		})
-		return UISwipeActionsConfiguration(actions: [action])
+			})
+
+			actions = [deleteAction]
+		case .history(let objectID):
+			let deleteAction = UIContextualAction(style: .destructive, title: "Delete", handler: weakify { action, view, completion, strongSelf in
+				var successful = false
+				defer { completion(successful) }
+
+				strongSelf.coordinator.dosageTableViewController(strongSelf, deleteDosageEntryWithID: objectID)
+				successful = true
+			})
+			actions = [deleteAction]
+		}
+
+		return UISwipeActionsConfiguration(actions: actions)
 	}
 }
 
