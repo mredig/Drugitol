@@ -44,24 +44,30 @@ extension DoseLogCoordinator: DosageTableViewController.Coordinator {
 		tappedPendingDosage dosage: LocalNotifications.PendingDosageInfo
 	) {
 		print("tapped \(dosage.drugName)")
-		switch dosage.dueTimestamp {
-		case .due:
-			Task {
-				guard
-					let idURL = dosage.drugID,
-					let drugObjectID = ChronCoreDataStack
-						.shared
-						.mainContext
-						.persistentStoreCoordinator?
-						.managedObjectID(forURIRepresentation: idURL)
-				else { return }
+		Task {
+			guard
+				let idURL = dosage.drugID,
+				let drugObjectID = ChronCoreDataStack
+					.shared
+					.mainContext
+					.persistentStoreCoordinator?
+					.managedObjectID(forURIRepresentation: idURL)
+			else { return }
 
-				await drugController.createDoseEntry(at: .now, forDrugWithID: drugObjectID)
+			await drugController.createDoseEntry(at: .now, forDrugWithID: drugObjectID)
+			switch dosage.dueTimestamp {
+			case .due:
 				LocalNotifications.shared.resolveDeliveredNotification(withID: dosage.notificationID)
+			case .upcoming(let dueDate):
+				do {
+					LocalNotifications.shared.deleteDrugAlarmNotification(withID: dosage.notificationID)
+					try LocalNotifications.shared.createDelayedReminder(from: dosage, delayedUntilAfter: dueDate)
+				} catch {
+					log.error("Error delaying reminder for early dosage", metadata: ["error": .stringConvertible(error as CustomStringConvertible)])
+				}
 			}
-		case .upcoming:
-			break
 		}
+
 	}
 
 	func dosageTableViewController(_ dosageTableViewController: DosageTableViewController, deletedPendingDosage dosage: LocalNotifications.PendingDosageInfo) {
