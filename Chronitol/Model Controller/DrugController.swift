@@ -1,59 +1,85 @@
 import Foundation
+import Logging
 import UIKit
 import CoreData
 import Combine
 import SwiftPizzaSnips
 
 class DrugController: NSObject {
+	let log = Logger(label: "DrugController")
 
-	private let activeDrugsFRC: NSFetchedResultsController<DrugEntry>
-	let activeDrugPublisher = CurrentValueSubject<NSDiffableDataSourceSnapshot<String, NSManagedObjectID>, Never>(.init())
-	var activeDrugIDs: [NSManagedObjectID] {
-		activeDrugPublisher.value.itemIdentifiers
-	}
-
-	private let allDrugsFRC: NSFetchedResultsController<DrugEntry>
+	private var allDrugsFRC: NSFetchedResultsController<DrugEntry>
 	let allDrugsPublisher = CurrentValueSubject<NSDiffableDataSourceSnapshot<String, NSManagedObjectID>, Never>(.init())
 	var allDrugsIDs: [NSManagedObjectID] {
 		allDrugsPublisher.value.itemIdentifiers
 	}
 
-	private let dosageListFRC: NSFetchedResultsController<DoseEntry>
+	private var activeDrugsFRC: NSFetchedResultsController<DrugEntry>
+	let activeDrugPublisher = CurrentValueSubject<NSDiffableDataSourceSnapshot<String, NSManagedObjectID>, Never>(.init())
+	var activeDrugIDs: [NSManagedObjectID] {
+		activeDrugPublisher.value.itemIdentifiers
+	}
+
+	private var dosageListFRC: NSFetchedResultsController<DoseEntry>
 	let dosageListPublisher = CurrentValueSubject<NSDiffableDataSourceSnapshot<String, NSManagedObjectID>, Never>(.init())
 
-	let context: NSManagedObjectContext
+	var context: NSManagedObjectContext { coreDataStack.mainContext }
 	let localNotifications = LocalNotifications.shared
 
 	let coreDataStack: ChronCoreDataStack
 
-	init(coreDataStack: ChronCoreDataStack) {
-		self.coreDataStack = coreDataStack
-		self.context = coreDataStack.mainContext
-
+	private static let drugsFetchRequest: NSFetchRequest<DrugEntry> = {
 		let allDrugsFetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		allDrugsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-		self.allDrugsFRC = NSFetchedResultsController<DrugEntry>(
-			fetchRequest: allDrugsFetchRequest,
-			managedObjectContext: coreDataStack.mainContext,
-			sectionNameKeyPath: nil,
-			cacheName: nil)
+		return allDrugsFetchRequest
+	}()
 
+	private static let activeDrugsFetchRequest: NSFetchRequest<DrugEntry> = {
 		let activeDrugsFetchRequest: NSFetchRequest<DrugEntry> = DrugEntry.fetchRequest()
 		activeDrugsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
 		activeDrugsFetchRequest.predicate = NSPredicate(format: "isActive == %i", true)
-		self.activeDrugsFRC = NSFetchedResultsController<DrugEntry>(
-			fetchRequest: activeDrugsFetchRequest,
-			managedObjectContext: coreDataStack.mainContext,
+		return activeDrugsFetchRequest
+	}()
+
+	private static let dosesFetchRequest: NSFetchRequest<DoseEntry> = {
+		let fetchRequest: NSFetchRequest<DoseEntry> = DoseEntry.fetchRequest()
+		fetchRequest.sortDescriptors = [
+			NSSortDescriptor(key: "date", ascending: false),
+			NSSortDescriptor(key: "timestamp", ascending: false),
+		]
+		return fetchRequest
+	}()
+
+	private static func allDrugsFRCGen(on context: NSManagedObjectContext) -> NSFetchedResultsController<DrugEntry> {
+		NSFetchedResultsController<DrugEntry>(
+			fetchRequest: Self.drugsFetchRequest,
+			managedObjectContext: context,
 			sectionNameKeyPath: nil,
 			cacheName: nil)
+	}
 
-		let fetchRequest: NSFetchRequest<DoseEntry> = DoseEntry.fetchRequest()
-		fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false), NSSortDescriptor(key: "timestamp", ascending: false)]
-		self.dosageListFRC = NSFetchedResultsController(
-			fetchRequest: fetchRequest,
-			managedObjectContext: coreDataStack.mainContext,
+	private static func activeDrugsFRCGen(on context: NSManagedObjectContext) -> NSFetchedResultsController<DrugEntry> {
+		NSFetchedResultsController<DrugEntry>(
+			fetchRequest: Self.activeDrugsFetchRequest,
+			managedObjectContext: context,
+			sectionNameKeyPath: nil,
+			cacheName: nil)
+	}
+
+	private static func dosesFRCGen(on context: NSManagedObjectContext) -> NSFetchedResultsController<DoseEntry> {
+		NSFetchedResultsController<DoseEntry>(
+			fetchRequest: Self.dosesFetchRequest,
+			managedObjectContext: context,
 			sectionNameKeyPath: "date",
 			cacheName: nil)
+	}
+
+	init(coreDataStack: ChronCoreDataStack) {
+		self.coreDataStack = coreDataStack
+
+		self.allDrugsFRC = Self.allDrugsFRCGen(on: coreDataStack.mainContext)
+		self.activeDrugsFRC = Self.activeDrugsFRCGen(on: coreDataStack.mainContext)
+		self.dosageListFRC = Self.dosesFRCGen(on: coreDataStack.mainContext)
 
 		super.init()
 		activeDrugsFRC.delegate = self
@@ -133,7 +159,14 @@ class DrugController: NSObject {
 		return entry
 	}
 
-	@discardableResult func updateDrugEntry(_ entry: DrugEntry, name: String, isActive: Bool, alarms: [DrugAlarm]) -> DrugEntry {
+	@discardableResult func updateDrugEntry(
+		_ entry: DrugEntry,
+		name: String,
+		isActive: Bool,
+		alarms: [DrugAlarm],
+		on context: NSManagedObjectContext? = nil
+	) -> DrugEntry {
+		let context = context ?? self.context
 		context.performAndWait {
 			entry.name = name
 			entry.alarms = nil
@@ -262,22 +295,27 @@ extension DrugController {
 		let dosesFR = DoseEntry.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
 		dosesFR.resultType = .managedObjectIDResultType
 		let dosesBatch = NSBatchDeleteRequest(fetchRequest: dosesFR)
+		dosesBatch.resultType = .resultTypeObjectIDs
 
 		let alarmsFR = DrugAlarm.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
 		alarmsFR.resultType = .managedObjectIDResultType
 		let alarmsBatch = NSBatchDeleteRequest(fetchRequest: alarmsFR)
+		alarmsBatch.resultType = .resultTypeObjectIDs
 
 		let drugFR = DrugEntry.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
 		drugFR.resultType = .managedObjectIDResultType
 		let drugBatch = NSBatchDeleteRequest(fetchRequest: drugFR)
+		drugBatch.resultType = .resultTypeObjectIDs
 
 		let context = ChronCoreDataStack.shared.container.newBackgroundContext()
-		try await context.perform {
+		try await context.perform { [log] in
 			func process(result: NSPersistentStoreResult) {
 				guard
 					let deleteResult = result as? NSBatchDeleteResult,
 					let objectIDs = deleteResult.result as? [NSManagedObjectID]
-				else { return }
+				else {
+					return log.error("Error performing batch delete.")
+				}
 
 				NSManagedObjectContext.mergeChanges(
 					fromRemoteContextSave: [NSDeletedObjectIDsKey: objectIDs],
@@ -297,7 +335,7 @@ extension DrugController {
 		let drugEntries = try (try PropertyListSerialization.propertyList(from: data, format: nil) as? [[String: Any]]).unwrap()
 
 		let context = ChronCoreDataStack.shared.container.newBackgroundContext()
-		try await context.perform {
+		try await context.perform { [self] in
 			for drugEntryDict in drugEntries {
 				guard
 					let name = drugEntryDict["name"] as? String,
@@ -330,7 +368,19 @@ extension DrugController {
 				}
 			}
 			try context.save()
+
+			let drugsFR = DrugEntry.fetchRequest()
+			let	drugs = try context.fetch(drugsFR)
+			for drug in drugs {
+				updateDrugEntry(drug, name: drug.name ?? "Imported Drug", isActive: drug.isActive, alarms: drug.drugAlarms, on: context)
+			}
 		}
+
+		allDrugsFRC = Self.allDrugsFRCGen(on: coreDataStack.mainContext)
+		activeDrugsFRC = Self.activeDrugsFRCGen(on: coreDataStack.mainContext)
+		dosageListFRC = Self.dosesFRCGen(on: coreDataStack.mainContext)
+
+		fetchFRCs()
 	}
 
 	/// doesn't actually export, but provides the data that can then BE exported
